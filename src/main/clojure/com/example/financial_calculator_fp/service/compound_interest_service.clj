@@ -1,4 +1,13 @@
-#_"
+"
+Features:
+ 
+ Calculation logic - calculate-interest-for-year
+ Iteration for multiple years - calculate-interest-for-multiple-years
+ Request / Response processing - process-request
+ Integration with Java - create-service
+"
+
+"
 current balance - saldo atual 
 interest earned - juros ganho
 "
@@ -6,8 +15,7 @@ interest earned - juros ganho
 ;; Defining Namespace
 (ns com.example.financial-calculator-fp.service.compound-interest-service
   (:import (com.example.financial_calculator_fp.service CompoundInterestService) 
-           (com.example.financial_calculator_fp.model.request CompoundInterestRequestDTO)
-           (com.example.financial_calculator_fp.model.response CompoundInterestResponsetDTO CalculationDTO YearlyBalanceDTO)))
+           (com.example.financial_calculator_fp.model.response CompoundInterestResponseDTO CalculationDTO YearlyBalanceDTO)))
  
 (defn calculate-interest-for-year           ;; Name of function
   "Calculo de juros compostos para um ano"  ;; Represents a documentation of the function (Docstring)
@@ -22,35 +30,35 @@ interest earned - juros ganho
          current-balance initial-amount
          yearly-details  []] 
     (if (> year years)
-      yearly-details  ;; "return yearly-details if true"
+      yearly-details  ;; "Return yearly-details if true"
       (let [new-balance     (calculate-interest-for-year current-balance annual-rate)
             interest-earned (- new-balance current-balance)
-            year-detail     {:year                year             ;; year-detils represents a key/value map
+            year-detail     {:year                year  ;; year-detils represents a key/value map
                              :starting-balance    current-balance
                              :interest-earned     interest-earned
                              :contributions-added 0.0
                              :ending-balance      new-balance}]
         (recur (inc year)
                new-balance
-               (conj yearly-details year-detail))))))     ;; Adding the element to the collection in an immutable way / "conj" = "conjoins"
-        
+               (conj yearly-details year-detail))))))  ;; Adding the element to the collection in an immutable way / "conj" = "conjoins"
+
 (defn process-request
-  "Processa requisicao e retorna uma resposta"
+  "Processamento da requisicao e retorno de uma resposta"
   [request]
   (let [
         ;; Extraction of request data
-        initial-amount (.getInitialAmount request)
+        initial-amount (.getInitialAmount request) ;; Java method call
         annual-rate (.getAnnualInterestRate request)
         years (.getYears request)
 
-        yearly-details (calculate-interest-for-multiple-years initial-amount annual-rate years)
+        yearly-details (calculate-interest-for-multiple-years initial-amount annual-rate years) ;; Return an array of maps with details for each year
 
-        final-balance (:ending-balance (last yearly-details))
+        final-balance (:ending-balance (last yearly-details)) ;; Get the last element of the array
         total-interest (- final-balance initial-amount)
 
-        ;; Creating java objects for response
-        yearly-dtos (map (fn [detail]
-                           (YearlyBalanceDTO.
+        ;; Creating java objects for response (yearly-dtos and calculation-dto)
+        yearly-dtos (map (fn [detail]  ;; Will return a new collection with the results 
+                           (YearlyBalanceDTO. ;; Creating a new instance of this class
                             (:year detail)
                             (:starting-balance detail)
                             (:interest-earned detail)
@@ -64,4 +72,12 @@ interest earned - juros ganho
                          final-balance)]
   
   ;; Return response object
-  (CompoundInterestResponsetDTO. calculation-dto yearly-dtos)))
+  (CompoundInterestResponseDTO calculation-dto yearly-dtos)))
+
+;; Function that will be called by the Java code in the configuration (external use -> ^:export)
+(defn ^:export create-service 
+  "Criacao de uma instancia do servico que implementa a interface java"
+  []
+  (reify CompoundInterestService  ;; Creation of an anonymous instance (object Java) that implements such interface
+    (calculateCompoundInterest [this request] ;; Method name defined in Java interface / "request" is the CompoundInterestRequestDTO parameter 
+      (process-request request))))
