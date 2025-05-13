@@ -34,3 +34,34 @@ interest earned - juros ganho
                new-balance
                (conj yearly-details year-detail))))))     ;; Adding the element to the collection in an immutable way / "conj" = "conjoins"
         
+(defn process-request
+  "Processa requisicao e retorna uma resposta"
+  [request]
+  (let [
+        ;; Extraction of request data
+        initial-amount (.getInitialAmount request)
+        annual-rate (.getAnnualInterestRate request)
+        years (.getYears request)
+
+        yearly-details (calculate-interest-for-multiple-years initial-amount annual-rate years)
+
+        final-balance (:ending-balance (last yearly-details))
+        total-interest (- final-balance initial-amount)
+
+        ;; Creating java objects for response
+        yearly-dtos (map (fn [detail]
+                           (YearlyBalanceDTO.
+                            (:year detail)
+                            (:starting-balance detail)
+                            (:interest-earned detail)
+                            (:contributions-added detail)
+                            (:ending-balance detail)))
+                         yearly-details)
+        calculation-dto (CalculationDTO.
+                         initial-amount
+                         0.0
+                         total-interest
+                         final-balance)]
+  
+  ;; Return response object
+  (CompoundInterestResponsetDTO. calculation-dto yearly-dtos)))
