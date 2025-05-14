@@ -26,6 +26,10 @@ public class CompoundInterestController {
 
     @PostMapping("/calculate")
     public ResponseEntity<CompoundInterestResponseDTO> calculateCompoundInterest (@Valid @RequestBody CompoundInterestRequestDTO request) {
+        if (request.getYears() > 50) {
+            throw new com.example.financial_calculator_fp.exceptions.ValidationException("years", "O período máximo permitido é de 50 anos");
+        }
+       
         CompoundInterestResponseDTO response = compoundInterestService.calculateCompoundInterest(request);
 
         return ResponseEntity.ok(response);
