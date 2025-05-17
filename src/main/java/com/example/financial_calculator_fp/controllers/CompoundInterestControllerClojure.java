@@ -35,7 +35,7 @@ public class CompoundInterestControllerClojure {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/health")
+    @GetMapping("/health")
     public ResponseEntity<String> health() {
         return ResponseEntity.ok("Serviço de Juros Compostos está funcionando!");
     }

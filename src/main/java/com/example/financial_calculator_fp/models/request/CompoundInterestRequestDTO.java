@@ -12,7 +12,7 @@ public class CompoundInterestRequestDTO {
 
     @NotNull(message = "A taxa de juros anual não pode ser nula")
     @Positive(message = "A taxa de juros anual deve ser maior que zero")
-    private Double annualIterestRate;
+    private Double annualInterestRate;
 
     @NotNull(message = "O número de anos não pode ser nulo")
     @Positive(message = "O número de anos deve ser maior que zero")
@@ -24,10 +24,10 @@ public class CompoundInterestRequestDTO {
     public CompoundInterestRequestDTO() {
     }
 
-    public CompoundInterestRequestDTO(Double initialAmount, Double annualIterestRate, Integer years,
+    public CompoundInterestRequestDTO(Double initialAmount, Double annualInterestRate, Integer years,
             AdditionalContributionDTO additionalContributionDTO) {
         this.initialAmount = initialAmount;
-        this.annualIterestRate = annualIterestRate;
+        this.annualInterestRate = annualInterestRate;
         this.years = years;
         this.additionalContributionDTO = additionalContributionDTO;
     }
@@ -41,11 +41,11 @@ public class CompoundInterestRequestDTO {
     }
 
     public Double getAnnualIterestRate() {
-        return annualIterestRate;
+        return annualInterestRate;
     }
 
-    public void setAnnualIterestRate(Double annualIterestRate) {
-        this.annualIterestRate = annualIterestRate;
+    public void setAnnualIterestRate(Double annualInterestRate) {
+        this.annualInterestRate = annualInterestRate;
     }
 
     public Integer getYears() {
