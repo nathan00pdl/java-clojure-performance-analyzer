@@ -15,7 +15,7 @@ import com.example.financial_calculator_fp.services.CompoundInterestServiceCloju
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/compound-interest")
+@RequestMapping("/api/compound-interest-clojure")
 public class CompoundInterestControllerClojure {
     private CompoundInterestServiceClojure compoundInterestService;
 
