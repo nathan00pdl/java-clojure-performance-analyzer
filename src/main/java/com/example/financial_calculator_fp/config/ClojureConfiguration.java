@@ -3,7 +3,7 @@ package com.example.financial_calculator_fp.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.example.financial_calculator_fp.services.CompoundInterestService;
+import com.example.financial_calculator_fp.services.CompoundInterestServiceClojure;
 
 import clojure.java.api.Clojure;
 import clojure.lang.IFn;
@@ -18,9 +18,9 @@ import clojure.lang.IFn;
 @Configuration
 public class ClojureConfiguration {
     @Bean
-    public CompoundInterestService compoundInterestService() {
+    public CompoundInterestServiceClojure compoundInterestService() {
         IFn createService = Clojure.var("com.example.financial-calculator-fp.service.compound-interest-service", "create-service");
 
-        return (CompoundInterestService) createService.invoke();
+        return (CompoundInterestServiceClojure) createService.invoke();
     }
 }

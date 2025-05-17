@@ -9,6 +9,6 @@ import com.example.financial_calculator_fp.models.response.CompoundInterestRespo
  * This Interface will be implemented by Clojure code.
  */
 
-public interface CompoundInterestService {
+public interface CompoundInterestServiceClojure {
     CompoundInterestResponseDTO calculateCompoundInterest(CompoundInterestRequestDTO request);
 }

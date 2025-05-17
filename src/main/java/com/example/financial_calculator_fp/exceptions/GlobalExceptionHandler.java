@@ -62,6 +62,8 @@ public class GlobalExceptionHandler {
         response.put("error", "Internal Server Error");
         response.put("message", "Ocorreu um erro inesperado");
 
+        ex.printStackTrace();
+
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
