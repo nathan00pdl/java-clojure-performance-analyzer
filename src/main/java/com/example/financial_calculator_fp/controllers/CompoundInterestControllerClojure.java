@@ -10,17 +10,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.financial_calculator_fp.models.request.CompoundInterestRequestDTO;
 import com.example.financial_calculator_fp.models.response.CompoundInterestResponseDTO;
-import com.example.financial_calculator_fp.services.CompoundInterestServiceClojure;
+import com.example.financial_calculator_fp.services.CompoundInterestService;
 
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/compound-interest-clojure")
 public class CompoundInterestControllerClojure {
-    private CompoundInterestServiceClojure compoundInterestService;
+    private CompoundInterestService compoundInterestService;
 
     @Autowired
-    public CompoundInterestControllerClojure(CompoundInterestServiceClojure compoundInterestService) {
+    public CompoundInterestControllerClojure(CompoundInterestService compoundInterestService) {
         this.compoundInterestService = compoundInterestService;
     }
 

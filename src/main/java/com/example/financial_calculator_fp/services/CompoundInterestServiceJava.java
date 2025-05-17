@@ -11,7 +11,7 @@ import com.example.financial_calculator_fp.models.response.CompoundInterestRespo
 import com.example.financial_calculator_fp.models.response.YearlyBalanceDTO;
 
 @Service("javaImplementation")
-public class CompoundInterestServiceJava implements CompoundInterestServiceClojure {
+public class CompoundInterestServiceJava implements CompoundInterestService {
 
     @Override
     public CompoundInterestResponseDTO calculateCompoundInterest(CompoundInterestRequestDTO request) {
