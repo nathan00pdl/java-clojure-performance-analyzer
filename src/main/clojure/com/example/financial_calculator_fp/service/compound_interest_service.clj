@@ -1,10 +1,10 @@
 "
 Features:
  
- Calculation logic - calculate-interest-for-year
- Iteration for multiple years - calculate-interest-for-multiple-years
- Request / Response processing - process-request
- Integration with Java - create-service
+-Calculation logic - calculate-interest-for-year
+-Iteration for multiple years - calculate-interest-for-multiple-years
+-Request / Response processing - process-request
+-Integration with Java - create-service
 "
 
 "
@@ -14,8 +14,10 @@ interest earned - juros ganho
 
 ;; Defining Namespace
 (ns com.example.financial-calculator-fp.service.compound-interest-service
-  (:import (com.example.financial_calculator_fp.service CompoundInterestService) 
-           (com.example.financial_calculator_fp.model.response CompoundInterestResponseDTO CalculationDTO YearlyBalanceDTO)))
+  (:import
+   (com.example.financial_calculator_fp.services CompoundInterestService)
+   (com.example.financial_calculator_fp.models.request CompoundInterestRequestDTO)
+   (com.example.financial_calculator_fp.models.response CalculationDTO CompoundInterestResponseDTO YearlyBalanceDTO)))
  
 (defn calculate-interest-for-year           ;; Name of function
   "Calculo de juros compostos para um ano"  ;; Represents a documentation of the function (Docstring)
@@ -44,7 +46,7 @@ interest earned - juros ganho
 
 (defn process-request
   "Processamento da requisicao e retorno de uma resposta"
-  [request]
+  [^CompoundInterestRequestDTO request]
   (let [
         ;; Extraction of request data
         initial-amount (.getInitialAmount request) ;; Java method call
@@ -58,21 +60,21 @@ interest earned - juros ganho
 
         ;; Creating java objects for response (yearly-dtos and calculation-dto)
         yearly-dtos (map (fn [detail]  ;; Will return a new collection with the results 
-                           (YearlyBalanceDTO. ;; Creating a new instance of this class
+                           (new YearlyBalanceDTO ;; Creating a new instance of this class
                             (:year detail)
                             (:starting-balance detail)
                             (:interest-earned detail)
                             (:contributions-added detail)
                             (:ending-balance detail)))
                          yearly-details)
-        calculation-dto (CalculationDTO.
+        calculation-dto (new CalculationDTO
                          initial-amount
                          0.0
                          total-interest
                          final-balance)]
   
   ;; Return response object
-  (CompoundInterestResponseDTO calculation-dto yearly-dtos)))
+  (new CompoundInterestResponseDTO calculation-dto yearly-dtos)))
 
 ;; Function that will be called by the Java code in the configuration (external use -> ^:export)
 (defn ^:export create-service 
