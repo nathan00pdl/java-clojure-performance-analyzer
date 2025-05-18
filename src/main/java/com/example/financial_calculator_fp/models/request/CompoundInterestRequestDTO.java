@@ -40,11 +40,11 @@ public class CompoundInterestRequestDTO {
         this.initialAmount = initialAmount;
     }
 
-    public Double getAnnualIterestRate() {
+    public Double getAnnualInterestRate() {
         return annualInterestRate;
     }
 
-    public void setAnnualIterestRate(Double annualInterestRate) {
+    public void setAnnualInterestRate(Double annualInterestRate) {
         this.annualInterestRate = annualInterestRate;
     }
 

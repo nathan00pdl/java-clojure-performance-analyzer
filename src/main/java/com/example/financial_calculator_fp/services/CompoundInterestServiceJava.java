@@ -16,10 +16,11 @@ public class CompoundInterestServiceJava implements CompoundInterestService {
     @Override
     public CompoundInterestResponseDTO calculateCompoundInterest(CompoundInterestRequestDTO request) {
         double initialAmount = request.getInitialAmount();
-        double annualRate = request.getAnnualIterestRate();
+        double annualRate = request.getAnnualInterestRate();
         int years = request.getYears();
 
         List<YearlyBalanceDTO> yearlyDetails = new ArrayList<>();
+
         double currentBalance = initialAmount;
 
         for (int year = 1; year <= years; year++) {
