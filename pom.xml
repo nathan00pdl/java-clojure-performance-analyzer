@@ -98,6 +98,25 @@
 			</plugin>
 
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>compile-java</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<compileSourceRoots>
+								<compileSourceRoot>${project.basedir}/src/main/java</compileSourceRoot>
+							</compileSourceRoots>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
 				<groupId>com.theoryinpractise</groupId>
 				<artifactId>clojure-maven-plugin</artifactId>
 				<version>1.8.4</version>
@@ -113,12 +132,14 @@
 					<copiedNamespaces>
 						<copiedNamespace>.*</copiedNamespace>
 					</copiedNamespaces>
+					<namespaces>
+						<namespace>com.example.financial-calculator-fp.service.compound-interest-services</namespace>
+					</namespaces>
 				</configuration>
 				<executions>
 					<execution>
-						<?m2e execute onConfiguration?>
 						<id>compile-clojure</id>
-						<phase>compile</phase>
+						<phase>process-classes</phase>
 						<goals>
 							<goal>compile</goal>
 						</goals>
@@ -134,5 +155,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
