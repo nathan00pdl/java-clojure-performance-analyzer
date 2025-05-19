@@ -26,7 +26,7 @@ interest earned - juros ganho
     (* initial-amount (+ 1 rate))))         ;; Formula: P*(1+r) / Note: The last line is always returned by the function
 
 (defn calculate-interest-for-multiple-years
-  "Calculo de juros para multiplos anos"
+  "Calculo de juros compostos para multiplos anos"
   [initial-amount annual-rate years]
   (loop [year 1
          current-balance initial-amount

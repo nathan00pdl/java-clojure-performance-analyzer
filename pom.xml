@@ -133,7 +133,7 @@
 						<copiedNamespace>.*</copiedNamespace>
 					</copiedNamespaces>
 					<namespaces>
-						<namespace>com.example.financial-calculator-fp.service.compound-interest-services</namespace>
+						<namespace>com.example.financial-calculator-fp.service.compound-interest-service</namespace>
 					</namespaces>
 				</configuration>
 				<executions>
