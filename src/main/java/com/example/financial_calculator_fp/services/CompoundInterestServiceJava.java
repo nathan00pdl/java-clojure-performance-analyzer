@@ -1,5 +1,7 @@
 package com.example.financial_calculator_fp.services;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,13 @@ import com.example.financial_calculator_fp.models.response.YearlyBalanceDTO;
 @Service("javaImplementation")
 public class CompoundInterestServiceJava implements CompoundInterestService {
 
+    private double roundTo3Decimals(double value) {
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(3, RoundingMode.HALF_UP);
+
+        return bd.doubleValue();
+    }
+
     @Override
     public CompoundInterestResponseDTO calculateCompoundInterest(CompoundInterestRequestDTO request) {
         double initialAmount = request.getInitialAmount();
@@ -24,8 +33,8 @@ public class CompoundInterestServiceJava implements CompoundInterestService {
         double currentBalance = initialAmount;
 
         for (int year = 1; year <= years; year++) {
-            double newBalance = currentBalance * (1 + annualRate / 100);
-            double interestEarned = newBalance - currentBalance;
+            double newBalance = roundTo3Decimals(currentBalance * (1 + annualRate / 100));
+            double interestEarned = roundTo3Decimals(newBalance - currentBalance);
 
             YearlyBalanceDTO yearDetail = new YearlyBalanceDTO(year, currentBalance, interestEarned, 0.0, newBalance);
 
@@ -33,7 +42,7 @@ public class CompoundInterestServiceJava implements CompoundInterestService {
             currentBalance = newBalance;
         }
 
-        double totalInterest = currentBalance - initialAmount;
+        double totalInterest = roundTo3Decimals(currentBalance - initialAmount);
         CalculationDTO summary = new CalculationDTO(initialAmount, 0.0, totalInterest, currentBalance);
 
         return new CompoundInterestResponseDTO(summary, yearlyDetails);
