@@ -1,6 +1,7 @@
 package com.example.financial_calculator_fp.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +21,7 @@ public class CompoundInterestControllerClojure {
     private CompoundInterestService compoundInterestService;
 
     @Autowired
-    public CompoundInterestControllerClojure(CompoundInterestService compoundInterestService) {
+    public CompoundInterestControllerClojure(@Qualifier("clojureImplementation") CompoundInterestService compoundInterestService) {
         this.compoundInterestService = compoundInterestService;
     }
 

@@ -17,7 +17,7 @@ import clojure.lang.IFn;
 
 @Configuration
 public class ClojureConfiguration {
-    @Bean
+    @Bean("clojureImplementation")
     public CompoundInterestService compoundInterestService() {
         IFn createService = Clojure.var("com.example.financial-calculator-fp.service.compound-interest-service", "create-service");
 
