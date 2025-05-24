@@ -201,10 +201,10 @@
 				<artifactId>gatling-maven-plugin</artifactId>
 				<version>4.3.0</version>
 				<configuration>
-					<simulationsFolder>src/test</simulationsFolder>
+					<simulationClass>com.example.financial_calculator_fp.performance.CompoundInterestSimulation</simulationClass>
 					<includes>
-						<include>javaGatling/com/example/financial_calculator_fp/performance/*Simulation.java</include>
-						<include>scalaGatling/com/example/financial_calculator_fp/performance/*Simulation.scala</include>
+						<include>**/*Simulation.java</include>
+						<include>**/*Simulation.scala</include>
 					</includes>
 				</configuration>
 			</plugin>

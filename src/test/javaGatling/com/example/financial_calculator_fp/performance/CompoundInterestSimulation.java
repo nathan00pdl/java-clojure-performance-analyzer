@@ -1,14 +1,21 @@
 package com.example.financial_calculator_fp.performance;
 
-import io.gatling.javaapi.core.*;
-import io.gatling.javaapi.http.*;
-import static io.gatling.javaapi.core.CoreDsl.*;
-import static io.gatling.javaapi.http.HttpDsl.*;
+import static io.gatling.javaapi.core.CoreDsl.StringBody;
+import static io.gatling.javaapi.core.CoreDsl.constantUsersPerSec;
+import static io.gatling.javaapi.core.CoreDsl.rampUsers;
+import static io.gatling.javaapi.core.CoreDsl.scenario;
+import static io.gatling.javaapi.http.HttpDsl.http;
+import static io.gatling.javaapi.http.HttpDsl.status;
 
 import java.time.Duration;
 
-public class CompoundInterestSimulation extends Simulation{
-    HttpProtocolBuilder httpProtocolBuilder = http
+import io.gatling.javaapi.core.ScenarioBuilder;
+import io.gatling.javaapi.core.Simulation;
+import io.gatling.javaapi.http.HttpProtocolBuilder;
+
+public class CompoundInterestSimulation extends Simulation {
+
+    HttpProtocolBuilder httpProtocol = http
         .baseUrl("http://localhost:8080")
         .acceptHeader("application/json")
         .contentTypeHeader("application/json");
