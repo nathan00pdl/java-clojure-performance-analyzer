@@ -4,7 +4,7 @@ import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import scala.concurrent.duration._
 
-class CompoundInterestSimulation extends Simulation {
+class CompoundInterestSimulationScala extends Simulation {
 
   val httpProtocol = http
     .baseUrl("http://localhost:8080") 

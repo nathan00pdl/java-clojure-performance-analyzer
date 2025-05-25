@@ -47,12 +47,12 @@ public class CompoundInterestSimulation extends Simulation {
     {
         setUp(
             javaEndpointScenario.injectOpen(
-                rampUsers(250).during(Duration.ofSeconds(30)),
-                constantUsersPerSec(10).during(Duration.ofMinutes(2))
+                rampUsers(1250).during(Duration.ofSeconds(30)),
+                constantUsersPerSec(30).during(Duration.ofMinutes(2))
             ),
             clojureEndpointScenario.injectOpen(
-                rampUsers(250).during(Duration.ofSeconds(30)),
-                constantUsersPerSec(10).during(Duration.ofMinutes(2))
+                rampUsers(1250).during(Duration.ofSeconds(30)),
+                constantUsersPerSec(30).during(Duration.ofMinutes(2))
             )
         ).protocols(httpProtocol);
     }
