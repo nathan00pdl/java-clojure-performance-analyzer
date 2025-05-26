@@ -1,8 +1,11 @@
 package com.example.financial_calculator_fp.performance;
 
 import static io.gatling.javaapi.core.CoreDsl.StringBody;
+import static io.gatling.javaapi.core.CoreDsl.atOnceUsers;
 import static io.gatling.javaapi.core.CoreDsl.constantUsersPerSec;
+import static io.gatling.javaapi.core.CoreDsl.global;
 import static io.gatling.javaapi.core.CoreDsl.rampUsers;
+import static io.gatling.javaapi.core.CoreDsl.rampUsersPerSec;
 import static io.gatling.javaapi.core.CoreDsl.scenario;
 import static io.gatling.javaapi.http.HttpDsl.http;
 import static io.gatling.javaapi.http.HttpDsl.status;
@@ -23,7 +26,7 @@ public class CompoundInterestSimulation extends Simulation {
     String requestBody = "{\n" +
         " \"initialAmount\": 1000.0,\n" + 
         " \"annualInterestRate\": 8.0,\n" + 
-        " \"years\": 20\n" + 
+        " \"years\": 50\n" + 
         "}";
 
     ScenarioBuilder javaEndpointScenario = scenario("JAVA Endpoint Test")
@@ -47,12 +50,16 @@ public class CompoundInterestSimulation extends Simulation {
     {
         setUp(
             javaEndpointScenario.injectOpen(
-                rampUsers(1250).during(Duration.ofSeconds(30)),
-                constantUsersPerSec(30).during(Duration.ofMinutes(2))
+                rampUsers(500).during(Duration.ofSeconds(10)),
+                rampUsers(2000).during(Duration.ofSeconds(30)),
+                constantUsersPerSec(5000).during(Duration.ofMinutes(2)),
+                rampUsers(1000).during(Duration.ofSeconds(30))
             ),
             clojureEndpointScenario.injectOpen(
-                rampUsers(1250).during(Duration.ofSeconds(30)),
-                constantUsersPerSec(30).during(Duration.ofMinutes(2))
+                rampUsers(500).during(Duration.ofSeconds(10)),
+                rampUsers(2000).during(Duration.ofSeconds(30)),
+                constantUsersPerSec(5000).during(Duration.ofMinutes(2)),
+                rampUsers(1000).during(Duration.ofSeconds(30))
             )
         ).protocols(httpProtocol);
     }
