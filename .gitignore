@@ -33,7 +33,11 @@ build/
 .vscode/
 
 ### IDE and development tools ###
-.clj-kondo/.cache/
-.lsp/
+*.hprof
 .metals/
+.metals/*
+.bloop/
+.bloop/*
+.clj-kondo/
+.clj-kondo/*
 .mvn/wrapper/
