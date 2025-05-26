@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### IDE and development tools ###
+.clj-kondo/.cache/
+.lsp/
+.metals/
+.mvn/wrapper/
