@@ -1,8 +1,11 @@
 package com.example.financial_calculator_fp.performance;
 
 import static io.gatling.javaapi.core.CoreDsl.StringBody;
+import static io.gatling.javaapi.core.CoreDsl.constantConcurrentUsers;
 import static io.gatling.javaapi.core.CoreDsl.constantUsersPerSec;
+import static io.gatling.javaapi.core.CoreDsl.rampConcurrentUsers;
 import static io.gatling.javaapi.core.CoreDsl.rampUsers;
+import static io.gatling.javaapi.core.CoreDsl.rampUsersPerSec;
 import static io.gatling.javaapi.core.CoreDsl.scenario;
 import static io.gatling.javaapi.http.HttpDsl.http;
 import static io.gatling.javaapi.http.HttpDsl.status;
@@ -46,18 +49,21 @@ public class CompoundInterestSimulation extends Simulation {
 
     {
         setUp(
-            javaEndpointScenario.injectOpen(
-                rampUsers(500).during(Duration.ofSeconds(10)),
-                rampUsers(2000).during(Duration.ofSeconds(30)),
-                constantUsersPerSec(5000).during(Duration.ofMinutes(2)),
-                rampUsers(1000).during(Duration.ofSeconds(30))
-            ),
-            clojureEndpointScenario.injectOpen(
-                rampUsers(500).during(Duration.ofSeconds(10)),
-                rampUsers(2000).during(Duration.ofSeconds(30)),
-                constantUsersPerSec(5000).during(Duration.ofMinutes(2)),
-                rampUsers(1000).during(Duration.ofSeconds(30))
+            clojureEndpointScenario.injectClosed(
+                rampConcurrentUsers(500).to(30000).during(Duration.ofMinutes(10)),
+                constantConcurrentUsers(30000).during(Duration.ofMinutes(5))
             )
         ).protocols(httpProtocol);
     }
+
+    /*
+    {
+        setUp(
+            javaEndpointScenario.injectClosed(
+                rampConcurrentUsers(500).to(30000).during(Duration.ofMinutes(10)),
+                constantConcurrentUsers(30000).during(Duration.ofMinutes(5))
+            )
+        ).protocols(httpProtocol);
+    }
+    */
 }
