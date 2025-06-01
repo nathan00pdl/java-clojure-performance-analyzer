@@ -1,55 +1,91 @@
 package com.example.financial_calculator_fp.performance;
 
-import static io.gatling.javaapi.core.CoreDsl.StringBody;
-import static io.gatling.javaapi.core.CoreDsl.constantConcurrentUsers;
-import static io.gatling.javaapi.core.CoreDsl.constantUsersPerSec;
-import static io.gatling.javaapi.core.CoreDsl.rampConcurrentUsers;
-import static io.gatling.javaapi.core.CoreDsl.rampUsers;
-import static io.gatling.javaapi.core.CoreDsl.rampUsersPerSec;
-import static io.gatling.javaapi.core.CoreDsl.scenario;
-import static io.gatling.javaapi.http.HttpDsl.http;
-import static io.gatling.javaapi.http.HttpDsl.status;
+import static io.gatling.javaapi.core.CoreDsl.*;
+import static io.gatling.javaapi.http.HttpDsl.*;
 
 import java.time.Duration;
+import io.gatling.javaapi.core.*;
+import io.gatling.javaapi.http.*;
 
-import io.gatling.javaapi.core.ScenarioBuilder;
-import io.gatling.javaapi.core.Simulation;
-import io.gatling.javaapi.http.HttpProtocolBuilder;
 
 public class CompoundInterestSimulation extends Simulation {
 
-    HttpProtocolBuilder httpProtocol = http
-        .baseUrl("http://localhost:8080")
+    private static final String BASE_URL = "http://localhost:8080";
+
+    private final HttpProtocolBuilder httpProtocol = http
+        .baseUrl(BASE_URL)
         .acceptHeader("application/json")
-        .contentTypeHeader("application/json");
+        .contentTypeHeader("application/json")
+        .userAgentHeader("Gatling-Extreme-Test")
+        .connectionHeader("keep-alive")
+        .shareConnections() 
+        .acceptEncodingHeader("gzip, deflate")
+        .disableFollowRedirect(); 
 
-    String requestBody = "{\n" +
-        " \"initialAmount\": 1000.0,\n" + 
-        " \"annualInterestRate\": 8.0,\n" + 
-        " \"years\": 50\n" + 
-        "}";
+    private final String simpleCalculation = """
+        {
+          "initialAmount": 1000.0,
+          "annualInterestRate": 5.0,
+          "years": 5
+        }
+        """;
 
-    ScenarioBuilder javaEndpointScenario = scenario("JAVA Endpoint Test")
+    private final String complexCalculation = """
+        {
+          "initialAmount": 100000.0,
+          "annualInterestRate": 12.0,
+          "years": 50
+        }
+        """;
+
+    private final ScenarioBuilder javaSimpleScenario = scenario("Java endpoint - simple test")
         .exec(
-            http("Calculate Compound Interest - JAVA")
+            http("Java Simple Compound Interest")
                 .post("/api/compound-interest-java/calculate")
-                .body(StringBody(requestBody))
+                .body(StringBody(simpleCalculation))
                 .check(status().is(200))
+                .check(responseTimeInMillis().saveAs("javaResponseTime"))
         )
-        .pause(1);
-    
-    ScenarioBuilder clojureEndpointScenario = scenario("CLOJURE Endpoint Test")
+        .pause(Duration.ofMillis(5), Duration.ofMillis(20));
+
+    private final ScenarioBuilder javaComplexScenario = scenario("Java endpoint - complex test")
         .exec(
-            http("Calculate Compound Interest - CLOJURE")
-                .post("/api/compound-interest-clojure/calculate")
-                .body(StringBody(requestBody))
+            http("Java Complex Compound Interest")
+                .post("/api/compound-interest-java/calculate")
+                .body(StringBody(complexCalculation))
                 .check(status().is(200))
+                .check(responseTimeInMillis().saveAs("javaComplexResponseTime"))
         )
-        .pause(1);
+        .pause(Duration.ofMillis(5), Duration.ofMillis(20));
+
+    private final ScenarioBuilder clojureSimpleScenario = scenario("Clojure endpoint - simple test")
+        .exec(
+            http("Clojure Simple Compound Interest")
+                .post("/api/compound-interest-clojure/calculate")
+                .body(StringBody(simpleCalculation))
+                .check(status().is(200))
+                .check(responseTimeInMillis().saveAs("clojureResponseTime"))
+        )
+        .pause(Duration.ofMillis(5), Duration.ofMillis(20));
+
+
+    private final ScenarioBuilder clojureComplexScenario = scenario("Clojure endpoint - complex test")
+        .exec(
+            http("Clojure Complex Compound Interest")
+                .post("/api/compound-interest-clojure/calculate")
+                .body(StringBody(complexCalculation))
+                .check(status().is(200))
+                .check(responseTimeInMillis().saveAs("clojureComplexResponseTime"))
+        )
+        .pause(Duration.ofMillis(5), Duration.ofMillis(20));
 
     {
         setUp(
-            clojureEndpointScenario.injectClosed(
+            clojureSimpleScenario.injectClosed(
+                rampConcurrentUsers(500).to(30000).during(Duration.ofMinutes(10)),
+                constantConcurrentUsers(30000).during(Duration.ofMinutes(5))
+            ),
+            clojureComplexScenario.injectClosed(
                 rampConcurrentUsers(500).to(30000).during(Duration.ofMinutes(10)),
                 constantConcurrentUsers(30000).during(Duration.ofMinutes(5))
             )
@@ -59,7 +95,11 @@ public class CompoundInterestSimulation extends Simulation {
     /*
     {
         setUp(
-            javaEndpointScenario.injectClosed(
+            javaSimpleScenario.injectClosed(
+                rampConcurrentUsers(500).to(30000).during(Duration.ofMinutes(10)),
+                constantConcurrentUsers(30000).during(Duration.ofMinutes(5))
+            ),
+            javaComplexScenario.injectClosed(
                 rampConcurrentUsers(500).to(30000).during(Duration.ofMinutes(10)),
                 constantConcurrentUsers(30000).during(Duration.ofMinutes(5))
             )
