@@ -12,33 +12,41 @@ import com.example.financial_calculator_fp.models.response.CalculationDTO;
 import com.example.financial_calculator_fp.models.response.CompoundInterestResponseDTO;
 import com.example.financial_calculator_fp.models.response.YearlyBalanceDTO;
 
+
 @Service("javaImplementation")
 public class CompoundInterestServiceJava implements CompoundInterestService {
 
     private double roundTo3Decimals(double value) {
-        BigDecimal bd = new BigDecimal(value);
-        bd = bd.setScale(3, RoundingMode.HALF_UP);
+        return BigDecimal.valueOf(value)
+                .setScale(3, RoundingMode.HALF_UP)
+                .doubleValue();
+    }
 
-        return bd.doubleValue();
+    private double calculateYearlyInterest(double initialAmount, double annualRate) {
+        double rate = annualRate / 100; 
+        return roundTo3Decimals(initialAmount * (1.0 + rate));
+    }
+
+    private YearlyBalanceDTO createYearlyBalance(int year, double startingBalance, double endingBalance) {
+        double interestEarned = roundTo3Decimals(endingBalance - startingBalance);
+        return new YearlyBalanceDTO(year, startingBalance, endingBalance, 0.0, interestEarned);
     }
 
     @Override
     public CompoundInterestResponseDTO calculateCompoundInterest(CompoundInterestRequestDTO request) {
-        double initialAmount = request.getInitialAmount();
-        double annualRate = request.getAnnualInterestRate();
-        int years = request.getYears();
+        final double initialAmount = request.getInitialAmount();
+        final double annualRate = request.getAnnualInterestRate();
+        final int years = request.getYears();
 
-        List<YearlyBalanceDTO> yearlyDetails = new ArrayList<>();
-
+        final List<YearlyBalanceDTO> yearlyDetails = new ArrayList<>(years);
         double currentBalance = initialAmount;
 
-        for (int year = 1; year <= years; year++) {
-            double newBalance = roundTo3Decimals(currentBalance * (1 + annualRate / 100));
-            double interestEarned = roundTo3Decimals(newBalance - currentBalance);
+        for(int year = 1; year <= years; year++) {
+            double newBalance = calculateYearlyInterest(currentBalance, annualRate);
 
-            YearlyBalanceDTO yearDetail = new YearlyBalanceDTO(year, currentBalance, interestEarned, 0.0, newBalance);
-
+            YearlyBalanceDTO yearDetail = createYearlyBalance(year, newBalance, newBalance);
             yearlyDetails.add(yearDetail);
+
             currentBalance = newBalance;
         }
 
@@ -47,5 +55,4 @@ public class CompoundInterestServiceJava implements CompoundInterestService {
 
         return new CompoundInterestResponseDTO(summary, yearlyDetails);
     }
-
 }
