@@ -24,6 +24,6 @@ public class ClojureNamespaceLoader {
         IFn require = Clojure.var("clojure.core", "require"); 
         require.invoke(Clojure.read("com.example.financial-calculator-fp.service.compound-interest-service"));
  
-        System.out.println("Namespace Clojure carregados com sucesso");
+        System.out.println("Clojure Namespace Loaded Successfully");
     }
 }

@@ -60,7 +60,7 @@ public class GlobalExceptionHandler {
         response.put("timestamp", LocalDateTime.now());
         response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         response.put("error", "Internal Server Error");
-        response.put("message", "Ocorreu um erro inesperado");
+        response.put("message", "An Unexpected Error Occurred");
 
         ex.printStackTrace();
 
