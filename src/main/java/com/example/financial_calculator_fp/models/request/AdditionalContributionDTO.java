@@ -4,11 +4,11 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 public class AdditionalContributionDTO {
-    @NotNull(message = "O valor da contribuição adicional não pode ser nulo")
-    @Min(value = 0, message = "O valor da contribuição adicional deve ser maior ou igual a zero")
+    @NotNull(message = "The Value Of The Additional Contribution Cannot Be Zero")
+    @Min(value = 0, message = "The Amount Of The Additional Contribution Must Be Greater Than Or Equal To Zero")
     private Double amount;
 
-    @NotNull(message = "A frequência da contribuição adicional não pode ser nula")
+    @NotNull(message = "The Frequency Of The Additional Contribution Cannot Be Zero")
     private ContributionFrequency frequency;
 
     public AdditionalContributionDTO() {

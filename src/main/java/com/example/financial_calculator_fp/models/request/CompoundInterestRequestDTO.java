@@ -6,16 +6,16 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public class CompoundInterestRequestDTO {
-    @NotNull(message = "O valor inicial não pode ser nulo")
-    @Min(value = 0, message = "O valor inicial deve ser maior ou igual a zero")
+    @NotNull(message = "Initial Value Cannot Be Null")
+    @Min(value = 0, message = "The Initial Value Must Be Greater Than Or Equal To Zero")
     private Double initialAmount;
 
-    @NotNull(message = "A taxa de juros anual não pode ser nula")
-    @Positive(message = "A taxa de juros anual deve ser maior que zero")
+    @NotNull(message = "The Annual Interest Rate Cannot Be Zero")
+    @Positive(message = "The Annual Interest Rate Must Be Greater Than Zero")
     private Double annualInterestRate;
 
-    @NotNull(message = "O número de anos não pode ser nulo")
-    @Positive(message = "O número de anos deve ser maior que zero")
+    @NotNull(message = "The Number Of Years Cannot Be Zero")
+    @Positive(message = "The Number Of Years Must Be Greater Than Zero")
     private Integer years;
 
     @Valid
