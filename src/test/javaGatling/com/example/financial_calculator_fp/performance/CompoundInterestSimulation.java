@@ -33,8 +33,8 @@ public class CompoundInterestSimulation extends Simulation {
     private final String complexCalculation = """
         {
           "initialAmount": 100000.0,
-          "annualInterestRate": 12.0,
-          "years": 50
+          "annualInterestRate": 8.0,
+          "years": 150
         }
         """;
 
@@ -79,12 +79,14 @@ public class CompoundInterestSimulation extends Simulation {
         )
         .pause(Duration.ofMillis(5), Duration.ofMillis(20));
 
+    
     {
         setUp(
             clojureComplexScenario.injectClosed(
                 rampConcurrentUsers(1000).to(50000).during(Duration.ofMinutes(10)),
                 constantConcurrentUsers(50000).during(Duration.ofMinutes(5)),
-                rampConcurrentUsers(50000).to(10000).during(Duration.ofMinutes(2))
+                rampConcurrentUsers(50000).to(80000).during(Duration.ofMinutes(10)),
+                rampConcurrentUsers(80000).to(1000).during(Duration.ofMinutes(2))
             )
         ).protocols(httpProtocol);
     }

@@ -27,8 +27,8 @@ public class CompoundInterestControllerJava {
 
     @PostMapping("/calculate")
     public ResponseEntity<CompoundInterestResponseDTO> calculateCompoundInterest(@Valid @RequestBody CompoundInterestRequestDTO request) {
-        if (request.getYears() > 50) {
-            throw new ValidationException("years", "O período máximo permitido é de 50 anos");
+        if (request.getYears() > 200) {
+            throw new ValidationException("years", "The Maximium Period Allowed Is 200 Years!");
         }
 
         CompoundInterestResponseDTO response = javaService.calculateCompoundInterest(request);
