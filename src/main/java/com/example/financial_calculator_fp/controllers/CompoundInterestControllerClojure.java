@@ -27,8 +27,8 @@ public class CompoundInterestControllerClojure {
 
     @PostMapping("/calculate")
     public ResponseEntity<CompoundInterestResponseDTO> calculateCompoundInterest (@Valid @RequestBody CompoundInterestRequestDTO request) {
-        if (request.getYears() > 50) {
-            throw new com.example.financial_calculator_fp.exceptions.ValidationException("years", "O período máximo permitido é de 50 anos");
+        if (request.getYears() > 200) {
+            throw new com.example.financial_calculator_fp.exceptions.ValidationException("years", "The Maximium Period Allowed Is 200 Years!");
         }
        
         CompoundInterestResponseDTO response = compoundInterestService.calculateCompoundInterest(request);
@@ -38,6 +38,6 @@ public class CompoundInterestControllerClojure {
 
     @GetMapping("/health")
     public ResponseEntity<String> health() {
-        return ResponseEntity.ok("Serviço de Juros Compostos está funcionando!");
+        return ResponseEntity.ok("Compound Interest Service Is Working!");
     }
 }

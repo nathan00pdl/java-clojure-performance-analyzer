@@ -12,7 +12,6 @@ import com.example.financial_calculator_fp.models.response.CalculationDTO;
 import com.example.financial_calculator_fp.models.response.CompoundInterestResponseDTO;
 import com.example.financial_calculator_fp.models.response.YearlyBalanceDTO;
 
-
 @Service("javaImplementation")
 public class CompoundInterestServiceJava implements CompoundInterestService {
 
