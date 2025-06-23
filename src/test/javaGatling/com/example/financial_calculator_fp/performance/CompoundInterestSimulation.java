@@ -82,25 +82,58 @@ public class CompoundInterestSimulation extends Simulation {
     
     {
         setUp(
-            clojureComplexScenario.injectClosed(
-                rampConcurrentUsers(1000).to(50000).during(Duration.ofMinutes(10)),
-                constantConcurrentUsers(50000).during(Duration.ofMinutes(5)),
-                rampConcurrentUsers(50000).to(80000).during(Duration.ofMinutes(10)),
-                rampConcurrentUsers(80000).to(1000).during(Duration.ofMinutes(2))
+            javaComplexScenario.injectClosed(
+                rampConcurrentUsers(1000).to(30000).during(Duration.ofMinutes(5)),
+                rampConcurrentUsers(30000).to(50000).during(Duration.ofMinutes(5))
             )
         ).protocols(httpProtocol);
     }
 
     /*
+    ----------------------------------------TESTS-----------------------------------------------------
+
+    X = javaSimpleScenario || javaComplexScenario || clojureSimpleScenario || clojureComplexScenario
+    Y = javaComplexScenario || clojureComplexScenario
+
+    --------------------------------------SCENARIO 1-------------------------------------------------
+
     {
         setUp(
-            javaSimpleScenario.injectClosed(
-                rampConcurrentUsers(500).to(30000).during(Duration.ofMinutes(10)),
-                constantConcurrentUsers(30000).during(Duration.ofMinutes(5))
-            ),
-            javaComplexScenario.injectClosed(
-                rampConcurrentUsers(500).to(30000).during(Duration.ofMinutes(10)),
-                constantConcurrentUsers(30000).during(Duration.ofMinutes(5))
+            X.injectClosed(
+                constantConcurrentUsers(10000).during(Duration.ofMinutes(10))
+            )
+        ).protocols(httpProtocol);
+    }
+
+    --------------------------------------SCENARIO 2-------------------------------------------------
+    
+    {
+        setUp(
+            X.injectClosed(
+                rampConcurrentUsers(10000).to(20000).during(Duration.ofMinutes(10))
+            )
+        ).protocols(httpProtocol);
+    }
+    
+    --------------------------------------SCENARIO 3-------------------------------------------------
+
+    {
+        setUp(
+            X.injectClosed(
+                rampConcurrentUsers(1000).to(30000).during(Duration.ofMinutes(10)),
+                rampConcurrentUsers(30000).to(50000).during(Duration.ofMinutes(10)),
+                rampConcurrentUsers(50000).to(1000).during(Duration.ofMinutes(5))
+            )
+        ).protocols(httpProtocol);
+    }
+
+        --------------------------------------SCENARIO 4-------------------------------------------------
+
+    {
+        setUp(
+            Y.injectClosed(
+                rampConcurrentUsers(1000).to(30000).during(Duration.ofMinutes(5)),
+                rampConcurrentUsers(30000).to(50000).during(Duration.ofMinutes(5))
             )
         ).protocols(httpProtocol);
     }
