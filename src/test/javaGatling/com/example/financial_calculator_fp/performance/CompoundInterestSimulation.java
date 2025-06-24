@@ -82,7 +82,7 @@ public class CompoundInterestSimulation extends Simulation {
     
     {
         setUp(
-            javaComplexScenario.injectClosed(
+            clojureComplexScenario.injectClosed(
                 rampConcurrentUsers(1000).to(30000).during(Duration.ofMinutes(5)),
                 rampConcurrentUsers(30000).to(50000).during(Duration.ofMinutes(5))
             )
