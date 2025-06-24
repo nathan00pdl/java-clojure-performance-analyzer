@@ -1,5 +1,7 @@
 package com.example.financial_calculator_fp.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
@@ -22,6 +24,8 @@ import clojure.lang.IFn;
 
 @Configuration
 public class ClojureConfiguration {
+    
+    private static final Logger logger = LoggerFactory.getLogger(ClojureConfiguration.class);
     private static final String CLOJURE_NAMESPACE = "com.example.financial-calculator-fp.service.compound-interest-service";
     private static final String CREATE_SERVICE_FUNCTION = "create-service";
 
@@ -29,22 +33,37 @@ public class ClojureConfiguration {
     @DependsOn("clojureNamespaceLoader")
     public CompoundInterestService compoundInterestService() {
         try {
+            logger.debug("Creating Clojure service implementation");
+            
+            // Get the Clojure function
             IFn createService = Clojure.var(CLOJURE_NAMESPACE, CREATE_SERVICE_FUNCTION);
             
             if (createService == null) {
-                throw new RuntimeException("Could Find Clojure Function: " + CREATE_SERVICE_FUNCTION);
+                String errorMsg = String.format("Could NOT find Clojure function '%s' in namespace '%s'", 
+                                              CREATE_SERVICE_FUNCTION, CLOJURE_NAMESPACE);
+                logger.error(errorMsg);
+                throw new RuntimeException(errorMsg);
             }
 
+            // Invoke the function to create service
             Object result = createService.invoke();
 
+            // Validate the result type
             if (!(result instanceof CompoundInterestService)) {
-                throw new RuntimeException("Clojure Function Did Not Return Expected Service Type!");
+                String errorMsg = String.format("Clojure function returned unexpected type. Expected: %s, Got: %s", 
+                                              CompoundInterestService.class.getSimpleName(), 
+                                              result != null ? result.getClass().getSimpleName() : "null");
+                logger.error(errorMsg);
+                throw new RuntimeException(errorMsg);
             }
 
+            logger.info("Clojure service implementation created successfully");
             return (CompoundInterestService) result;
 
         } catch (Exception e) {
-            throw new RuntimeException("Failed To Create Clojure Service Implementation!", e);
+            logger.error("Failed to create Clojure service implementation", e);
+            throw new RuntimeException("Failed to create Clojure service implementation", e);
         }
     }
 }
+
