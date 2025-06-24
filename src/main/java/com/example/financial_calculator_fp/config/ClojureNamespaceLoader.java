@@ -1,5 +1,7 @@
 package com.example.financial_calculator_fp.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import clojure.java.api.Clojure;
@@ -19,11 +21,23 @@ import jakarta.annotation.PostConstruct;
 
 @Component
 public class ClojureNamespaceLoader {
+    
+    private static final Logger logger = LoggerFactory.getLogger(ClojureNamespaceLoader.class);
+    private static final String CLOJURE_NAMESPACE = "com.example.financial-calculator-fp.service.compound-interest-service";
+    
     @PostConstruct
     public void loadNamespaces() {
-        IFn require = Clojure.var("clojure.core", "require"); 
-        require.invoke(Clojure.read("com.example.financial-calculator-fp.service.compound-interest-service"));
- 
-        System.out.println("Clojure Namespace Loaded Successfully");
+        try {
+            logger.info("Loading Clojure namespace: {}", CLOJURE_NAMESPACE);
+            
+            IFn require = Clojure.var("clojure.core", "require");
+            require.invoke(Clojure.read(CLOJURE_NAMESPACE));
+            
+            logger.info("Clojure namespace loaded successfully: {}", CLOJURE_NAMESPACE);
+            
+        } catch (Exception e) {
+            logger.error("Failed to load Clojure namespace: {}", CLOJURE_NAMESPACE, e);
+            throw new RuntimeException("Critical error: Unable to load Clojure namespace", e);
+        }
     }
 }
