@@ -9,60 +9,60 @@
   (double (/ (Math/round (* value 1000.0)) 1000.0)))
 
 (defn calculate-compound-interest-yearly
-  [^double initial-amount ^double annual-rate]
+  [^double current-amount ^double annual-rate]
   (let [rate (/ annual-rate 100)
-        result (* initial-amount (+ 1 rate))]
+        result (* current-amount (+ 1 rate))]
     (round result)))
 
 (defn calculate-compound-interest-years
   [^double initial-amount ^double annual-rate ^long years]
   (loop [year 1
-         current-balance initial-amount
-         yearly-details  []]
+         current-amount initial-amount
+         yearly-details-list  []]
     (if (> year years)
-      yearly-details  ;"Return yearly-details if true"
-      (let [new-balance     (calculate-compound-interest-yearly current-balance annual-rate)
-            interest-earned (round (- new-balance current-balance))
-            year-detail     {:year                year  ;year-detils represents a key/value map
-                             :start-balance       current-balance
-                             :end-balance      new-balance 
-                             :additional-contributions 0.0
-                             :interest-earned     interest-earned}]
+      yearly-details-list
+      (let [new-amount      (calculate-compound-interest-yearly current-amount annual-rate)
+            interest-earned (round (- new-amount current-amount))
+            year-detail     {:year                         year
+                             :start-balance               current-amount
+                             :end-balance                 new-amount
+                             :interest-earned             interest-earned
+                             :additional-contributions    0.0}]
         (recur (inc year)
-               new-balance
-               (conj yearly-details year-detail))))))  ;Adding the element to the collection in an immutable way / "conj" = "conjoins"
+               new-amount
+               (conj yearly-details-list year-detail))))))
 
 (defn process-compound-interest-request
   [^CompoundInterestRequestDTO request]
   (let [
-        initial-amount (.getInitialAmount request) 
-        annual-rate (.getAnnualInterestRate request)
+        initial-amount (.getInitialAmount request)
+        rate (.getAnnualInterestRate request)
         years (.getYears request)
 
-        yearly-details (calculate-compound-interest-years initial-amount annual-rate years)  ;Return an array of maps with details for each year 
-        final-balance (:end-balance (last yearly-details)) 
-        total-interest (round (- final-balance initial-amount))
+        yearly-details-list (calculate-compound-interest-years initial-amount rate years)
+        final-balance (:end-balance (last yearly-details-list))
+        total-interest-earned (round (- final-balance initial-amount))
 
-        ;Creating java objects for response 
-        yearly-dtos (map (fn [detail]  
-                           (new YearlyInvestmentSummaryDTO  
-                                (int (:year detail))
-                                (:start-balance detail)
-                                (:end-balance detail)
-                                (:additional-contributions detail)
-                                (:interest-earned detail)))
-                         yearly-details)
-        InvestmentSummaryDTO (new InvestmentSummaryDTO
+        yearly-dtos (map (fn [detail]
+                           (new YearlyInvestmentSummaryDTO
+                                (int (:year detail))               
+                                (:start-balance detail)            
+                                (:end-balance detail)              
+                                (:interest-earned detail)          
+                                (:additional-contributions detail))) 
+                         yearly-details-list)
+
+        summary-results (new InvestmentSummaryDTO
                              initial-amount
                              final-balance
-                             total-interest 
-                             0.0)]
+                             total-interest-earned
+                             0.0)
+        ]
 
-    (new CompoundInterestResponseDTO InvestmentSummaryDTO yearly-dtos)))  
+    (new CompoundInterestResponseDTO summary-results yearly-dtos)))
 
-;Function that will be called by the Java code in the configuration (external use -> ^:export)
 (defn ^:export create-service
   []
-  (reify CompoundInterestService  ; Creation of an anonymous instance (object Java) that implements such interface
-    (calculateCompoundInterest [_ request]  ; Method name defined in Java interface / "request" is the CompoundInterestRequestDTO parameter 
+  (reify CompoundInterestService
+    (calculateCompoundInterest [_ request]
       (process-compound-interest-request request))))
