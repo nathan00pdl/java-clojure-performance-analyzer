@@ -11,17 +11,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.financial_calculator_fp.exceptions.ValidationException;
 import com.example.financial_calculator_fp.models.request.CompoundInterestRequestDTO;
 import com.example.financial_calculator_fp.models.response.CompoundInterestResponseDTO;
-import com.example.financial_calculator_fp.services.CompoundInterestServiceJava;
+import com.example.financial_calculator_fp.services.JavaCompoundInterestService;
 
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/compound-interest-java")
-public class CompoundInterestControllerJava {
-    private final CompoundInterestServiceJava javaService;
+public class JavaCompoundInterestController {
+    private final JavaCompoundInterestService javaService;
 
     @Autowired
-    public CompoundInterestControllerJava(@Qualifier("javaImplementation") CompoundInterestServiceJava javaService) {
+    public JavaCompoundInterestController(@Qualifier("javaImplementation") JavaCompoundInterestService javaService) {
         this.javaService = javaService;
     }
 
