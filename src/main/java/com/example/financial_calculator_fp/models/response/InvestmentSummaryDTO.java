@@ -1,16 +1,16 @@
 package com.example.financial_calculator_fp.models.response;
 
-public class CalculationDTO {
+public class InvestmentSummaryDTO {
     private Double initialInvestment;
-    private Double totalContributions;
-    private Double totalInterestEarned;
     private Double finalBalance;
+    private Double totalAdditionalContributions;
+    private Double totalInterestEarned;
 
-    public CalculationDTO(){}
+    public InvestmentSummaryDTO(){}
 
-    public CalculationDTO(Double initialInvestment, Double totalContributions, Double totalInterestEarned, Double finalBalance) {
+    public InvestmentSummaryDTO(Double initialInvestment, Double finalBalance, Double totalAdditionalContributions, Double totalInterestEarned) {
         this.initialInvestment = initialInvestment;
-        this.totalContributions = totalContributions;
+        this.totalAdditionalContributions = totalAdditionalContributions;
         this.totalInterestEarned = totalInterestEarned;
         this.finalBalance = finalBalance;
     }
@@ -23,12 +23,12 @@ public class CalculationDTO {
         this.initialInvestment = initialInvestment;
     }
 
-    public Double getTotalContributions() {
-        return totalContributions;
+    public Double getToAdditionaltalContributions() {
+        return totalAdditionalContributions;
     }
 
-    public void setTotalContributions(Double totalContributions) {
-        this.totalContributions = totalContributions;
+    public void setToAdditionaltalContributions(Double totalAdditionalContributions) {
+        this.totalAdditionalContributions = totalAdditionalContributions;
     }
 
     public Double getTotalInterestEarned() {
