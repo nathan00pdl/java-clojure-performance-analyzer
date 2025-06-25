@@ -33,11 +33,11 @@ public class ClojureNamespaceLoader {
             IFn require = Clojure.var("clojure.core", "require");
             require.invoke(Clojure.read(CLOJURE_NAMESPACE));
             
-            logger.info("Clojure namespace loaded successfully: {}", CLOJURE_NAMESPACE);
+            logger.info("Clojure Namespace Loaded Successfully: {}", CLOJURE_NAMESPACE);
             
         } catch (Exception e) {
-            logger.error("Failed to load Clojure namespace: {}", CLOJURE_NAMESPACE, e);
-            throw new RuntimeException("Critical error: Unable to load Clojure namespace", e);
+            logger.error("Failed To Load Clojure Namespace: {}", CLOJURE_NAMESPACE, e);
+            throw new RuntimeException("Critical Error: Unable To Load Clojure Namespace", e);
         }
     }
 }
