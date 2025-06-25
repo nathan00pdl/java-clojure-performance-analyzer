@@ -3,29 +3,29 @@ package com.example.financial_calculator_fp.models.response;
 import java.util.List;
 
 public class CompoundInterestResponseDTO {
-    private  CalculationDTO summaryResults;
-    private List<YearlyBalanceDTO> yearDetails;
+    private  InvestmentSummaryDTO summaryResults;
+    private List<YearlyInvestmentSummaryDTO> yearlyDetailsList;
 
     public CompoundInterestResponseDTO(){}
 
-    public CompoundInterestResponseDTO(CalculationDTO summaryResults, List<YearlyBalanceDTO> yearDetails) {
+    public CompoundInterestResponseDTO(InvestmentSummaryDTO summaryResults, List<YearlyInvestmentSummaryDTO> yearlyDetailsList) {
         this.summaryResults = summaryResults;
-        this.yearDetails = yearDetails;
+        this.yearlyDetailsList = yearlyDetailsList;
     }
 
-    public CalculationDTO getSummaryResults() {
+    public InvestmentSummaryDTO getSummaryResults() {
         return summaryResults;
     }
 
-    public void setSummaryResults(CalculationDTO summaryResults) {
+    public void setSummaryResults(InvestmentSummaryDTO summaryResults) {
         this.summaryResults = summaryResults;
     }
 
-    public List<YearlyBalanceDTO> getYearDetails() {
-        return yearDetails;
+    public List<YearlyInvestmentSummaryDTO> getYlyearDetailsList() {
+        return yearlyDetailsList;
     }
 
-    public void setYearDetails(List<YearlyBalanceDTO> yearDetails) {
-        this.yearDetails = yearDetails;
+    public void setYlyearDetailsList(List<YearlyInvestmentSummaryDTO> yearlyDetailsList) {
+        this.yearlyDetailsList = yearlyDetailsList;
     }
 }
