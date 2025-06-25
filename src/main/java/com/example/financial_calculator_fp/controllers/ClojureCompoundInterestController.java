@@ -17,11 +17,11 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/compound-interest-clojure")
-public class CompoundInterestControllerClojure {
+public class ClojureCompoundInterestController {
     private CompoundInterestService compoundInterestService;
 
     @Autowired
-    public CompoundInterestControllerClojure(@Qualifier("clojureImplementation") CompoundInterestService compoundInterestService) {
+    public ClojureCompoundInterestController(@Qualifier("clojureImplementation") CompoundInterestService compoundInterestService) {
         this.compoundInterestService = compoundInterestService;
     }
 
