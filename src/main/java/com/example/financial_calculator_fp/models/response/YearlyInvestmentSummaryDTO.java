@@ -12,9 +12,9 @@ public class YearlyInvestmentSummaryDTO {
     public YearlyInvestmentSummaryDTO(Integer year, Double startBalance, Double endBalance, Double interestEarned, Double additionalContribution){
         this.year = year;
         this.startBalance = startBalance;
+        this.endBalance = endBalance;
         this.interestEarned = interestEarned;
         this.additionalContribution = additionalContribution;
-        this.endBalance = endBalance;
     }
 
     public Integer getYear() {

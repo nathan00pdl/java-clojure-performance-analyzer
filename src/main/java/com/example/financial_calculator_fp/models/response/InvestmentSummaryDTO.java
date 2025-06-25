@@ -3,16 +3,16 @@ package com.example.financial_calculator_fp.models.response;
 public class InvestmentSummaryDTO {
     private Double initialInvestment;
     private Double finalBalance;
-    private Double totalAdditionalContributions;
     private Double totalInterestEarned;
+    private Double totalAdditionalContributions;
 
     public InvestmentSummaryDTO(){}
 
-    public InvestmentSummaryDTO(Double initialInvestment, Double finalBalance, Double totalAdditionalContributions, Double totalInterestEarned) {
+    public InvestmentSummaryDTO(Double initialInvestment, Double finalBalance, Double totalInterestEarned, Double totalAdditionalContributions) {
         this.initialInvestment = initialInvestment;
-        this.totalAdditionalContributions = totalAdditionalContributions;
-        this.totalInterestEarned = totalInterestEarned;
         this.finalBalance = finalBalance;
+        this.totalInterestEarned = totalInterestEarned;
+        this.totalAdditionalContributions = totalAdditionalContributions;
     }
 
     public Double getInitialInvestment() {
@@ -31,19 +31,19 @@ public class InvestmentSummaryDTO {
         this.finalBalance = finalBalance;
     }
 
-    public Double getTotalAdditionalContributions() {
-        return totalAdditionalContributions;
-    }
-
-    public void setTotalAdditionalContributions(Double totalAdditionalContributions) {
-        this.totalAdditionalContributions = totalAdditionalContributions;
-    }
-
     public Double getTotalInterestEarned() {
         return totalInterestEarned;
     }
 
     public void setTotalInterestEarned(Double totalInterestEarned) {
         this.totalInterestEarned = totalInterestEarned;
+    }
+
+    public Double getTotalAdditionalContributions() {
+        return totalAdditionalContributions;
+    }
+
+    public void setTotalAdditionalContributions(Double totalAdditionalContributions) {
+        this.totalAdditionalContributions = totalAdditionalContributions;
     }
 }
