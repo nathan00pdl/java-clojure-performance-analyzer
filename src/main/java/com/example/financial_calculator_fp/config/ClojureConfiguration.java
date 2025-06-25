@@ -59,7 +59,7 @@ public class ClojureConfiguration {
 
         } catch (Exception e) {
             logger.error("Failed To Create Clojure Service Implementation", e);
-            throw new RuntimeException("Failed To Create Clojure ServiceIimplementation", e);
+            throw new RuntimeException("Failed To Create Clojure Service Iimplementation", e);
         }
     }
 }
