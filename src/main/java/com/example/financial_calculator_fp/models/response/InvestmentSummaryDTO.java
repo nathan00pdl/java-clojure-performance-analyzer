@@ -23,11 +23,19 @@ public class InvestmentSummaryDTO {
         this.initialInvestment = initialInvestment;
     }
 
-    public Double getToAdditionaltalContributions() {
+    public Double getFinalBalance() {
+        return finalBalance;
+    }
+
+    public void setFinalBalance(Double finalBalance) {
+        this.finalBalance = finalBalance;
+    }
+
+    public Double getTotalAdditionalContributions() {
         return totalAdditionalContributions;
     }
 
-    public void setToAdditionaltalContributions(Double totalAdditionalContributions) {
+    public void setTotalAdditionalContributions(Double totalAdditionalContributions) {
         this.totalAdditionalContributions = totalAdditionalContributions;
     }
 
@@ -38,14 +46,4 @@ public class InvestmentSummaryDTO {
     public void setTotalInterestEarned(Double totalInterestEarned) {
         this.totalInterestEarned = totalInterestEarned;
     }
-
-    public Double getFinalBalance() {
-        return finalBalance;
-    }
-
-    public void setFinalBalance(Double finalBalance) {
-        this.finalBalance = finalBalance;
-    }
-    
-    
 }
