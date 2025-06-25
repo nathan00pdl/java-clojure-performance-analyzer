@@ -1,4 +1,3 @@
-;; Defining Namespace
 (ns com.example.financial-calculator-fp.service.compound-interest-service
   (:import
    (com.example.financial_calculator_fp.services CompoundInterestService)
@@ -53,13 +52,13 @@
                                 (:additional-contributions detail)
                                 (:interest-earned detail)))
                          yearly-details)
-        calculation-dto (new InvestmentSummaryDTO
+        InvestmentSummaryDTO (new InvestmentSummaryDTO
                              initial-amount
-                             0.0
-                             total-interest
-                             final-balance)]
+                             final-balance
+                             total-interest 
+                             0.0)]
 
-    (new CompoundInterestResponseDTO calculation-dto yearly-dtos)))  
+    (new CompoundInterestResponseDTO InvestmentSummaryDTO yearly-dtos)))  
 
 ;Function that will be called by the Java code in the configuration (external use -> ^:export)
 (defn ^:export create-service
