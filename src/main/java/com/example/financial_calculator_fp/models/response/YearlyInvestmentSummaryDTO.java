@@ -33,22 +33,6 @@ public class YearlyInvestmentSummaryDTO {
         this.startBalance = startBalance;
     }
 
-    public Double getInterestEarned() {
-        return interestEarned;
-    }
-
-    public void setInterestEarned(Double interestEarned) {
-        this.interestEarned = interestEarned;
-    }
-
-    public Double additionalCetContribution() {
-        return additionalContribution;
-    }
-
-    public void additionalCetContribution(Double additionalContribution) {
-        this.additionalContribution = additionalContribution;
-    }
-
     public Double getEndBalance() {
         return endBalance;
     }
@@ -57,5 +41,19 @@ public class YearlyInvestmentSummaryDTO {
         this.endBalance = endBalance;
     }
 
-    
+    public Double getInterestEarned() {
+        return interestEarned;
+    }
+
+    public void setInterestEarned(Double interestEarned) {
+        this.interestEarned = interestEarned;
+    }
+
+    public Double getAdditionalContribution() {
+        return additionalContribution;
+    }
+
+    public void setAdditionalContribution(Double additionalContribution) {
+        this.additionalContribution = additionalContribution;
+    }
 }

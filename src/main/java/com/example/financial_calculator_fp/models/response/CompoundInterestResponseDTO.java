@@ -21,11 +21,11 @@ public class CompoundInterestResponseDTO {
         this.summaryResults = summaryResults;
     }
 
-    public List<YearlyInvestmentSummaryDTO> getYlyearDetailsList() {
+    public List<YearlyInvestmentSummaryDTO> getYearlyDetailsList() {
         return yearlyDetailsList;
     }
 
-    public void setYlyearDetailsList(List<YearlyInvestmentSummaryDTO> yearlyDetailsList) {
+    public void setYearlyDetailsList(List<YearlyInvestmentSummaryDTO> yearlyDetailsList) {
         this.yearlyDetailsList = yearlyDetailsList;
     }
 }
