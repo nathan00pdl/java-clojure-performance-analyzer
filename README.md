@@ -1,4 +1,4 @@
-# Paradigm Performance Analyzer
+# Performance Analyzer between programming paradigms
 
 ## Overview
 This project implements a comparative performance study between **Object-Oriented Programming (OOP)** and **Functional Programming (FP)** through a REST API that calculates compound interest. The application provides two implementations of the same business rule:
