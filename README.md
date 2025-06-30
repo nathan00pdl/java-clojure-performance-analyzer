@@ -11,7 +11,6 @@ To evaluate and compare performance, scalability and behavior under different lo
 
 
 ## Architecture
-
 ### Layered Structure (MVC)
 ```
 src/main/java/com/example/financial_calculator_fp/
@@ -41,7 +40,6 @@ src/test/javaGatling/com/example/financial_calculator_fp/
 
 
 ## Technologies Used
-
 ### Core Framework
 - **Spring Boot 3.4.5**: Main framework
 - **Spring Web**: REST APIs
@@ -68,7 +66,6 @@ src/test/javaGatling/com/example/financial_calculator_fp/
 
 
 ## Installation and Execution
-
 ### 1. Repository Clone
 ```bash
 git clone https://github.com/your-username/paradigm-performance-analyzer.git
@@ -148,7 +145,6 @@ Content-Type: application/json
 
 
 ## Performance Testing
-
 ### Running Gatling Tests
 ```bash
 # Run all tests
@@ -156,12 +152,23 @@ mvn gatling:test
 ```
 
 ### Performance Reports
-
 Reports are generated in: `target/gatling/`
 
 
-## Validations and Restrictions
+## Metrics and Monitoring
+### Collected Metrics
+- **Throughput**:
+    - Total requests
+    - OK requests
+    - KO requests
+    - Error rate: % KO
+- **Response Time (ms)**:
+    - Min, Mean and Max 
+    - Consistency: standard deviation
+    - Percentiles: 50th, 75th, 95th and 99th
 
+
+## Validations and Restrictions
 ### Input Validations
 - `initialAmount`: >= 0
 - `annualInterestRate`: > 0
@@ -174,7 +181,6 @@ Reports are generated in: `target/gatling/`
 
 
 ## Paradigm Comparison
-
 ### Java Implementation (Imperative)
 - **Structure**: Traditional loops, mutable lists
 - **Advantages**: Familiar, direct debugging
@@ -187,7 +193,6 @@ Reports are generated in: `target/gatling/`
 
 
 ## Useful Commands
-
 ### Development
 ```bash
 # Complete cleanup
@@ -205,17 +210,3 @@ mvn dependency:tree
 # Code analysis
 mvn spotbugs:check
 ```
-
-
-## Metrics and Monitoring
-
-### Collected Metrics
-- **Throughput**:
-    - Total requests
-    - OK requests
-    - KO requests
-    - Error rate: % KO
-- **Response Time (ms)**:
-    - Min, Mean and Max 
-    - Consistency: standard deviation
-    - Percentiles: 50th, 75th, 95th and 99th
