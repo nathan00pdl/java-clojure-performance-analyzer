@@ -210,17 +210,12 @@ mvn spotbugs:check
 ## Metrics and Monitoring
 
 ### Collected Metrics
-- **Response Time**: Latency per request
-- **Throughput**: Requests per second
-- **CPU Utilization**: During load peaks
-- **Memory Usage**: Heap and garbage collection
-
-
-## Next Steps
-
-- [ ] Redis cache implementation
-- [ ] Metrics with Micrometer
-- [ ] Docker containerization
-- [ ] CI/CD pipeline
-- [ ] Stress testing in distributed environment
-- [ ] Implementation in other functional languages (Scala, Haskell)
+- **Throughput**:
+    - Total requests
+    - OK requests
+    - KO requests
+    - Error rate: % KO
+- **Response Time (ms)**:
+    - Min, Mean and Max 
+    - Consistency: standard deviation
+    - Percentiles: 50th, 75th, 95th and 99th
