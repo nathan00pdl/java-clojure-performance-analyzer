@@ -37,7 +37,7 @@ public class JavaCompoundInterestService implements CompoundInterestService {
         return round(amount * (1 + rate / 100.0));
     }
     
-    private YearlyInvestmentSummary createYearlyInvestmentSummaryDTO(int year, double startBalance, double endBalance) {
+    private YearlyInvestmentSummary createYearlyInvestmentSummary(int year, double startBalance, double endBalance) {
         double interestEarned = round(endBalance - startBalance);
         return new YearlyInvestmentSummary(year, startBalance, endBalance, interestEarned, ADDITIONAL_CONTRIBUTION);
     }
@@ -55,7 +55,7 @@ public class JavaCompoundInterestService implements CompoundInterestService {
 
         for (int year = 1; year <= years; year++) {
             double newAmount = applyCompoundInterest(currentAmount, rate);
-            yearlyDetailsList.add(createYearlyInvestmentSummaryDTO(year, currentAmount, newAmount));
+            yearlyDetailsList.add(createYearlyInvestmentSummary(year, currentAmount, newAmount));
             currentAmount = newAmount;
         }
 
