@@ -3,7 +3,7 @@ package com.example.financial_calculator_fp.models.request;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
-public class AdditionalContributionDTO {
+public class AdditionalContribution {
     @NotNull(message = "The Value Of The Additional Contribution Cannot Be Zero")
     @Min(value = 0, message = "The Amount Of The Additional Contribution Must Be Greater Than Or Equal To Zero")
     private Double amount;
@@ -11,10 +11,10 @@ public class AdditionalContributionDTO {
     @NotNull(message = "The Frequency Of The Additional Contribution Cannot Be Zero")
     private ContributionFrequency frequency;
 
-    public AdditionalContributionDTO() {
+    public AdditionalContribution() {
     }
 
-    public AdditionalContributionDTO(Double amount, ContributionFrequency frequency) {
+    public AdditionalContribution(Double amount, ContributionFrequency frequency) {
         this.amount = amount;
         this.frequency = frequency;
     }

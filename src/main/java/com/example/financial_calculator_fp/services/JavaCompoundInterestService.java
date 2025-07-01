@@ -7,10 +7,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.example.financial_calculator_fp.models.request.CompoundInterestRequestDTO;
-import com.example.financial_calculator_fp.models.response.InvestmentSummaryDTO;
-import com.example.financial_calculator_fp.models.response.CompoundInterestResponseDTO;
-import com.example.financial_calculator_fp.models.response.YearlyInvestmentSummaryDTO;
+import com.example.financial_calculator_fp.models.request.CompoundInterestRequest;
+import com.example.financial_calculator_fp.models.response.InvestmentSummary;
+import com.example.financial_calculator_fp.models.response.CompoundInterestResponse;
+import com.example.financial_calculator_fp.models.response.YearlyInvestmentSummary;
 
 @Service("javaImplementation")
 public class JavaCompoundInterestService implements CompoundInterestService {
@@ -28,19 +28,19 @@ public class JavaCompoundInterestService implements CompoundInterestService {
         return round(amount * (1 + rate / 100.0));
     }
     
-    private YearlyInvestmentSummaryDTO createYearlyInvestmentSummaryDTO(int year, double startBalance, double endBalance) {
+    private YearlyInvestmentSummary createYearlyInvestmentSummaryDTO(int year, double startBalance, double endBalance) {
         double interestEarned = round(endBalance - startBalance);
-        return new YearlyInvestmentSummaryDTO(year, startBalance, endBalance, interestEarned, ADDITIONAL_CONTRIBUTION);
+        return new YearlyInvestmentSummary(year, startBalance, endBalance, interestEarned, ADDITIONAL_CONTRIBUTION);
     }
 
     @Override
-    public CompoundInterestResponseDTO calculateCompoundInterest(CompoundInterestRequestDTO request) {        
+    public CompoundInterestResponse calculateCompoundInterest(CompoundInterestRequest request) {        
         final double initialAmount = request.getInitialAmount();
         final double rate = request.getAnnualInterestRate();
         final int years = request.getYears();
 
         double currentAmount = initialAmount;
-        List<YearlyInvestmentSummaryDTO> yearlyDetailsList = new ArrayList<>(years);
+        List<YearlyInvestmentSummary> yearlyDetailsList = new ArrayList<>(years);
 
         for (int year = 1; year <= years; year++) {
             double newAmount = applyCompoundInterest(currentAmount, rate);
@@ -49,8 +49,8 @@ public class JavaCompoundInterestService implements CompoundInterestService {
         }
 
         double totalInterestEarned = round(currentAmount - request.getInitialAmount());
-        InvestmentSummaryDTO summaryResults = new InvestmentSummaryDTO(request.getInitialAmount(), currentAmount, totalInterestEarned, ADDITIONAL_CONTRIBUTION);
+        InvestmentSummary summaryResults = new InvestmentSummary(request.getInitialAmount(), currentAmount, totalInterestEarned, ADDITIONAL_CONTRIBUTION);
 
-        return new CompoundInterestResponseDTO(summaryResults, yearlyDetailsList);
+        return new CompoundInterestResponse(summaryResults, yearlyDetailsList);
     }
 }
