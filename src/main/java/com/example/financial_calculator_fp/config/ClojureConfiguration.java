@@ -4,23 +4,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 
 import com.example.financial_calculator_fp.services.CompoundInterestService;
 
 import clojure.java.api.Clojure;
+import clojure.lang.IFn;
+import jakarta.annotation.PostConstruct;
 
-/*
- * Notes:
- * 
+/**
  * Configuration class for integrating Clojure services with Spring Boot framework.
  * 
- * This configuration allows services implemented in clojure to be exposed as Spring Beans, 
- * enabling dependency injection into controllers and other Java component.
- * 
- * The bean creation depends on namespace loading to ensure Clojure code is properly initilized.
+ * This configuration loads the necessary Clojure namespaces and exposes Clojure 
+ * services as Spring Beans, enabling dependency injection into controllers and 
+ * other Java components.
  */
-
 @Configuration
 public class ClojureConfiguration {
     
@@ -28,11 +25,26 @@ public class ClojureConfiguration {
     private static final String NAMESPACE = "com.example.financial-calculator-fp.service.compound-interest-service";
     private static final String FUNCTION = "create-service";
 
+    @PostConstruct
+    public void loadNamespaces() {
+        try {
+            logger.info("Loading Clojure Namespace: {}", NAMESPACE);
+            
+            IFn require = Clojure.var("clojure.core", "require");
+            require.invoke(Clojure.read(NAMESPACE));
+            
+            logger.info("Clojure Namespace Loaded Successfully: {}", NAMESPACE);
+            
+        } catch (Exception e) {
+            logger.error("Failed To Load Clojure Namespace: {}", NAMESPACE, e);
+            throw new RuntimeException("Critical Error: Unable To Load Clojure Namespace", e);
+        }
+    }
+
     @Bean("clojureImplementation")
-    @DependsOn("clojureNamespaceLoader")
     public CompoundInterestService compoundInterestService() {
         try {
-            logger.debug("Creating Clojure Service Implementation");
+            logger.debug("Creating Clojure ServiceIimplementation");
             
             Object service = Clojure.var(NAMESPACE, FUNCTION).invoke();
             
@@ -49,4 +61,3 @@ public class ClojureConfiguration {
         }
     }
 }
-
