@@ -2,11 +2,18 @@
   (:import
    (com.example.financial_calculator_fp.services CompoundInterestService)
    (com.example.financial_calculator_fp.models.request CompoundInterestRequestDTO)
-   (com.example.financial_calculator_fp.models.response CompoundInterestResponseDTO InvestmentSummaryDTO YearlyInvestmentSummaryDTO)))
+   (com.example.financial_calculator_fp.models.response CompoundInterestResponseDTO InvestmentSummaryDTO YearlyInvestmentSummaryDTO)
+   (com.example.financial_calculator_fp.exceptions ValidationException)))
 
 (defn round
   [^double value]
   (double (/ (Math/round (* value 1000.0)) 1000.0)))
+
+(defn validate-business-rules
+  [^CompoundInterestRequestDTO request]
+  (let [years (.getYears request)]
+    (when (> years 200)
+      (throw (ValidationException. "years" "The Maximum Period Allowed is 200 years")))))
 
 (defn calculate-compound-interest-yearly
   [^double current-amount ^double annual-rate]
@@ -34,6 +41,7 @@
 
 (defn process-compound-interest-request
   [^CompoundInterestRequestDTO request]
+  (validate-business-rules request)
   (let [
         initial-amount (.getInitialAmount request)
         rate (.getAnnualInterestRate request)

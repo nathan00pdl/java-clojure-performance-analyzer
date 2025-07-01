@@ -12,16 +12,25 @@ import com.example.financial_calculator_fp.models.response.InvestmentSummary;
 import com.example.financial_calculator_fp.models.response.CompoundInterestResponse;
 import com.example.financial_calculator_fp.models.response.YearlyInvestmentSummary;
 
+import com.example.financial_calculator_fp.exceptions.ValidationException;
+
 @Service("javaImplementation")
 public class JavaCompoundInterestService implements CompoundInterestService {
     
     private static final int DECIMAL_PRECISION = 3;
     private static final double ADDITIONAL_CONTRIBUTION = 0.0;
+    private static final int MAX_YEARS = 200;
 
     private double round(double value) {
         return BigDecimal.valueOf(value)
                 .setScale(DECIMAL_PRECISION, RoundingMode.HALF_UP)
                 .doubleValue();
+    }
+
+    private void validateBusinessRules(CompoundInterestRequest request) {
+        if (request.getYears() > MAX_YEARS) {
+            throw new ValidationException("years", "The Maximum Period Allowed Is " + MAX_YEARS + " Years!");
+        }
     }
 
     private double applyCompoundInterest(double amount, double rate) {
@@ -35,6 +44,8 @@ public class JavaCompoundInterestService implements CompoundInterestService {
 
     @Override
     public CompoundInterestResponse calculateCompoundInterest(CompoundInterestRequest request) {        
+        validateBusinessRules(request);
+
         final double initialAmount = request.getInitialAmount();
         final double rate = request.getAnnualInterestRate();
         final int years = request.getYears();
