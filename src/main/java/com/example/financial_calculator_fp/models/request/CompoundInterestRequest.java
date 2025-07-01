@@ -19,17 +19,17 @@ public class CompoundInterestRequest {
     private Integer years;
 
     @Valid
-    private AdditionalContribution additionalContributionDTO;
+    private AdditionalContribution additionalContribution;
 
     public CompoundInterestRequest() {
     }
 
     public CompoundInterestRequest(Double initialAmount, Double annualInterestRate, Integer years,
-            AdditionalContribution additionalContributionDTO) {
+            AdditionalContribution additionalContribution) {
         this.initialAmount = initialAmount;
         this.annualInterestRate = annualInterestRate;
         this.years = years;
-        this.additionalContributionDTO = additionalContributionDTO;
+        this.additionalContribution = additionalContribution;
     }
 
     public Double getInitialAmount() {
@@ -56,11 +56,11 @@ public class CompoundInterestRequest {
         this.years = years;
     }
 
-    public AdditionalContribution getAdditionalContributionDTO() {
-        return additionalContributionDTO;
+    public AdditionalContribution getAdditionalContribution() {
+        return additionalContribution;
     }
 
-    public void setAdditionalContributionDTO(AdditionalContribution additionalContributionDTO) {
-        this.additionalContributionDTO = additionalContributionDTO;
+    public void setAdditionalContribution(AdditionalContribution additionalContribution) {
+        this.additionalContribution = additionalContribution;
     }
 }
