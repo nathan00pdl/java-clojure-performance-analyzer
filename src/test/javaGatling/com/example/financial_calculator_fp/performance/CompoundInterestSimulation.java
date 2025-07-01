@@ -7,7 +7,6 @@ import java.time.Duration;
 import io.gatling.javaapi.core.*;
 import io.gatling.javaapi.http.*;
 
-
 public class CompoundInterestSimulation extends Simulation {
 
     private static final String BASE_URL = "http://localhost:8080";
