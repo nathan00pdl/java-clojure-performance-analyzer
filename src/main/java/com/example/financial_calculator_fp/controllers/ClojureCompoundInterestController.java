@@ -27,12 +27,7 @@ public class ClojureCompoundInterestController {
 
     @PostMapping("/calculate")
     public ResponseEntity<CompoundInterestResponse> calculateCompoundInterest (@Valid @RequestBody CompoundInterestRequest request) {
-        if (request.getYears() > 200) {
-            throw new com.example.financial_calculator_fp.exceptions.ValidationException("years", "The Maximium Period Allowed Is 200 Years!");
-        }
-       
         CompoundInterestResponse response = compoundInterestService.calculateCompoundInterest(request);
-
         return ResponseEntity.ok(response);
     }
 

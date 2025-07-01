@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.financial_calculator_fp.exceptions.ValidationException;
 import com.example.financial_calculator_fp.models.request.CompoundInterestRequest;
 import com.example.financial_calculator_fp.models.response.CompoundInterestResponse;
 import com.example.financial_calculator_fp.services.JavaCompoundInterestService;
@@ -27,10 +26,6 @@ public class JavaCompoundInterestController {
 
     @PostMapping("/calculate")
     public ResponseEntity<CompoundInterestResponse> calculateCompoundInterest(@Valid @RequestBody CompoundInterestRequest request) {
-        if (request.getYears() > 200) {
-            throw new ValidationException("years", "The Maximium Period Allowed Is 200 Years!");
-        }
-
         CompoundInterestResponse response = javaService.calculateCompoundInterest(request);
         return ResponseEntity.ok(response);
     }
