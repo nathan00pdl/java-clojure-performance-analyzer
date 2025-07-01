@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-public class CompoundInterestRequestDTO {
+public class CompoundInterestRequest {
     @NotNull(message = "Initial Value Cannot Be Null")
     @Min(value = 0, message = "The Initial Value Must Be Greater Than Or Equal To Zero")
     private Double initialAmount;
@@ -19,13 +19,13 @@ public class CompoundInterestRequestDTO {
     private Integer years;
 
     @Valid
-    private AdditionalContributionDTO additionalContributionDTO;
+    private AdditionalContribution additionalContributionDTO;
 
-    public CompoundInterestRequestDTO() {
+    public CompoundInterestRequest() {
     }
 
-    public CompoundInterestRequestDTO(Double initialAmount, Double annualInterestRate, Integer years,
-            AdditionalContributionDTO additionalContributionDTO) {
+    public CompoundInterestRequest(Double initialAmount, Double annualInterestRate, Integer years,
+            AdditionalContribution additionalContributionDTO) {
         this.initialAmount = initialAmount;
         this.annualInterestRate = annualInterestRate;
         this.years = years;
@@ -56,11 +56,11 @@ public class CompoundInterestRequestDTO {
         this.years = years;
     }
 
-    public AdditionalContributionDTO getAdditionalContributionDTO() {
+    public AdditionalContribution getAdditionalContributionDTO() {
         return additionalContributionDTO;
     }
 
-    public void setAdditionalContributionDTO(AdditionalContributionDTO additionalContributionDTO) {
+    public void setAdditionalContributionDTO(AdditionalContribution additionalContributionDTO) {
         this.additionalContributionDTO = additionalContributionDTO;
     }
 }

@@ -1,15 +1,15 @@
 package com.example.financial_calculator_fp.models.response;
 
-public class YearlyInvestmentSummaryDTO {
+public class YearlyInvestmentSummary {
     private Integer year;
     private Double startBalance;
     private Double endBalance;
     private Double interestEarned;
     private Double additionalContribution;
 
-    public YearlyInvestmentSummaryDTO(){}
+    public YearlyInvestmentSummary(){}
 
-    public YearlyInvestmentSummaryDTO(Integer year, Double startBalance, Double endBalance, Double interestEarned, Double additionalContribution){
+    public YearlyInvestmentSummary(Integer year, Double startBalance, Double endBalance, Double interestEarned, Double additionalContribution){
         this.year = year;
         this.startBalance = startBalance;
         this.endBalance = endBalance;
