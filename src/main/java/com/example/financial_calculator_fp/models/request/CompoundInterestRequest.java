@@ -1,13 +1,14 @@
 package com.example.financial_calculator_fp.models.request;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 
 public class CompoundInterestRequest {
     @NotNull(message = "Initial Value Cannot Be Null")
-    @Min(value = 0, message = "The Initial Value Must Be Greater Than Or Equal To Zero")
+    @PositiveOrZero(message = "The Initial Value Must Be Greater Than Or Equal To Zero")
     private Double initialAmount;
 
     @NotNull(message = "The Annual Interest Rate Cannot Be Zero")
@@ -16,6 +17,7 @@ public class CompoundInterestRequest {
 
     @NotNull(message = "The Number Of Years Cannot Be Zero")
     @Positive(message = "The Number Of Years Must Be Greater Than Zero")
+    @Max(value = 200, message = "The Maximum Period Allowed Is 200 Years!")
     private Integer years;
 
     @Valid

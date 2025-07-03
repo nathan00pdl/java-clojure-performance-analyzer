@@ -2,21 +2,14 @@
   (:import
    (com.example.financial_calculator_fp.services CompoundInterestService)
    (com.example.financial_calculator_fp.models.request CompoundInterestRequest)
-   (com.example.financial_calculator_fp.models.response CompoundInterestResponse InvestmentSummary YearlyInvestmentSummary)
-   (com.example.financial_calculator_fp.exceptions ValidationException)))
+   (com.example.financial_calculator_fp.models.response CompoundInterestResponse InvestmentSummary YearlyInvestmentSummary)))
 
 (def ^:private ADDITIONAL_CONTRIBUTION 0.0)
-(def ^:private MAX_YEARS 200)
 
 (defn round
   [^double value]
-  (double (/ (Math/round (* value 1000.0)) 1000.0)))
-
-(defn validate-business-rules
-  [^CompoundInterestRequest request]
-  (let [years (.getYears request)]
-    (when (> years MAX_YEARS)
-      (throw (ValidationException. "years" "The Maximum Period Allowed Is 200 Years!")))))
+  (let [bd (java.math.BigDecimal/valueOf value)]
+    (.doubleValue (.setScale bd 3 java.math.RoundingMode/HALF_UP))))
 
 (defn calculate-compound-interest-yearly
   [^double current-amount ^double annual-rate]
@@ -43,8 +36,7 @@
                (conj yearly-details-list year-detail))))))
 
 (defn process-compound-interest-request
-  [^CompoundInterestRequest request]
-  (validate-business-rules request)
+  [^CompoundInterestRequest request] 
   (let [
         initial-amount (.getInitialAmount request)
         rate (.getAnnualInterestRate request)
