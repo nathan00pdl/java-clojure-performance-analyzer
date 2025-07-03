@@ -16,7 +16,7 @@
   [^CompoundInterestRequest request]
   (let [years (.getYears request)]
     (when (> years MAX_YEARS)
-      (throw (ValidationException. "years" "The Maximium Period Allowed Is 200 Years!")))))
+      (throw (ValidationException. "years" "The Maximum Period Allowed Is 200 Years!")))))
 
 (defn calculate-compound-interest-yearly
   [^double current-amount ^double annual-rate]
