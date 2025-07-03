@@ -45,7 +45,7 @@ public class ClojureConfiguration {
     @Bean("clojureImplementation")
     public CompoundInterestService compoundInterestService() {
         try {
-            logger.debug("Creating Clojure ServiceIimplementation");
+            logger.debug("Creating Clojure Service Implementation");
             
             Object service = Clojure.var(NAMESPACE, FUNCTION).invoke();
             
