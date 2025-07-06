@@ -1,11 +1,11 @@
-package com.example.financial_calculator_fp.config;
+package com.example.java_clojure_performance_analyzer.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.example.financial_calculator_fp.services.CompoundInterestService;
+import com.example.java_clojure_performance_analyzer.services.CompoundInterestService;
 
 import clojure.java.api.Clojure;
 import clojure.lang.IFn;
@@ -23,7 +23,7 @@ import jakarta.annotation.PostConstruct;
 public class ClojureConfiguration {
     
     private static final Logger logger = LoggerFactory.getLogger(ClojureConfiguration.class);
-    private static final String NAMESPACE = "com.example.financial-calculator-fp.service.compound-interest-service";
+    private static final String NAMESPACE = "com.example.java-clojure-performance-analyzer.service.compound-interest-service";
     private static final String FUNCTION = "create-service";
 
     @PostConstruct

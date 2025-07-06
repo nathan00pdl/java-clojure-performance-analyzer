@@ -1,4 +1,4 @@
-package com.example.financial_calculator_fp.performance;
+package com.example.java_clojure_performance_analyzer.performance;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;

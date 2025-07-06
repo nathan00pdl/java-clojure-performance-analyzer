@@ -1,4 +1,4 @@
-package com.example.financial_calculator_fp.exceptions;
+package com.example.java_clojure_performance_analyzer.exceptions;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;

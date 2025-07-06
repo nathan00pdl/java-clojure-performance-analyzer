@@ -1,4 +1,4 @@
-package com.example.financial_calculator_fp.config;
+package com.example.java_clojure_performance_analyzer.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

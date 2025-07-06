@@ -1,8 +1,8 @@
-(ns com.example.financial-calculator-fp.service.compound-interest-service
+(ns com.example.java-clojure-performance-analyzer.service.compound-interest-service
   (:import
-   (com.example.financial_calculator_fp.services CompoundInterestService)
-   (com.example.financial_calculator_fp.models.request CompoundInterestRequest)
-   (com.example.financial_calculator_fp.models.response CompoundInterestResponse InvestmentSummary YearlyInvestmentSummary)))
+   (com.example.java_clojure_performance_analyzer.services CompoundInterestService)
+   (com.example.java_clojure_performance_analyzer.models.request CompoundInterestRequest)
+   (com.example.java_clojure_performance_analyzer.models.response CompoundInterestResponse InvestmentSummary YearlyInvestmentSummary)))
 
 (def ^:private ADDITIONAL_CONTRIBUTION 0.0)
 

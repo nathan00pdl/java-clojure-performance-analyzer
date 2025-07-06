@@ -1,4 +1,4 @@
-package com.example.financial_calculator_fp.exceptions;
+package com.example.java_clojure_performance_analyzer.exceptions;
 
 public class ValidationException extends RuntimeException {
     private final String field;

@@ -1,4 +1,4 @@
-package com.example.financial_calculator_fp.controllers;
+package com.example.java_clojure_performance_analyzer.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.financial_calculator_fp.models.request.CompoundInterestRequest;
-import com.example.financial_calculator_fp.models.response.CompoundInterestResponse;
-import com.example.financial_calculator_fp.services.CompoundInterestService;
+import com.example.java_clojure_performance_analyzer.models.request.CompoundInterestRequest;
+import com.example.java_clojure_performance_analyzer.models.response.CompoundInterestResponse;
+import com.example.java_clojure_performance_analyzer.services.CompoundInterestService;
 
 import jakarta.validation.Valid;
 
