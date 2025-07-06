@@ -1,4 +1,4 @@
-package com.example.financial_calculator_fp.services;
+package com.example.java_clojure_performance_analyzer.services;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -7,10 +7,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.example.financial_calculator_fp.models.request.CompoundInterestRequest;
-import com.example.financial_calculator_fp.models.response.InvestmentSummary;
-import com.example.financial_calculator_fp.models.response.CompoundInterestResponse;
-import com.example.financial_calculator_fp.models.response.YearlyInvestmentSummary;
+import com.example.java_clojure_performance_analyzer.models.request.CompoundInterestRequest;
+import com.example.java_clojure_performance_analyzer.models.response.CompoundInterestResponse;
+import com.example.java_clojure_performance_analyzer.models.response.InvestmentSummary;
+import com.example.java_clojure_performance_analyzer.models.response.YearlyInvestmentSummary;
 
 @Service("javaImplementation")
 public class JavaCompoundInterestService implements CompoundInterestService {

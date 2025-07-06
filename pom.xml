@@ -9,9 +9,9 @@
 		<relativePath/>
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>financial-calculator-fp</artifactId>
+	<artifactId>java-clojure-performance-analyzer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>financial-calculator-fp</name>
+	<name>java-clojure-performance-analyzer</name>
 	<description>Performance comparison between OOP (Java) and FP (Clojure) paradigms</description>
 	
 	<properties>
@@ -126,7 +126,7 @@
 					</sourceDirectories>
 					<warnOnReflection>true</warnOnReflection>
 					<namespaces>
-						<namespace>com.example.financial-calculator-fp.service.compound-interest-service</namespace>
+						<namespace>com.example.java-clojure-performance-analyzer.service.compound-interest-service</namespace>
 					</namespaces>
 				</configuration>
 				<executions>
@@ -146,7 +146,7 @@
 				<artifactId>gatling-maven-plugin</artifactId>
 				<version>4.3.0</version>
 				<configuration>
-					<simulationClass>com.example.financial_calculator_fp.performance.CompoundInterestSimulation</simulationClass>
+					<simulationClass>com.example.java_clojure_performance_analyzer.performance.CompoundInterestSimulation</simulationClass>
 				</configuration>
 			</plugin>
 

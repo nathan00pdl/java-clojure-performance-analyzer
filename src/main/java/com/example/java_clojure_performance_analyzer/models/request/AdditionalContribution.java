@@ -1,4 +1,4 @@
-package com.example.financial_calculator_fp.models.request;
+package com.example.java_clojure_performance_analyzer.models.request;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

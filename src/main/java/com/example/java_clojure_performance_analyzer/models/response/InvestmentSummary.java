@@ -1,4 +1,4 @@
-package com.example.financial_calculator_fp.models.response;
+package com.example.java_clojure_performance_analyzer.models.response;
 
 public class InvestmentSummary {
     private Double initialInvestment;
