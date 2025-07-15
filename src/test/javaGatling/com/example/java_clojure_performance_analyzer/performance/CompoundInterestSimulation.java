@@ -15,11 +15,13 @@ public class CompoundInterestSimulation extends Simulation {
         .baseUrl(BASE_URL)
         .acceptHeader("application/json")
         .contentTypeHeader("application/json")
-        .userAgentHeader("Gatling-Extreme-Test")
+        .userAgentHeader("Gatling-Performance-Test")
         .connectionHeader("keep-alive")
         .shareConnections() 
         .acceptEncodingHeader("gzip, deflate")
-        .disableFollowRedirect(); 
+        .disableFollowRedirect()
+        .inferHtmlResources()
+        .maxConnectionsPerHost(500); 
 
     private final String simpleCalculation = """
         {
@@ -37,103 +39,125 @@ public class CompoundInterestSimulation extends Simulation {
         }
         """;
 
-    private final ScenarioBuilder javaSimpleScenario = scenario("Java endpoint - simple test")
+    // ========== WARM-UP ==========
+    
+    private final ScenarioBuilder javaWarmUpScenario = scenario("Java Warm-up")
+        .exec(
+            http("Java Warm-up Simple")
+                .post("/api/compound-interest-java/calculate")
+                .body(StringBody(simpleCalculation))
+                .check(status().is(200))
+        )
+        .pause(Duration.ofMillis(10), Duration.ofMillis(50))
+        .exec(
+            http("Java Warm-up Complex")
+                .post("/api/compound-interest-java/calculate")
+                .body(StringBody(complexCalculation))
+                .check(status().is(200))
+        )
+        .pause(Duration.ofMillis(10), Duration.ofMillis(50));
+
+    private final ScenarioBuilder clojureWarmUpScenario = scenario("Clojure Warm-up")
+        .exec(
+            http("Clojure Warm-up Simple")
+                .post("/api/compound-interest-clojure/calculate")
+                .body(StringBody(simpleCalculation))
+                .check(status().is(200))
+        )
+        .pause(Duration.ofMillis(10), Duration.ofMillis(50))
+        .exec(
+            http("Clojure Warm-up Complex")
+                .post("/api/compound-interest-clojure/calculate")
+                .body(StringBody(complexCalculation))
+                .check(status().is(200))
+        )
+        .pause(Duration.ofMillis(10), Duration.ofMillis(50));
+
+    // ========== JAVA ==========
+
+    private final ScenarioBuilder javaSimpleScenario = scenario("Java Simple Test")
         .exec(
             http("Java Simple Compound Interest")
                 .post("/api/compound-interest-java/calculate")
                 .body(StringBody(simpleCalculation))
                 .check(status().is(200))
-                .check(responseTimeInMillis().saveAs("javaResponseTime"))
+                .check(responseTimeInMillis().saveAs("responseTime"))
         )
         .pause(Duration.ofMillis(5), Duration.ofMillis(20));
 
-    private final ScenarioBuilder javaComplexScenario = scenario("Java endpoint - complex test")
+    private final ScenarioBuilder javaComplexScenario = scenario("Java Complex Test")
         .exec(
             http("Java Complex Compound Interest")
                 .post("/api/compound-interest-java/calculate")
                 .body(StringBody(complexCalculation))
                 .check(status().is(200))
-                .check(responseTimeInMillis().saveAs("javaComplexResponseTime"))
+                .check(responseTimeInMillis().saveAs("responseTime"))
         )
         .pause(Duration.ofMillis(5), Duration.ofMillis(20));
 
-    private final ScenarioBuilder clojureSimpleScenario = scenario("Clojure endpoint - simple test")
+    // ========== CLOJURE ==========
+
+    private final ScenarioBuilder clojureSimpleScenario = scenario("Clojure Simple Test")
         .exec(
             http("Clojure Simple Compound Interest")
                 .post("/api/compound-interest-clojure/calculate")
                 .body(StringBody(simpleCalculation))
                 .check(status().is(200))
-                .check(responseTimeInMillis().saveAs("clojureResponseTime"))
+                .check(responseTimeInMillis().saveAs("responseTime"))
         )
         .pause(Duration.ofMillis(5), Duration.ofMillis(20));
 
-
-    private final ScenarioBuilder clojureComplexScenario = scenario("Clojure endpoint - complex test")
+    private final ScenarioBuilder clojureComplexScenario = scenario("Clojure Complex Test")
         .exec(
             http("Clojure Complex Compound Interest")
                 .post("/api/compound-interest-clojure/calculate")
                 .body(StringBody(complexCalculation))
                 .check(status().is(200))
-                .check(responseTimeInMillis().saveAs("clojureComplexResponseTime"))
+                .check(responseTimeInMillis().saveAs("responseTime"))
         )
         .pause(Duration.ofMillis(5), Duration.ofMillis(20));
 
+    // ========== EXECUTION TESTS ==========
+
     {
         setUp(
-            javaComplexScenario.injectClosed(
-                constantConcurrentUsers(10000).during(Duration.ofMinutes(5))
+            clojureWarmUpScenario.injectClosed(
+                constantConcurrentUsers(10).during(Duration.ofSeconds(30)),
+                rampConcurrentUsers(10).to(50).during(Duration.ofSeconds(30)),
+                constantConcurrentUsers(50).during(Duration.ofSeconds(60))
+            ).andThen(
+                clojureComplexScenario.injectClosed(
+                    constantConcurrentUsers(100).during(Duration.ofMinutes(5))
+                )
             )
-        ).protocols(httpProtocol);
+        ).protocols(httpProtocol)
+        .assertions(
+            global().responseTime().max().lt(5000),
+            global().successfulRequests().percent().gt(95.0)
+        );
     }
 
-    
     /*
-    ----------------------------------------TESTS-----------------------------------------------------
-
-    X = javaSimpleScenario || javaComplexScenario || clojureSimpleScenario || clojureComplexScenario
-    Y = javaComplexScenario || clojureComplexScenario
-
-    --------------------------------------SCENARIO 1-------------------------------------------------
-
-    {
-        setUp(
-            X.injectClosed(
-                constantConcurrentUsers(10000).during(Duration.ofMinutes(10))
-            )
-        ).protocols(httpProtocol);
-    }
-
-    --------------------------------------SCENARIO 2-------------------------------------------------
+    ========== OTHER TEST SCENARIOS ==========
     
-    {
-        setUp(
-            X.injectClosed(
-                rampConcurrentUsers(10000).to(20000).during(Duration.ofMinutes(10))
-            )
-        ).protocols(httpProtocol);
-    }
+    // SCENARIO 2: 
+    testScenario.injectClosed(
+        rampConcurrentUsers(10).to(200).during(Duration.ofMinutes(5)),
+        constantConcurrentUsers(200).during(Duration.ofMinutes(10))
+    )
     
-    --------------------------------------SCENARIO 3-------------------------------------------------
-
-    {
-        setUp(
-            X.injectClosed(
-                rampConcurrentUsers(1000).to(30000).during(Duration.ofMinutes(10)),
-                rampConcurrentUsers(30000).to(50000).during(Duration.ofMinutes(10)),
-                rampConcurrentUsers(50000).to(1000).during(Duration.ofMinutes(5))
-            )
-        ).protocols(httpProtocol);
-    }
-
-        --------------------------------------SCENARIO 4-------------------------------------------------
-
-    {
-        setUp(
-            Y.injectClosed(
-                rampConcurrentUsers(1000).to(30000).during(Duration.ofMinutes(5)),
-                rampConcurrentUsers(30000).to(50000).during(Duration.ofMinutes(5))
-            )
-        ).protocols(httpProtocol);
-    }
+    // SCENARIO 3: 
+    testScenario.injectClosed(
+        rampConcurrentUsers(10).to(500).during(Duration.ofMinutes(2)),
+        constantConcurrentUsers(500).during(Duration.ofMinutes(3)),
+        rampConcurrentUsers(500).to(1000).during(Duration.ofMinutes(2)),
+        constantConcurrentUsers(1000).during(Duration.ofMinutes(3))
+    )
+    
+    // SCENARIO 4: 
+    testScenario.injectClosed(
+        rampConcurrentUsers(100).to(2000).during(Duration.ofMinutes(10)),
+        constantConcurrentUsers(2000).during(Duration.ofMinutes(15))
+    )
     */
 }
