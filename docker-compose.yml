@@ -5,19 +5,14 @@ services:
     container_name: gatling-test-environment
     ports:
       - '8080:8080'
-    
+   
     mem_limit: 8g
     mem_reservation: 2g
     cpus: 6.0
-    
+   
     tmpfs:
       - /tmp:size=2g,noexec,nosuid,nodev
-    
-    volumes:
-      - .:/app  
-      - ./gatling-results:/app/target/gatling  
-      - maven-cache:/root/.m2  
-    
+       
     ulimits:
       nofile:
         soft: 65536
@@ -25,11 +20,16 @@ services:
       memlock:
         soft: -1
         hard: -1
-    
+   
     environment:
-      - JAVA_OPTS=-Xms1g -Xmx5g -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UseStringDeduplication
-      - MAVEN_OPTS=-Xmx2g
-    
+      - JAVA_OPTS=-Xms4g -Xmx4g -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:MaxMetaspaceSize=512m -Xlog:gc*:/app/gc.log:time,tags -XX:+UseStringDeduplication
+   
+    volumes:
+      - .:/app  
+      - ./gatling-results:/app/gatling-results
+      - ./logs:/app/logs
+      - maven-cache:/root/.m2
+   
     networks:
       - test-network
 
