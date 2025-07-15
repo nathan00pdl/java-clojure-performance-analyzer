@@ -147,6 +147,7 @@
 				<version>4.3.0</version>
 				<configuration>
 					<simulationClass>com.example.java_clojure_performance_analyzer.performance.CompoundInterestSimulation</simulationClass>
+					<resultsFolder>/app/gatling-results</resultsFolder>
 				</configuration>
 			</plugin>
 
