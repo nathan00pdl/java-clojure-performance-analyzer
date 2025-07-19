@@ -5,16 +5,14 @@ public class YearlyInvestmentSummary {
     private Double startBalance;
     private Double endBalance;
     private Double interestEarned;
-    private Double additionalContribution;
 
     public YearlyInvestmentSummary(){}
 
-    public YearlyInvestmentSummary(Integer year, Double startBalance, Double endBalance, Double interestEarned, Double additionalContribution){
+    public YearlyInvestmentSummary(Integer year, Double startBalance, Double endBalance, Double interestEarned){
         this.year = year;
         this.startBalance = startBalance;
         this.endBalance = endBalance;
         this.interestEarned = interestEarned;
-        this.additionalContribution = additionalContribution;
     }
 
     public Integer getYear() {
@@ -47,13 +45,5 @@ public class YearlyInvestmentSummary {
 
     public void setInterestEarned(Double interestEarned) {
         this.interestEarned = interestEarned;
-    }
-
-    public Double getAdditionalContribution() {
-        return additionalContribution;
-    }
-
-    public void setAdditionalContribution(Double additionalContribution) {
-        this.additionalContribution = additionalContribution;
     }
 }

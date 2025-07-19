@@ -16,7 +16,6 @@ import com.example.java_clojure_performance_analyzer.models.response.YearlyInves
 public class JavaCompoundInterestService implements CompoundInterestService {
     
     private static final int DECIMAL_PRECISION = 3;
-    private static final double ADDITIONAL_CONTRIBUTION = 0.0;
 
     private double round(double value) {
         return BigDecimal.valueOf(value)
@@ -30,7 +29,7 @@ public class JavaCompoundInterestService implements CompoundInterestService {
     
     private YearlyInvestmentSummary createYearlyInvestmentSummary(int year, double startBalance, double endBalance) {
         double interestEarned = round(endBalance - startBalance);
-        return new YearlyInvestmentSummary(year, startBalance, endBalance, interestEarned, ADDITIONAL_CONTRIBUTION);
+        return new YearlyInvestmentSummary(year, startBalance, endBalance, interestEarned);
     }
 
     @Override
@@ -49,7 +48,7 @@ public class JavaCompoundInterestService implements CompoundInterestService {
         }
 
         double totalInterestEarned = round(currentAmount - request.getInitialAmount());
-        InvestmentSummary summaryResults = new InvestmentSummary(request.getInitialAmount(), currentAmount, totalInterestEarned, ADDITIONAL_CONTRIBUTION);
+        InvestmentSummary summaryResults = new InvestmentSummary(request.getInitialAmount(), currentAmount, totalInterestEarned);
 
         return new CompoundInterestResponse(summaryResults, yearlyDetailsList);
     }

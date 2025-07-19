@@ -1,6 +1,5 @@
 package com.example.java_clojure_performance_analyzer.models.request;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -20,18 +19,13 @@ public class CompoundInterestRequest {
     @Max(value = 200, message = "The Maximum Period Allowed Is 200 Years!")
     private Integer years;
 
-    @Valid
-    private AdditionalContribution additionalContribution;
-
     public CompoundInterestRequest() {
     }
 
-    public CompoundInterestRequest(Double initialAmount, Double annualInterestRate, Integer years,
-            AdditionalContribution additionalContribution) {
+    public CompoundInterestRequest(Double initialAmount, Double annualInterestRate, Integer years) {
         this.initialAmount = initialAmount;
         this.annualInterestRate = annualInterestRate;
         this.years = years;
-        this.additionalContribution = additionalContribution;
     }
 
     public Double getInitialAmount() {
@@ -56,13 +50,5 @@ public class CompoundInterestRequest {
 
     public void setYears(Integer years) {
         this.years = years;
-    }
-
-    public AdditionalContribution getAdditionalContribution() {
-        return additionalContribution;
-    }
-
-    public void setAdditionalContribution(AdditionalContribution additionalContribution) {
-        this.additionalContribution = additionalContribution;
     }
 }
