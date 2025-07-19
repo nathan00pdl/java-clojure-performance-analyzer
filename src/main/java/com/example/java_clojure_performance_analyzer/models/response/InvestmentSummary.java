@@ -4,15 +4,13 @@ public class InvestmentSummary {
     private Double initialInvestment;
     private Double finalBalance;
     private Double totalInterestEarned;
-    private Double totalAdditionalContributions;
 
     public InvestmentSummary(){}
 
-    public InvestmentSummary(Double initialInvestment, Double finalBalance, Double totalInterestEarned, Double totalAdditionalContributions) {
+    public InvestmentSummary(Double initialInvestment, Double finalBalance, Double totalInterestEarned) {
         this.initialInvestment = initialInvestment;
         this.finalBalance = finalBalance;
         this.totalInterestEarned = totalInterestEarned;
-        this.totalAdditionalContributions = totalAdditionalContributions;
     }
 
     public Double getInitialInvestment() {
@@ -37,13 +35,5 @@ public class InvestmentSummary {
 
     public void setTotalInterestEarned(Double totalInterestEarned) {
         this.totalInterestEarned = totalInterestEarned;
-    }
-
-    public Double getTotalAdditionalContributions() {
-        return totalAdditionalContributions;
-    }
-
-    public void setTotalAdditionalContributions(Double totalAdditionalContributions) {
-        this.totalAdditionalContributions = totalAdditionalContributions;
     }
 }

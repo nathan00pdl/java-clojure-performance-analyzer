@@ -4,8 +4,6 @@
    (com.example.java_clojure_performance_analyzer.models.request CompoundInterestRequest)
    (com.example.java_clojure_performance_analyzer.models.response CompoundInterestResponse InvestmentSummary YearlyInvestmentSummary)))
 
-(def ^:private ADDITIONAL_CONTRIBUTION 0.0)
-
 (defn round
   [^double value]
   (let [bd (java.math.BigDecimal/valueOf value)]
@@ -29,16 +27,14 @@
             year-detail     {:year                         year
                              :start-balance               current-amount
                              :end-balance                 new-amount
-                             :interest-earned             interest-earned
-                             :additional-contributions    ADDITIONAL_CONTRIBUTION}]
+                             :interest-earned             interest-earned}]
         (recur (inc year)
                new-amount
                (conj yearly-details-list year-detail))))))
 
 (defn process-compound-interest-request
   [^CompoundInterestRequest request] 
-  (let [
-        initial-amount (.getInitialAmount request)
+  (let [initial-amount (.getInitialAmount request)
         rate (.getAnnualInterestRate request)
         years (.getYears request)
 
@@ -47,19 +43,17 @@
         total-interest-earned (round (- current-amount initial-amount))
 
         yearly-summary-results (map (fn [detail]
-                           (new YearlyInvestmentSummary
-                                (int (:year detail))               
-                                (:start-balance detail)            
-                                (:end-balance detail)              
-                                (:interest-earned detail)          
-                                (:additional-contributions detail))) 
-                         yearly-details-list)
+                                      (new YearlyInvestmentSummary
+                                           (int (:year detail))
+                                           (:start-balance detail)
+                                           (:end-balance detail)
+                                           (:interest-earned detail)))
+                                    yearly-details-list)
 
         summary-results (new InvestmentSummary
                              initial-amount
                              current-amount
-                             total-interest-earned
-                             ADDITIONAL_CONTRIBUTION)
+                             total-interest-earned)
         ]
 
     (new CompoundInterestResponse summary-results yearly-summary-results)))
