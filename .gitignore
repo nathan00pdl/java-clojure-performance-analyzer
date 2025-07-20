@@ -74,3 +74,5 @@ replay_pid*
 ..bfg-report/
 temp/
 tmp/
+
+/gatling-results
