@@ -76,3 +76,4 @@ temp/
 tmp/
 
 /gatling-results
+/maven-cache
