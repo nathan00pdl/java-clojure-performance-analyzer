@@ -7,36 +7,13 @@ services:
       - '8080:8080'
    
     mem_limit: 8g
-    mem_reservation: 2g
+    mem_reservation: 8g  
     cpus: 6.0
    
-    tmpfs:
-      - /tmp:size=2g,noexec,nosuid,nodev
-       
-    ulimits:
-      nofile:
-        soft: 65536
-        hard: 65536
-      memlock:
-        soft: -1
-        hard: -1
-   
     environment:
-      - JAVA_OPTS=-Xms4g -Xmx4g -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:MaxMetaspaceSize=512m -Xlog:gc*:/app/gc.log:time,tags -XX:+UseStringDeduplication
-   
+      JAVA_OPTS: -Xmx6g -Xss6g
+
     volumes:
       - .:/app  
       - ./gatling-results:/app/gatling-results
-      - ./logs:/app/logs
-      - maven-cache:/root/.m2
-   
-    networks:
-      - test-network
-
-networks:
-  test-network:
-    driver: bridge
-
-volumes:
-  maven-cache:
-    driver: local
+      - ./maven-cache:/root/.m2
