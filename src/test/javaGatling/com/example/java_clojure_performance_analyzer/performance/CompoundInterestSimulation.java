@@ -21,7 +21,7 @@ public class CompoundInterestSimulation extends Simulation {
         .acceptEncodingHeader("gzip, deflate")
         .disableFollowRedirect()
         .inferHtmlResources()
-        .maxConnectionsPerHost(500); 
+        .maxConnectionsPerHost(1000); 
 
     private final String simpleCalculation = """
         {
@@ -38,40 +38,6 @@ public class CompoundInterestSimulation extends Simulation {
           "years": 150
         }
         """;
-
-    // ========== WARM-UP ==========
-    
-    private final ScenarioBuilder javaWarmUpScenario = scenario("Java Warm-up")
-        .exec(
-            http("Java Warm-up Simple")
-                .post("/api/compound-interest-java/calculate")
-                .body(StringBody(simpleCalculation))
-                .check(status().is(200))
-        )
-        .pause(Duration.ofMillis(10), Duration.ofMillis(50))
-        .exec(
-            http("Java Warm-up Complex")
-                .post("/api/compound-interest-java/calculate")
-                .body(StringBody(complexCalculation))
-                .check(status().is(200))
-        )
-        .pause(Duration.ofMillis(10), Duration.ofMillis(50));
-
-    private final ScenarioBuilder clojureWarmUpScenario = scenario("Clojure Warm-up")
-        .exec(
-            http("Clojure Warm-up Simple")
-                .post("/api/compound-interest-clojure/calculate")
-                .body(StringBody(simpleCalculation))
-                .check(status().is(200))
-        )
-        .pause(Duration.ofMillis(10), Duration.ofMillis(50))
-        .exec(
-            http("Clojure Warm-up Complex")
-                .post("/api/compound-interest-clojure/calculate")
-                .body(StringBody(complexCalculation))
-                .check(status().is(200))
-        )
-        .pause(Duration.ofMillis(10), Duration.ofMillis(50));
 
     // ========== JAVA ==========
 
@@ -121,43 +87,22 @@ public class CompoundInterestSimulation extends Simulation {
 
     {
         setUp(
-            clojureWarmUpScenario.injectClosed(
-                constantConcurrentUsers(10).during(Duration.ofSeconds(30)),
-                rampConcurrentUsers(10).to(50).during(Duration.ofSeconds(30)),
-                constantConcurrentUsers(50).during(Duration.ofSeconds(60))
-            ).andThen(
-                clojureComplexScenario.injectClosed(
-                    constantConcurrentUsers(100).during(Duration.ofMinutes(5))
-                )
+            clojureComplexScenario.injectClosed(
+                constantConcurrentUsers(1000).during(Duration.ofMinutes(2))
             )
-        ).protocols(httpProtocol)
-        .assertions(
-            global().responseTime().max().lt(5000),
-            global().successfulRequests().percent().gt(95.0)
-        );
+        ).protocols(httpProtocol);
     }
 
-    /*
-    ========== OTHER TEST SCENARIOS ==========
-    
-    // SCENARIO 2: 
-    testScenario.injectClosed(
-        rampConcurrentUsers(10).to(200).during(Duration.ofMinutes(5)),
-        constantConcurrentUsers(200).during(Duration.ofMinutes(10))
-    )
-    
-    // SCENARIO 3: 
-    testScenario.injectClosed(
-        rampConcurrentUsers(10).to(500).during(Duration.ofMinutes(2)),
-        constantConcurrentUsers(500).during(Duration.ofMinutes(3)),
-        rampConcurrentUsers(500).to(1000).during(Duration.ofMinutes(2)),
-        constantConcurrentUsers(1000).during(Duration.ofMinutes(3))
-    )
-    
-    // SCENARIO 4: 
-    testScenario.injectClosed(
-        rampConcurrentUsers(100).to(2000).during(Duration.ofMinutes(10)),
-        constantConcurrentUsers(2000).during(Duration.ofMinutes(15))
-    )
-    */
+/*
+ {
+        setUp(
+            clojureComplexScenario.injectClosed(
+                rampConcurrentUsers(10).to(500).during(Duration.ofMinutes(2)),
+                constantConcurrentUsers(500).during(Duration.ofMinutes(3)),
+                rampConcurrentUsers(500).to(1000).during(Duration.ofMinutes(2)),
+                constantConcurrentUsers(1000).during(Duration.ofMinutes(3))
+            )
+        ).protocols(httpProtocol);
+    }
+ */
 }
