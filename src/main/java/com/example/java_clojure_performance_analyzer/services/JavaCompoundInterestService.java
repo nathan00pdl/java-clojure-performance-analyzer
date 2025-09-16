@@ -48,8 +48,8 @@ public class JavaCompoundInterestService implements CompoundInterestService {
         }
 
         double totalInterestEarned = round(currentAmount - request.getInitialAmount());
-        InvestmentSummary summaryResults = new InvestmentSummary(request.getInitialAmount(), currentAmount, totalInterestEarned);
+        InvestmentSummary summary = new InvestmentSummary(request.getInitialAmount(), currentAmount, totalInterestEarned);
 
-        return new CompoundInterestResponse(summaryResults, yearlyDetailsList);
+        return new CompoundInterestResponse(summary, yearlyDetailsList);
     }
 }
