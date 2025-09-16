@@ -3,22 +3,22 @@ package com.example.java_clojure_performance_analyzer.models.response;
 import java.util.List;
 
 public class CompoundInterestResponse {
-    private  InvestmentSummary summaryResults;
+    private  InvestmentSummary summary;
     private List<YearlyInvestmentSummary> yearlyDetailsList;
 
     public CompoundInterestResponse(){}
 
-    public CompoundInterestResponse(InvestmentSummary summaryResults, List<YearlyInvestmentSummary> yearlyDetailsList) {
-        this.summaryResults = summaryResults;
+    public CompoundInterestResponse(InvestmentSummary summary, List<YearlyInvestmentSummary> yearlyDetailsList) {
+        this.summary = summary;
         this.yearlyDetailsList = yearlyDetailsList;
     }
 
-    public InvestmentSummary getSummaryResults() {
-        return summaryResults;
+    public InvestmentSummary getSummary() {
+        return summary;
     }
 
-    public void setSummaryResults(InvestmentSummary summaryResults) {
-        this.summaryResults = summaryResults;
+    public void setSummary(InvestmentSummary summary) {
+        this.summary = summary;
     }
 
     public List<YearlyInvestmentSummary> getYearlyDetailsList() {
