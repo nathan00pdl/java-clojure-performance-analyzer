@@ -60,7 +60,7 @@
                              total-interest-earned)]
     (new CompoundInterestResponse summary-results (vec yearly-summary-results)))) 
 
-(defn ^:export create-service-optimized 
+(defn ^:export create-service 
   []
   (reify CompoundInterestService
     (calculateCompoundInterest [_ request]

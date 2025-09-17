@@ -21,8 +21,7 @@ import jakarta.annotation.PostConstruct;
 public class ClojureConfiguration {
     private static final String IDIOMATIC_NAMESPACE = "com.example.java-clojure-performance-analyzer.service.compound-interest-service-idiomatic";
     private static final String OPTIMIZED_NAMESPACE = "com.example.java-clojure-performance-analyzer.service.compound-interest-service-optimized";
-    private static final String IDIOMATIC_FUNCTION = "create-service";
-    private static final String OPTIMIZED_FUNCTION = "create-optimized-service";
+    private static final String FUNCTION = "create-service";
 
     @PostConstruct
     public void loadNamespaces() {
@@ -31,15 +30,15 @@ public class ClojureConfiguration {
         require.invoke(Clojure.read(OPTIMIZED_NAMESPACE));
     }
 
-    @Bean("clojureIdiomticImplementation")
+    @Bean("clojureIdiomaticImplementation")
     public CompoundInterestService compoundInterestService() {
-        Object service = Clojure.var(IDIOMATIC_NAMESPACE, IDIOMATIC_FUNCTION).invoke();
+        Object service = Clojure.var(IDIOMATIC_NAMESPACE, FUNCTION).invoke();
         return (CompoundInterestService) service;
     }
 
     @Bean("clojureOptimizedImplementation")
     public CompoundInterestService compoundInterestOptimizedService() {
-        Object service = Clojure.var(OPTIMIZED_NAMESPACE, OPTIMIZED_FUNCTION).invoke();
+        Object service = Clojure.var(OPTIMIZED_NAMESPACE, FUNCTION).invoke();
         return (CompoundInterestService) service;
     }
 }
