@@ -1,22 +1,22 @@
-(ns com.example.java-clojure-performance-analyzer.service.compound-interest-service
+(ns main.clojure.com.example.java-clojure-performance-analyzer.service.compound-interest-service-idiomatic
   (:import
    (com.example.java_clojure_performance_analyzer.services CompoundInterestService)
    (com.example.java_clojure_performance_analyzer.models.request CompoundInterestRequest)
    (com.example.java_clojure_performance_analyzer.models.response CompoundInterestResponse InvestmentSummary YearlyInvestmentSummary)))
 
 (defn round
-  [^double value]
+  [value]
   (let [bd (java.math.BigDecimal/valueOf value)]
     (.doubleValue (.setScale bd 3 java.math.RoundingMode/HALF_UP))))
 
 (defn calculate-compound-interest-yearly
-  [^double current-amount ^double annual-rate]
-  (let [rate (/ annual-rate 100) 
-        result (* current-amount (+ 1 rate))] 
+  [current-amount annual-rate]
+  (let [rate (/ annual-rate 100.0) 
+        result (* current-amount (+ 1.0 rate))] 
     (round result)))
 
 (defn calculate-compound-interest-years
-  [^double initial-amount ^double annual-rate years]
+  [initial-amount annual-rate years]
   (loop [year 1 
          current-amount initial-amount
          yearly-details-list  []]
