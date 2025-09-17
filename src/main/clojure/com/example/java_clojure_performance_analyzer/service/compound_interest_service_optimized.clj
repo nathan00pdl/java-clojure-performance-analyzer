@@ -7,12 +7,12 @@
 
 (set! *warn-on-reflection* true)
 
-(defn ^double round 
+(defn round ^double  
   [^double value]
   (let [^BigDecimal bd (BigDecimal/valueOf value)]
     (.doubleValue (.setScale bd 3 RoundingMode/HALF_UP))))
 
-(defn ^double calculate-compound-interest-yearly 
+(defn calculate-compound-interest-yearly ^double
   [^double current-amount, ^double annual-rate]
   (let [rate (/ annual-rate 100.0)
         result (* current-amount (+ 1.0 rate))]
@@ -35,7 +35,7 @@
                new-amount
                (conj yearly-details-list year-detail)))))) 
 
-(defn ^CompoundInterestResponse process-compound-interest-request 
+(defn process-compound-interest-request ^CompoundInterestResponse
   [^CompoundInterestRequest request]
   (let [^double initial-amount (.getInitialAmount request)
         ^double rate           (.getAnnualInterestRate request)
