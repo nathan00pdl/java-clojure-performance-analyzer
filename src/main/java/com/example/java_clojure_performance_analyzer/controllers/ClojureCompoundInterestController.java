@@ -18,21 +18,26 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/compound-interest-clojure")
 public class ClojureCompoundInterestController {
-    private CompoundInterestService compoundInterestService;
+    private final CompoundInterestService idiomaticService;
+    private final CompoundInterestService optimizedService;
 
     @Autowired
-    public ClojureCompoundInterestController(@Qualifier("clojureImplementation") CompoundInterestService compoundInterestService) {
-        this.compoundInterestService = compoundInterestService;
+    public ClojureCompoundInterestController(
+            @Qualifier("clojureIdiomaticImplementation") CompoundInterestService idioInterestService,
+            @Qualifier("clojureOptimizedImplementation") CompoundInterestService optimizedService) {
+        this.idiomaticService = idioInterestService;
+        this.optimizedService = optimizedService;
     }
 
-    @PostMapping("/calculate")
-    public ResponseEntity<CompoundInterestResponse> calculateCompoundInterest (@Valid @RequestBody CompoundInterestRequest request) {
-        CompoundInterestResponse response = compoundInterestService.calculateCompoundInterest(request);
+    @PostMapping("/calculate-idiomatic")
+    public ResponseEntity<CompoundInterestResponse> calculateCompoundInterestIdiomatic(@Valid @RequestBody CompoundInterestRequest request) {
+        CompoundInterestResponse response = idiomaticService.calculateCompoundInterest(request);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/health")
-    public ResponseEntity<String> health() {
-        return ResponseEntity.ok("Compound Interest Service Is Working!");
+    @PostMapping("/calculate-optimized")
+    public ResponseEntity<CompoundInterestResponse> calculateCompoundInterestOptimized(@Valid @RequestBody CompoundInterestRequest request) {
+        CompoundInterestResponse response = optimizedService.calculateCompoundInterest(request);
+        return ResponseEntity.ok(response);
     }
 }
