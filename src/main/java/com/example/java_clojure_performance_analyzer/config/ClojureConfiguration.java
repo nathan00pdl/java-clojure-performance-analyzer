@@ -1,7 +1,5 @@
 package com.example.java_clojure_performance_analyzer.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,44 +19,27 @@ import jakarta.annotation.PostConstruct;
 
 @Configuration
 public class ClojureConfiguration {
-    
-    private static final Logger logger = LoggerFactory.getLogger(ClojureConfiguration.class);
-    private static final String NAMESPACE = "com.example.java-clojure-performance-analyzer.service.compound-interest-service";
-    private static final String FUNCTION = "create-service";
+    private static final String IDIOMATIC_NAMESPACE = "com.example.java-clojure-performance-analyzer.service.compound-interest-service-idiomatic";
+    private static final String OPTIMIZED_NAMESPACE = "com.example.java-clojure-performance-analyzer.service.compound-interest-service-optimized";
+    private static final String IDIOMATIC_FUNCTION = "create-service";
+    private static final String OPTIMIZED_FUNCTION = "create-optimized-service";
 
     @PostConstruct
     public void loadNamespaces() {
-        try {
-            logger.info("Loading Clojure Namespace: {}", NAMESPACE);
-            
-            IFn require = Clojure.var("clojure.core", "require");
-            require.invoke(Clojure.read(NAMESPACE));
-            
-            logger.info("Clojure Namespace Loaded Successfully: {}", NAMESPACE);
-            
-        } catch (Exception e) {
-            logger.error("Failed To Load Clojure Namespace: {}", NAMESPACE, e);
-            throw new RuntimeException("Critical Error: Unable To Load Clojure Namespace", e);
-        }
+        IFn require = Clojure.var("clojure.core", "require");
+        require.invoke(Clojure.read(IDIOMATIC_NAMESPACE));
+        require.invoke(Clojure.read(OPTIMIZED_NAMESPACE));
     }
 
-    @Bean("clojureImplementation")
+    @Bean("clojureIdiomticImplementation")
     public CompoundInterestService compoundInterestService() {
-        try {
-            logger.debug("Creating Clojure Service Implementation");
-            
-            Object service = Clojure.var(NAMESPACE, FUNCTION).invoke();
-            
-            if (!(service instanceof CompoundInterestService)) {
-                throw new RuntimeException("Invalid Service Type Returned From Clojure");
-            }
+        Object service = Clojure.var(IDIOMATIC_NAMESPACE, IDIOMATIC_FUNCTION).invoke();
+        return (CompoundInterestService) service;
+    }
 
-            logger.info("Clojure Service Created Successfully");
-            return (CompoundInterestService) service;
-            
-        } catch (Exception e) {
-            logger.error("Failed To Create Clojure Service", e);
-            throw new RuntimeException("Clojure Service Creation Failed", e);
-        }
+    @Bean("clojureOptimizedImplementation")
+    public CompoundInterestService compoundInterestOptimizedService() {
+        Object service = Clojure.var(OPTIMIZED_NAMESPACE, OPTIMIZED_FUNCTION).invoke();
+        return (CompoundInterestService) service;
     }
 }
