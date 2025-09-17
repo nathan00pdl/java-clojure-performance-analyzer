@@ -23,7 +23,15 @@ public class CompoundInterestSimulation extends Simulation {
         .inferHtmlResources()
         .maxConnectionsPerHost(1000); 
 
-    private final String requestBody = """
+    private final String simpleCalculation = """
+        {
+          "initialAmount": 1000.0,
+          "annualInterestRate": 5.0,
+          "years": 5
+        }
+        """;
+
+    private final String complexCalculation = """
         {
           "initialAmount": 100000.0,
           "annualInterestRate": 8.0,
@@ -33,77 +41,68 @@ public class CompoundInterestSimulation extends Simulation {
 
     // ========== JAVA ==========
 
-    private final ScenarioBuilder scenarioJava = scenario("JAVA - Test")
+    private final ScenarioBuilder javaSimpleScenario = scenario("Java Simple Test")
         .exec(
-            http("Calculate Compound Interest: Java")
+            http("Java Simple Compound Interest")
                 .post("/api/compound-interest-java/calculate")
-                .body(StringBody(requestBody))
+                .body(StringBody(simpleCalculation))
                 .check(status().is(200))
                 .check(responseTimeInMillis().saveAs("responseTime"))
         )
         .pause(Duration.ofMillis(5), Duration.ofMillis(20));
 
-    // ========== CLOJURE IDIOMATIC ==========
-
-    private final ScenarioBuilder scenarioClojureIdiomatic = scenario("CLOJURE IDIOMATIC - Test")
+    private final ScenarioBuilder javaComplexScenario = scenario("Java Complex Test")
         .exec(
-            http("Calculate Compound Interest: Clojure Idiomatic")
-                .post("/api/compound-interest-clojure/calculate-idiomatic")
-                .body(StringBody(requestBody))
+            http("Java Complex Compound Interest")
+                .post("/api/compound-interest-java/calculate")
+                .body(StringBody(complexCalculation))
                 .check(status().is(200))
                 .check(responseTimeInMillis().saveAs("responseTime"))
         )
         .pause(Duration.ofMillis(5), Duration.ofMillis(20));
 
-    // ========== CLOJURE OTIMIZED ==========
+    // ========== CLOJURE ==========
 
-    private final ScenarioBuilder scenarioClojureOptimized = scenario("CLOJURE OPTIMIZED - Test")
+    private final ScenarioBuilder clojureSimpleScenario = scenario("Clojure Simple Test")
         .exec(
-            http("Calculate Compound Interest: Clojure Optimized")
-                .post("/api/compound-interest-clojure/calculate-optimized")
-                .body(StringBody(requestBody))
+            http("Clojure Simple Compound Interest")
+                .post("/api/compound-interest-clojure/calculate")
+                .body(StringBody(simpleCalculation))
                 .check(status().is(200))
                 .check(responseTimeInMillis().saveAs("responseTime"))
         )
         .pause(Duration.ofMillis(5), Duration.ofMillis(20));
 
+    private final ScenarioBuilder clojureComplexScenario = scenario("Clojure Complex Test")
+        .exec(
+            http("Clojure Complex Compound Interest")
+                .post("/api/compound-interest-clojure/calculate")
+                .body(StringBody(complexCalculation))
+                .check(status().is(200))
+                .check(responseTimeInMillis().saveAs("responseTime"))
+        )
+        .pause(Duration.ofMillis(5), Duration.ofMillis(20));
 
     // ========== EXECUTION TESTS ==========
 
     {
         setUp(
-            scenarioJava.injectClosed(
+            clojureComplexScenario.injectClosed(
                 constantConcurrentUsers(1000).during(Duration.ofMinutes(2))
             )
         ).protocols(httpProtocol);
     }
 
 /*
-{
-    setUp(
-        scenarioClojureIdiomatic.injectClosed(
-            constantConcurrentUsers(1000).during(Duration.ofMinutes(2))
-        )
-    ).protocols(httpProtocol);
-}
-
-{
-    setUp(
-        scenarioClojureOptimized.injectClosed(
-            constantConcurrentUsers(1000).during(Duration.ofMinutes(2))
-        )
-    ).protocols(httpProtocol);
-}
-
-{
-    setUp(
-        scenario.injectClosed(
-            rampConcurrentUsers(10).to(500).during(Duration.ofMinutes(2)),
-            constantConcurrentUsers(500).during(Duration.ofMinutes(3)),
-            rampConcurrentUsers(500).to(1000).during(Duration.ofMinutes(2)),
-            constantConcurrentUsers(1000).during(Duration.ofMinutes(3))
-        )
-    ).protocols(httpProtocol);
-}
+ {
+        setUp(
+            clojureComplexScenario.injectClosed(
+                rampConcurrentUsers(10).to(500).during(Duration.ofMinutes(2)),
+                constantConcurrentUsers(500).during(Duration.ofMinutes(3)),
+                rampConcurrentUsers(500).to(1000).during(Duration.ofMinutes(2)),
+                constantConcurrentUsers(1000).during(Duration.ofMinutes(3))
+            )
+        ).protocols(httpProtocol);
+    }
  */
 }
