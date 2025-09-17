@@ -126,7 +126,10 @@
 					</sourceDirectories>
 					<warnOnReflection>true</warnOnReflection>
 					<namespaces>
-						<namespace>com.example.java-clojure-performance-analyzer.service.compound-interest-service</namespace>
+						<namespaces>
+							<namespace>com.example.java-clojure-performance-analyzer.service.compound-interest-service-idiomatic</namespace>
+							<namespace>com.example.java-clojure-performance-analyzer.service.compound-interest-service-optimized</namespace>
+						</namespaces>
 					</namespaces>
 				</configuration>
 				<executions>
