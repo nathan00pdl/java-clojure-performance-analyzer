@@ -23,22 +23,26 @@ public class ClojureConfiguration {
     private static final String OPTIMIZED_NAMESPACE = "com.example.java-clojure-performance-analyzer.service.compound-interest-service-optimized";
     private static final String FUNCTION = "create-service";
 
+    private IFn idiomaticServiceFactory;
+    private IFn optimizedServiceFactory;
+
     @PostConstruct
     public void loadNamespaces() {
         IFn require = Clojure.var("clojure.core", "require");
         require.invoke(Clojure.read(IDIOMATIC_NAMESPACE));
         require.invoke(Clojure.read(OPTIMIZED_NAMESPACE));
+
+        this.idiomaticServiceFactory = Clojure.var(IDIOMATIC_NAMESPACE, FUNCTION);
+        this.optimizedServiceFactory = Clojure.var(OPTIMIZED_NAMESPACE, FUNCTION);
     }
 
     @Bean("clojureIdiomaticImplementation")
     public CompoundInterestService compoundInterestService() {
-        Object service = Clojure.var(IDIOMATIC_NAMESPACE, FUNCTION).invoke();
-        return (CompoundInterestService) service;
+        return (CompoundInterestService) idiomaticServiceFactory.invoke();
     }
 
     @Bean("clojureOptimizedImplementation")
     public CompoundInterestService compoundInterestOptimizedService() {
-        Object service = Clojure.var(OPTIMIZED_NAMESPACE, FUNCTION).invoke();
-        return (CompoundInterestService) service;
+        return (CompoundInterestService) optimizedServiceFactory.invoke();
     }
 }
