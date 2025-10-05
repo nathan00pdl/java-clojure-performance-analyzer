@@ -3,8 +3,6 @@ services:
     build: .
     image: java-clojure-performance-analyzer
     container_name: gatling-test-environment
-    ports:
-      - '8080:8080'
    
     mem_limit: 8g
     mem_reservation: 8g  
@@ -17,3 +15,5 @@ services:
       - .:/app  
       - ./gatling-results:/app/gatling-results
       - ./maven-cache:/root/.m2
+
+    network_mode: "host"
