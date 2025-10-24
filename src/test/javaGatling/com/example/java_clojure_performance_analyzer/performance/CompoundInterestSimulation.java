@@ -25,9 +25,9 @@ public class CompoundInterestSimulation extends Simulation {
 
     private final String requestBody = """
         {
-          "initialAmount": 100000.0,
-          "annualInterestRate": 8.0,
-          "years": 150
+          "initialAmount": 10000.0,
+          "annualInterestRate": 10.0,
+          "years": 100
         }
         """;
 
@@ -68,15 +68,17 @@ public class CompoundInterestSimulation extends Simulation {
         .pause(Duration.ofMillis(5), Duration.ofMillis(20));
 
 
-    // ========== EXECUTION TESTS ==========
+    // ========== EXECUTION TEST ==========
 
     {
         setUp(
-            scenarioJava.injectClosed(
-                constantConcurrentUsers(1000).during(Duration.ofMinutes(2))
+            scenarioClojureOptimized.injectClosed(
+                constantConcurrentUsers(5000).during(Duration.ofMinutes(1))
             )
         ).protocols(httpProtocol);
     }
+}
+
 
 /*
 {
@@ -105,5 +107,4 @@ public class CompoundInterestSimulation extends Simulation {
         )
     ).protocols(httpProtocol);
 }
- */
-}
+*/
