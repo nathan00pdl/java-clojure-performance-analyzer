@@ -1,60 +1,64 @@
 (ns com.example.java-clojure-performance-analyzer.service.compound-interest-service-idiomatic
   (:import
    (com.example.java_clojure_performance_analyzer.services CompoundInterestService)
-   (com.example.java_clojure_performance_analyzer.models.response CompoundInterestResponse InvestmentSummary YearlyInvestmentSummary)
-   (java.math BigDecimal RoundingMode)))
+   (com.example.java_clojure_performance_analyzer.models.request CompoundInterestRequest)
+   (com.example.java_clojure_performance_analyzer.models.response CompoundInterestResponse InvestmentSummary YearlyInvestmentSummary)))
 
-(defn round-value
-  [value]  
-  (let [bd (BigDecimal/valueOf value)]
-    (.doubleValue (.setScale bd 3 RoundingMode/HALF_UP))))
-
-(defn apply-compound-interest
-  [current-amount annual-rate]  
-  (let [rate (/ annual-rate 100.0)
-        result (* current-amount (+ 1.0 rate))]
-    (round-value result)))
-
-(defn calculate-compound-interest-years
-  [initial-amount annual-rate years]
-  (loop [year 1
-         current-amount initial-amount
-         yearly-details-list []]
-    (if (> year years)
-      yearly-details-list
-      (let [new-amount (apply-compound-interest current-amount annual-rate)
-            interest-earned (round-value (- new-amount current-amount))
-            year-detail {:year            year
-                         :start-balance   current-amount
-                         :end-balance     new-amount
-                         :interest-earned interest-earned}]
-        (recur (inc year)
-               new-amount
-               (conj yearly-details-list year-detail))))))
-
-(defn calculate-compound-interest-request
-  [request]
+(defn calculate-compound-interest
+  [^CompoundInterestRequest request]
   (let [initial-amount (.getInitialAmount request)
         rate           (.getAnnualInterestRate request)
         years          (.getYears request)
 
-        yearly-details-list   (calculate-compound-interest-years initial-amount rate years)
-        current-amount        (:end-balance (last yearly-details-list))
-        total-interest-earned (round-value (- current-amount initial-amount))
+        compound-factor (+ 1.0 (/ rate 100.0))
 
-        yearly-summary-results (mapv (fn [detail]
-                                       (YearlyInvestmentSummary.
-                                        (int    (:year detail))
-                                        (double (:start-balance detail))
-                                        (double (:end-balance detail))
-                                        (double (:interest-earned detail))))
-                                     yearly-details-list)]
-    (CompoundInterestResponse.
-     (InvestmentSummary. initial-amount current-amount total-interest-earned)
-     yearly-summary-results)))
+        yearly-details-list (loop [year                1
+                                   current-amount      initial-amount
+                                   yearly-details-list []
+                                   ]
+
+                              (if (> year years)
+                                yearly-details-list
+
+                                (let [start-balance   current-amount
+                                      end-balance     (* current-amount compound-factor)
+                                      interest-earned (- end-balance start-balance)
+                                      ]
+
+                                  (recur (inc year)
+                                         end-balance
+                                         (conj yearly-details-list
+                                               (YearlyInvestmentSummary.
+                                                (int year)
+                                                (double start-balance)
+                                                (double end-balance)
+                                                (double interest-earned)
+                                                )
+                                               )
+                                         )
+                                  )
+                                )
+                              )
+
+        final-amount          (if (empty? yearly-details-list)
+                                initial-amount
+                                (.getEndBalance ^YearlyInvestmentSummary (last yearly-details-list))
+                                )
+        
+        total-interest-earned (- final-amount initial-amount)
+
+        summary (InvestmentSummary. initial-amount final-amount total-interest-earned)
+        ]
+
+    (CompoundInterestResponse. summary yearly-details-list)
+    )
+    )
 
 (defn ^:export create-service
   []
   (reify CompoundInterestService
     (calculateCompoundInterest [_ request]
-      (calculate-compound-interest-request request))))
+      (calculate-compound-interest request)
+      )
+    )
+  )
