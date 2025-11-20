@@ -77,3 +77,5 @@ tmp/
 
 /gatling-results
 /maven-cache
+
+/grafana-data
