@@ -24,25 +24,36 @@
 
             (let [start-balance   current-amount
                   end-balance     (* current-amount compound-factor)
-                  interest-earned (- end-balance start-balance)]
+                  interest-earned (- end-balance start-balance)
+                  ]
 
               (.add yearly-details-list
                     (YearlyInvestmentSummary.
                      (int year)
                      start-balance
                      end-balance
-                     interest-earned))
+                     interest-earned)
+                    )
 
               (recur (unchecked-inc year)
-                     end-balance))))
+                     end-balance)
+              )
+            )
+          )
 
         total-interest-earned (- final-amount initial-amount)
-        summary (InvestmentSummary. initial-amount final-amount total-interest-earned)]
+        summary (InvestmentSummary. initial-amount final-amount total-interest-earned)
+        ]
 
-    (CompoundInterestResponse. summary yearly-details-list)))
+    (CompoundInterestResponse. summary yearly-details-list)
+    )
+    )
 
 (defn ^:export create-service
   []
   (reify CompoundInterestService
     (calculateCompoundInterest [_ request]
-      (calculate-compound-interest request))))
+      (calculate-compound-interest request)
+      )
+    )
+  )
