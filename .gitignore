@@ -75,7 +75,7 @@ replay_pid*
 temp/
 tmp/
 
-/gatling-results
 /maven-cache
-
+/gatling-results
 /grafana-data
+/prometheus-data
