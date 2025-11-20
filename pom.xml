@@ -42,18 +42,6 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 
-		<!-- Clojure Dependencies -->
-		<dependency>
-			<groupId>org.clojure</groupId>
-			<artifactId>clojure</artifactId>
-			<version>${clojure.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.clojure</groupId>
-			<artifactId>math.numeric-tower</artifactId>
-			<version>0.0.5</version>
-		</dependency>
-
 		<!-- Documentation -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
@@ -75,6 +63,18 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Clojure Dependencies -->
+		<dependency>
+			<groupId>org.clojure</groupId>
+			<artifactId>clojure</artifactId>
+			<version>${clojure.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.clojure</groupId>
+			<artifactId>math.numeric-tower</artifactId>
+			<version>0.0.5</version>
+		</dependency>
 		
 		<!-- Gatling Performance Testing -->
 		<dependency>
@@ -95,6 +95,13 @@
 			<version>${gatling.version}</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Prometheus Monitoring -->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
