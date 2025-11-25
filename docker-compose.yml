@@ -1,23 +1,40 @@
 services:
 
-  performance-analyzer:
+  app:
     build: .
     image: java-clojure-performance-analyzer
-    container_name: gatling-test
+    container_name: app-performance-test
    
     mem_limit: 8g
     mem_reservation: 8g  
     cpus: 6.0
    
     environment:
-      JAVA_OPTS: -Xmx6g -Xss6g
+      JAVA_OPTS: >-
+        -Xms4g
+        -Xmx6g
+        -Xss1m
+        -XX:MaxMetaspaceSize=512m
+        -XX:+UseG1GC
+        -XX:MaxGCPauseMillis=200
+        -XX:+ParallelRefProcEnabled
+        -XX:+UseStringDeduplication
+        -XX:+HeapDumpOnOutOfMemoryError
+        -XX:HeapDumpPath=/app/heap-dumps
+
+    restart: unless-stopped
+    
+    ports:
+      - "8080:8080"
 
     volumes:
-      - .:/app  
       - ./gatling-results:/app/gatling-results
       - ./maven-cache:/root/.m2
+      - ./heap-dumps:/app/heap-dumps
 
-    network_mode: "host"
+    networks:
+      - monitoring-network
+
 
   prometheus:
     image: prom/prometheus:v2.54.0
@@ -29,41 +46,46 @@ services:
       - '--web.console.libraries=/usr/share/prometheus/console_libraries'
       - '--web.console.templates=/usr/share/prometheus/consoles'
     
+    restart: unless-stopped
+
+    depends_on:
+      - app
+
     ports:
       - "9090:9090"
-    
+
     volumes:
       - ./monitoring-configs/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ./prometheus-data:/prometheus
-    
-    restart: unless-stopped
-    
+
     networks:
       - monitoring-network
+
 
   grafana:
     image: grafana/grafana:11.3.0
     container_name: grafana-dashboard
-    
-    ports:
-      - "3000:3000"
-    
+
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin123
       - GF_USERS_ALLOW_SIGN_UP=false
     
+    restart: unless-stopped
+
+    depends_on:
+      - prometheus
+
+    ports:
+      - "3000:3000"
+    
     volumes:
       - ./grafana-data:/var/lib/grafana
       - ./monitoring-configs/grafana-datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml:ro
     
-    depends_on:
-      - prometheus
-    
-    restart: unless-stopped
-    
     networks:
       - monitoring-network
+
 
 networks:
   monitoring-network:
