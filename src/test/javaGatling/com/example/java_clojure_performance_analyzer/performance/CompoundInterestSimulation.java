@@ -31,7 +31,7 @@ public class CompoundInterestSimulation extends Simulation {
         }
         """;
 
-    // ========== JAVA ==========
+    // JAVA 
 
     private final ScenarioBuilder scenarioJava = scenario("JAVA - Test")
         .exec(
@@ -43,7 +43,7 @@ public class CompoundInterestSimulation extends Simulation {
         )
         .pause(Duration.ofMillis(5), Duration.ofMillis(20));
 
-    // ========== CLOJURE IDIOMATIC ==========
+    // CLOJURE IDIOMATIC
 
     private final ScenarioBuilder scenarioClojureIdiomatic = scenario("CLOJURE IDIOMATIC - Test")
         .exec(
@@ -55,7 +55,7 @@ public class CompoundInterestSimulation extends Simulation {
         )
         .pause(Duration.ofMillis(5), Duration.ofMillis(20));
 
-    // ========== CLOJURE OTIMIZED ==========
+    // CLOJURE OTIMIZED
 
     private final ScenarioBuilder scenarioClojureOptimized = scenario("CLOJURE OPTIMIZED - Test")
         .exec(
@@ -68,12 +68,12 @@ public class CompoundInterestSimulation extends Simulation {
         .pause(Duration.ofMillis(5), Duration.ofMillis(20));
 
 
-    // ========== EXECUTION TEST ==========
+    // EXECUTION TEST
 
     {
         setUp(
-            scenarioClojureOptimized.injectClosed(
-                constantConcurrentUsers(5000).during(Duration.ofMinutes(1))
+            scenarioClojureIdiomatic.injectClosed(
+                constantConcurrentUsers(100).during(Duration.ofMinutes(5))
             )
         ).protocols(httpProtocol);
     }
