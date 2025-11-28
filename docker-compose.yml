@@ -62,6 +62,31 @@ services:
       - monitoring-network
 
 
+  grafana:
+    image: grafana/grafana:11.3.0
+    container_name: grafana-dashboard
+
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+      - GF_USERS_ALLOW_SIGN_UP=false
+    
+    restart: unless-stopped
+
+    depends_on:
+      - prometheus
+
+    ports:
+      - "3000:3000"
+    
+    volumes:
+      - ./grafana-data:/var/lib/grafana
+      - ./monitoring-configs/grafana-datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml:ro
+    
+    networks:
+      - monitoring-network
+
+
 networks:
   monitoring-network:
     driver: bridge
