@@ -72,7 +72,7 @@ public class CompoundInterestSimulation extends Simulation {
 
     {
         setUp(
-            scenarioClojureIdiomatic.injectClosed(
+            scenarioJava.injectClosed(
                 constantConcurrentUsers(100).during(Duration.ofMinutes(5))
             )
         ).protocols(httpProtocol);
