@@ -63,9 +63,8 @@ echo ""
 
 GC_FINAL=$(curl -s "${PROMETHEUS_URL}/api/v1/query?query=sum(jvm_gc_pause_seconds_sum)" | jq -r '.data.result[0].value[1]')
 COLLECTIONS_FINAL=$(curl -s "${PROMETHEUS_URL}/api/v1/query?query=sum(jvm_gc_pause_seconds_count)" | jq -r '.data.result[0].value[1]')
+HEAP_PEAK=$(curl -s -G "${PROMETHEUS_URL}/api/v1/query" --data-urlencode 'query=max(max_over_time(jvm_memory_used_bytes{area="heap"}[10m]))' | jq -r '.data.result[0].value[1]')
 CPU_PEAK=$(curl -s -G "${PROMETHEUS_URL}/api/v1/query" --data-urlencode 'query=max(max_over_time(process_cpu_usage[10m])) * 100' | jq -r '.data.result[0].value[1]')
-
-CPU_PEAK=$(curl -s -G "${PROMETHEUS_URL}/api/v1/query" --data-urlencode 'query=max_over_time(process_cpu_usage[10m]) * 100' | jq -r '.data.result[0].value[1]')
 
 if [ "$GC_FINAL" == "null" ] || [ "$COLLECTIONS_FINAL" == "null" ] || [ "$HEAP_PEAK" == "null" ] || [ -z "$HEAP_PEAK" ] || [ "$CPU_PEAK" == "null" ] || [ -z "$CPU_PEAK" ]; then
     echo -e "${RED}Error: Could not retrieve final metrics.${NC}"
