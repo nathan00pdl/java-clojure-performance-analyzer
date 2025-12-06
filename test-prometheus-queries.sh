@@ -13,11 +13,15 @@ echo "2. Testing GC Collections query:"
 curl -s "${PROMETHEUS_URL}/api/v1/query?query=sum(jvm_gc_pause_seconds_count)" | jq '.'
 echo ""
 
-echo "3. Testing Heap Peak query:"
+echo "3. Testing Requests Count query:"
+curl -s "${PROMETHEUS_URL}/api/v1/query?query=sum(http_server_requests_seconds_count)" | jq '.'
+echo ""
+
+echo "4. Testing Heap Peak query:"
 curl -s -G "${PROMETHEUS_URL}/api/v1/query" --data-urlencode 'query=max(max_over_time(jvm_memory_used_bytes{area="heap"}[10m]))' | jq '.'
 echo ""
 
-echo "4. Testing CPU Peak query:"
+echo "5. Testing CPU Peak query:"
 curl -s -G "${PROMETHEUS_URL}/api/v1/query" --data-urlencode 'query=max(max_over_time(process_cpu_usage[10m])) * 100' | jq '.'
 echo ""
 
