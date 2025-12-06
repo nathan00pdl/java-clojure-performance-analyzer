@@ -37,6 +37,7 @@ echo ""
 
 GC_INITIAL=$(curl -s "${PROMETHEUS_URL}/api/v1/query?query=sum(jvm_gc_pause_seconds_sum)" | jq -r '.data.result[0].value[1]')
 COLLECTIONS_INITIAL=$(curl -s "${PROMETHEUS_URL}/api/v1/query?query=sum(jvm_gc_pause_seconds_count)" | jq -r '.data.result[0].value[1]')
+REQUESTS_INITIAL=$(curl -s "${PROMETHEUS_URL}/api/v1/query?query=sum(http_server_requests_seconds_count)" | jq -r '.data.result[0].value[1]')
 
 if [ "$GC_INITIAL" == "null" ] || [ "$COLLECTIONS_INITIAL" == "null" ]; then
     echo -e "${RED}Error: Could not retrieve metrics. Check if application is running.${NC}"
@@ -45,6 +46,7 @@ fi
 
 echo -e "  GC Time Initial:        ${GREEN}${GC_INITIAL}${NC} seconds"
 echo -e "  GC Collections Initial: ${GREEN}${COLLECTIONS_INITIAL}${NC}"
+echo -e "  Requests Initial:       ${GREEN}${REQUESTS_INITIAL}${NC}"
 echo ""
 
 echo -e "${YELLOW}[STEP 2] Ready to run test${NC}"
@@ -63,6 +65,7 @@ echo ""
 
 GC_FINAL=$(curl -s "${PROMETHEUS_URL}/api/v1/query?query=sum(jvm_gc_pause_seconds_sum)" | jq -r '.data.result[0].value[1]')
 COLLECTIONS_FINAL=$(curl -s "${PROMETHEUS_URL}/api/v1/query?query=sum(jvm_gc_pause_seconds_count)" | jq -r '.data.result[0].value[1]')
+REQUESTS_FINAL=$(curl -s "${PROMETHEUS_URL}/api/v1/query?query=sum(http_server_requests_seconds_count)" | jq -r '.data.result[0].value[1]')
 HEAP_PEAK=$(curl -s -G "${PROMETHEUS_URL}/api/v1/query" --data-urlencode 'query=max(max_over_time(jvm_memory_used_bytes{area="heap"}[10m]))' | jq -r '.data.result[0].value[1]')
 CPU_PEAK=$(curl -s -G "${PROMETHEUS_URL}/api/v1/query" --data-urlencode 'query=max(max_over_time(process_cpu_usage[10m])) * 100' | jq -r '.data.result[0].value[1]')
 
@@ -71,6 +74,7 @@ if [ "$GC_FINAL" == "null" ] || [ "$COLLECTIONS_FINAL" == "null" ] || [ "$HEAP_P
     echo -e "${YELLOW}Debug info:${NC}"
     echo "  GC_FINAL: $GC_FINAL"
     echo "  COLLECTIONS_FINAL: $COLLECTIONS_FINAL"
+    echo "  REQUESTS_FINAL: $REQUESTS_FINAL"
     echo "  HEAP_PEAK: $HEAP_PEAK"
     echo "  CPU_PEAK: $CPU_PEAK"
     exit 1
@@ -78,6 +82,7 @@ fi
 
 echo -e "  GC Time Final:          ${GREEN}${GC_FINAL}${NC} seconds"
 echo -e "  GC Collections Final:   ${GREEN}${COLLECTIONS_FINAL}${NC}"
+echo -e "  Requests Final:         ${GREEN}${REQUESTS_FINAL}${NC}"
 echo -e "  Heap Peak:              ${GREEN}${HEAP_PEAK}${NC} bytes"
 echo -e "  CPU Peak:               ${GREEN}${CPU_PEAK}${NC} %"
 echo ""
@@ -87,6 +92,7 @@ echo ""
 
 GC_TIME=$(echo "($GC_FINAL - $GC_INITIAL) * 1000" | bc)
 GC_COLLECTIONS=$(echo "$COLLECTIONS_FINAL - $COLLECTIONS_INITIAL" | bc)
+TOTAL_REQUESTS=$(echo "$REQUESTS_FINAL - $REQUESTS_INITIAL" | bc)
 HEAP_GB=$(echo "scale=2; $HEAP_PEAK / 1000000000" | bc)
 HEAP_MAX=6000000000
 HEAP_PERCENT=$(echo "scale=2; ($HEAP_PEAK / $HEAP_MAX) * 100" | bc)
@@ -94,6 +100,7 @@ CPU_PEAK_FORMATTED=$(echo "scale=2; $CPU_PEAK" | bc)
 
 echo -e "  GC Time (test):         ${GREEN}${GC_TIME}${NC} ms"
 echo -e "  GC Collections (test):  ${GREEN}${GC_COLLECTIONS}${NC}"
+echo -e "  Total Requests:         ${GREEN}${TOTAL_REQUESTS}${NC}"
 echo -e "  Heap Peak:              ${GREEN}${HEAP_GB}${NC} GB"
 echo -e "  Heap Peak (%):          ${GREEN}${HEAP_PERCENT}${NC} %"
 echo -e "  CPU Peak:               ${GREEN}${CPU_PEAK_FORMATTED}${NC} %"
@@ -116,6 +123,8 @@ GC Time Initial:          $GC_INITIAL seconds
 GC Time Final:            $GC_FINAL seconds
 GC Collections Initial:   $COLLECTIONS_INITIAL
 GC Collections Final:     $COLLECTIONS_FINAL
+Requests Initial:         $REQUESTS_INITIAL
+Requests Final:           $REQUESTS_FINAL
 Heap Peak:                $HEAP_PEAK bytes
 CPU Peak:                 $CPU_PEAK %
 
@@ -123,6 +132,7 @@ CALCULATED METRICS:
 ────────────────────────────────────────────────
 GC Time (test):           $GC_TIME ms
 GC Collections (test):    $GC_COLLECTIONS
+Total Requests:           $TOTAL_REQUESTS
 Heap Peak:                $HEAP_GB GB
 Heap Peak (%):            $HEAP_PERCENT %
 CPU Peak:                 $CPU_PEAK_FORMATTED %
@@ -169,6 +179,7 @@ echo -e "${BLUE}  SUMMARY${NC}"
 echo -e "${BLUE}═══════════════════════════════════════════════════${NC}"
 echo ""
 printf "  %-25s ${GREEN}%s${NC}\n" "Implementation:" "$IMPLEMENTATION"
+printf "  %-25s ${GREEN}%s${NC}\n" "Total Requests:" "$TOTAL_REQUESTS"
 printf "  %-25s ${GREEN}%s ms${NC}\n" "GC Time:" "$GC_TIME"
 printf "  %-25s ${GREEN}%s${NC}\n" "GC Collections:" "$GC_COLLECTIONS"
 printf "  %-25s ${GREEN}%s GB${NC}\n" "Heap Peak:" "$HEAP_GB"
@@ -181,10 +192,10 @@ echo ""
 CSV_FILE="${RESULTS_DIR}/metrics-comparison.csv"
 
 if [ ! -f "$CSV_FILE" ]; then
-    echo "Implementation,Date,GC_Time_ms,GC_Collections,Heap_GB,Heap_Percent,CPU_Peak_Percent" > "$CSV_FILE"
+    echo "Implementation,Date,Total_Requests,GC_Time_ms,GC_Collections,Heap_GB,Heap_Percent,CPU_Peak_Percent" > "$CSV_FILE"
 fi
 
-echo "$IMPLEMENTATION,$(date '+%Y-%m-%d %H:%M:%S'),$GC_TIME,$GC_COLLECTIONS,$HEAP_GB,$HEAP_PERCENT,$CPU_PEAK_FORMATTED" >> "$CSV_FILE"
+echo "$IMPLEMENTATION,$(date '+%Y-%m-%d %H:%M:%S'),$TOTAL_REQUESTS,$GC_TIME,$GC_COLLECTIONS,$HEAP_GB,$HEAP_PERCENT,$CPU_PEAK_FORMATTED" >> "$CSV_FILE"
 
 echo -e "${GREEN}Data added to CSV: ${CSV_FILE}${NC}"
 echo ""
