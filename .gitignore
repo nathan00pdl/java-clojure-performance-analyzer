@@ -79,4 +79,3 @@ tmp/
 /gatling-results
 /grafana-data
 /prometheus-data
-/metrics-results
