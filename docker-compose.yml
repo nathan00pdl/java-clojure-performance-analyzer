@@ -6,21 +6,22 @@ services:
     container_name: app-performance-test
    
     mem_limit: 8g
-    mem_reservation: 8g  
+    mem_reservation: 6g  
     cpus: 6.0
    
     environment:
       JAVA_OPTS: >-
-        -Xms4g
-        -Xmx6g
-        -Xss1m
-        -XX:MaxMetaspaceSize=512m
-        -XX:+UseG1GC
-        -XX:MaxGCPauseMillis=200
-        -XX:+ParallelRefProcEnabled
-        -XX:+UseStringDeduplication
-        -XX:+HeapDumpOnOutOfMemoryError
-        -XX:HeapDumpPath=/app/heap-dumps
+        -Xms4g                              # Initial Heap 
+        -Xmx6g                              # Maximum Heap 
+        -Xss512k                            # Stack per thread 
+        -XX:MaxMetaspaceSize=512m           # Metaspace (classes)
+        -XX:+UseG1GC                        # G1 Garbage Collector
+        -XX:MaxGCPauseMillis=200            
+        -XX:+ParallelRefProcEnabled         
+        -XX:+UseStringDeduplication         # Saves RAM
+        -XX:+UseCompressedOops              # compress pointers (saves RAM)
+        -XX:+HeapDumpOnOutOfMemoryError     # Dump on OOM
+        -XX:HeapDumpPath=/app/heap-dumps    
 
     restart: unless-stopped
     
