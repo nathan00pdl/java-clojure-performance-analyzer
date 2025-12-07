@@ -11,17 +11,17 @@ services:
    
     environment:
       JAVA_OPTS: >-
-        -Xms4g                              # Initial Heap 
-        -Xmx6g                              # Maximum Heap 
-        -Xss512k                            # Stack per thread 
-        -XX:MaxMetaspaceSize=512m           # Metaspace (classes)
-        -XX:+UseG1GC                        # G1 Garbage Collector
-        -XX:MaxGCPauseMillis=200            
-        -XX:+ParallelRefProcEnabled         
-        -XX:+UseStringDeduplication         # Saves RAM
-        -XX:+UseCompressedOops              # compress pointers (saves RAM)
-        -XX:+HeapDumpOnOutOfMemoryError     # Dump on OOM
-        -XX:HeapDumpPath=/app/heap-dumps    
+        -Xms4g                     
+        -Xmx6g
+        -Xss512k
+        -XX:MaxMetaspaceSize=512m
+        -XX:+UseG1GC
+        -XX:MaxGCPauseMillis=200
+        -XX:+ParallelRefProcEnabled
+        -XX:+UseStringDeduplication
+        -XX:+UseCompressedOops
+        -XX:+HeapDumpOnOutOfMemoryError
+        -XX:HeapDumpPath=/app/heap-dumps
 
     restart: unless-stopped
     
