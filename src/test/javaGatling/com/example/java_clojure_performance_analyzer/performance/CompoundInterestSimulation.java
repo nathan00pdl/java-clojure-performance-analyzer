@@ -15,13 +15,13 @@ public class CompoundInterestSimulation extends Simulation {
         .baseUrl(BASE_URL)
         .acceptHeader("application/json")
         .contentTypeHeader("application/json")
-        .userAgentHeader("Gatling-Performance-Test")
+        .userAgentHeader("app-performance-test")
         .connectionHeader("keep-alive")
         .shareConnections() 
         .acceptEncodingHeader("gzip, deflate")
         .disableFollowRedirect()
         .inferHtmlResources()
-        .maxConnectionsPerHost(1000); 
+        .maxConnectionsPerHost(1000);
 
     private final String requestBody = """
         {
@@ -72,39 +72,9 @@ public class CompoundInterestSimulation extends Simulation {
 
     {
         setUp(
-            scenarioJava.injectClosed(
-                constantConcurrentUsers(100).during(Duration.ofMinutes(5))
+            scenarioJava.injectOpen(
+                constantUsersPerSec(100).during(Duration.ofMinutes(5))
             )
         ).protocols(httpProtocol);
     }
 }
-
-
-/*
-{
-    setUp(
-        scenarioClojureIdiomatic.injectClosed(
-            constantConcurrentUsers(1000).during(Duration.ofMinutes(2))
-        )
-    ).protocols(httpProtocol);
-}
-
-{
-    setUp(
-        scenarioClojureOptimized.injectClosed(
-            constantConcurrentUsers(1000).during(Duration.ofMinutes(2))
-        )
-    ).protocols(httpProtocol);
-}
-
-{
-    setUp(
-        scenario.injectClosed(
-            rampConcurrentUsers(10).to(500).during(Duration.ofMinutes(2)),
-            constantConcurrentUsers(500).during(Duration.ofMinutes(3)),
-            rampConcurrentUsers(500).to(1000).during(Duration.ofMinutes(2)),
-            constantConcurrentUsers(1000).during(Duration.ofMinutes(3))
-        )
-    ).protocols(httpProtocol);
-}
-*/
