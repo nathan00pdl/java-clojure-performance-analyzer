@@ -77,5 +77,7 @@ tmp/
 
 /maven-cache
 /gatling-results
+/metrics-results
+
 /grafana-data
 /prometheus-data
