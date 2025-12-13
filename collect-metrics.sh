@@ -12,7 +12,7 @@ IMPLEMENTATION=$1
 
 if [ -z "$IMPLEMENTATION" ]; then
     echo "Error: Specify implementation"
-    echo "Usage: $0 [java|clojure-idiomatic|clojure-optimized]"
+    echo "Usage: $0 [java|clojure-idiomatic|clojure-interop-java]"
     exit 1
 fi
 
@@ -468,5 +468,5 @@ echo ""
 echo "Next steps:"
 echo "  1. Wait 5 minutes for stabilization"
 echo "  2. Run next implementation:"
-echo -e "     ${GREEN}./collect-metrics.sh [java|clojure-idiomatic|clojure-optimized]${NC}"
+echo -e "     ${GREEN}./collect-metrics.sh [java|clojure-idiomatic|clojure-interop-java]${NC}"
 echo ""
