@@ -55,12 +55,12 @@ public class CompoundInterestSimulation extends Simulation {
         )
         .pause(Duration.ofMillis(5), Duration.ofMillis(20));
 
-    // CLOJURE OTIMIZED
+    // CLOJURE INTEROP JAVA
 
-    private final ScenarioBuilder scenarioClojureOptimized = scenario("CLOJURE OPTIMIZED - Test")
+    private final ScenarioBuilder scenarioClojureInteropJava = scenario("CLOJURE INTEROP JAVA - Test")
         .exec(
-            http("Calculate Compound Interest: Clojure Optimized")
-                .post("/api/compound-interest-clojure/calculate-optimized")
+            http("Calculate Compound Interest: Clojure Interop Java")
+                .post("/api/compound-interest-clojure/calculate-interop-java")
                 .body(StringBody(requestBody))
                 .check(status().is(200))
                 .check(responseTimeInMillis().saveAs("responseTime"))
@@ -72,7 +72,7 @@ public class CompoundInterestSimulation extends Simulation {
 
     {
         setUp(
-            scenarioJava.injectOpen(
+            scenarioClojureIdiomatic.injectOpen(
                 constantUsersPerSec(100).during(Duration.ofMinutes(5))
             )
         ).protocols(httpProtocol);
