@@ -134,7 +134,7 @@
 					<warnOnReflection>true</warnOnReflection>
 					<namespaces>
 						<namespace>com.example.java-clojure-performance-analyzer.service.compound-interest-service-idiomatic</namespace>
-						<namespace>com.example.java-clojure-performance-analyzer.service.compound-interest-service-optimized</namespace>
+						<namespace>com.example.java-clojure-performance-analyzer.service.compound-interest-service-interop-java</namespace>
 					</namespaces>
 				</configuration>
 				<executions>
