@@ -20,20 +20,20 @@ import jakarta.annotation.PostConstruct;
 @Configuration
 public class ClojureConfiguration {
     private static final String IDIOMATIC_NAMESPACE = "com.example.java-clojure-performance-analyzer.service.compound-interest-service-idiomatic";
-    private static final String OPTIMIZED_NAMESPACE = "com.example.java-clojure-performance-analyzer.service.compound-interest-service-optimized";
+    private static final String INTEROP_JAVA_NAMESPACE = "com.example.java-clojure-performance-analyzer.service.compound-interest-service-interop-java";
     private static final String FUNCTION = "create-service";
 
     private IFn idiomaticServiceFactory;
-    private IFn optimizedServiceFactory;
+    private IFn interopJavaServiceFactory;
 
     @PostConstruct
     public void loadNamespaces() {
         IFn require = Clojure.var("clojure.core", "require");
         require.invoke(Clojure.read(IDIOMATIC_NAMESPACE));
-        require.invoke(Clojure.read(OPTIMIZED_NAMESPACE));
+        require.invoke(Clojure.read(INTEROP_JAVA_NAMESPACE));
 
         this.idiomaticServiceFactory = Clojure.var(IDIOMATIC_NAMESPACE, FUNCTION);
-        this.optimizedServiceFactory = Clojure.var(OPTIMIZED_NAMESPACE, FUNCTION);
+        this.interopJavaServiceFactory = Clojure.var(INTEROP_JAVA_NAMESPACE, FUNCTION);
     }
 
     @Bean("clojureIdiomaticImplementation")
@@ -41,8 +41,8 @@ public class ClojureConfiguration {
         return (CompoundInterestService) idiomaticServiceFactory.invoke();
     }
 
-    @Bean("clojureOptimizedImplementation")
-    public CompoundInterestService compoundInterestOptimizedService() {
-        return (CompoundInterestService) optimizedServiceFactory.invoke();
+    @Bean("clojureInteropJavaImplementation")
+    public CompoundInterestService compoundInterestInteropJavaService() {
+        return (CompoundInterestService) interopJavaServiceFactory.invoke();
     }
 }
