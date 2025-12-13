@@ -18,14 +18,14 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/compound-interest-clojure")
 public class ClojureCompoundInterestController {
     private final CompoundInterestService idiomaticService;
-    private final CompoundInterestService optimizedService;
+    private final CompoundInterestService interopJavaService;
 
     @Autowired
     public ClojureCompoundInterestController(
             @Qualifier("clojureIdiomaticImplementation") CompoundInterestService idioInterestService,
-            @Qualifier("clojureOptimizedImplementation") CompoundInterestService optimizedService) {
+            @Qualifier("clojureInteropJavaImplementation") CompoundInterestService interopJavaService) {
         this.idiomaticService = idioInterestService;
-        this.optimizedService = optimizedService;
+        this.interopJavaService = interopJavaService;
     }
 
     @PostMapping("/calculate-idiomatic")
@@ -34,9 +34,9 @@ public class ClojureCompoundInterestController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/calculate-optimized")
-    public ResponseEntity<CompoundInterestResponse> calculateCompoundInterestOptimized(@Valid @RequestBody CompoundInterestRequest request) {
-        CompoundInterestResponse response = optimizedService.calculateCompoundInterest(request);
+    @PostMapping("/calculate-interop-java")
+    public ResponseEntity<CompoundInterestResponse> calculateCompoundInterestInteropJava(@Valid @RequestBody CompoundInterestRequest request) {
+        CompoundInterestResponse response = interopJavaService.calculateCompoundInterest(request);
         return ResponseEntity.ok(response);
     }
 }
