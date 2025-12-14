@@ -1,4 +1,4 @@
-(ns main.clojure.com.example.java-clojure-performance-analyzer.service.compound-interest-service-interop-java
+(ns com.example.java-clojure-performance-analyzer.service.compound-interest-service-interop-java
   (:import
    (com.example.java_clojure_performance_analyzer.services CompoundInterestService)
    (com.example.java_clojure_performance_analyzer.models.request CompoundInterestRequest)
