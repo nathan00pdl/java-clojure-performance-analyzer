@@ -1,0 +1,482 @@
+Compiled from "compound_interest_service_idiomatic.clj"
+public final class com.example.java_clojure_performance_analyzer.service.compound_interest_service_idiomatic$calculate_compound_interest extends clojure.lang.AFunction {
+  public static final clojure.lang.Var const__4;
+
+  public static final clojure.lang.Var const__5;
+
+  public com.example.java_clojure_performance_analyzer.service.compound_interest_service_idiomatic$calculate_compound_interest();
+    Code:
+       0: aload_0
+       1: invokespecial #9                  // Method clojure/lang/AFunction."<init>":()V
+       4: return
+
+  public static java.lang.Object invokeStatic(java.lang.Object);
+    Code:
+       0: aload_0
+       1: checkcast     #13                 // class com/example/java_clojure_performance_analyzer/models/request/CompoundInterestRequest
+       4: invokevirtual #17                 // Method com/example/java_clojure_performance_analyzer/models/request/CompoundInterestRequest.getInitialAmount:()Ljava/lang/Double;
+       7: astore_1
+       8: aload_0
+       9: checkcast     #13                 // class com/example/java_clojure_performance_analyzer/models/request/CompoundInterestRequest
+      12: invokevirtual #20                 // Method com/example/java_clojure_performance_analyzer/models/request/CompoundInterestRequest.getAnnualInterestRate:()Ljava/lang/Double;
+      15: astore_2
+      16: aload_0
+      17: aconst_null
+      18: astore_0
+      19: checkcast     #13                 // class com/example/java_clojure_performance_analyzer/models/request/CompoundInterestRequest
+      22: invokevirtual #24                 // Method com/example/java_clojure_performance_analyzer/models/request/CompoundInterestRequest.getYears:()Ljava/lang/Integer;
+      25: astore_3
+      26: dconst_1
+      27: aload_2
+      28: aconst_null
+      29: astore_2
+      30: ldc2_w        #25                 // double 100.0d
+      33: invokestatic  #32                 // Method clojure/lang/Numbers.divide:(Ljava/lang/Object;D)D
+      36: dadd
+      37: dstore        4
+      39: new           #34                 // class com/example/java_clojure_performance_analyzer/service/compound_interest_service_idiomatic$calculate_compound_interest$fn__275
+      42: dup
+      43: aload_3
+      44: aconst_null
+      45: astore_3
+      46: dload         4
+      48: aload_1
+      49: invokespecial #37                 // Method com/example/java_clojure_performance_analyzer/service/compound_interest_service_idiomatic$calculate_compound_interest$fn__275."<init>":(Ljava/lang/Object;DLjava/lang/Object;)V
+      52: checkcast     #39                 // class clojure/lang/IFn
+      55: invokeinterface #43,  1           // InterfaceMethod clojure/lang/IFn.invoke:()Ljava/lang/Object;
+      60: astore        6
+      62: getstatic     #47                 // Field const__4:Lclojure/lang/Var;
+      65: invokevirtual #52                 // Method clojure/lang/Var.getRawRoot:()Ljava/lang/Object;
+      68: checkcast     #39                 // class clojure/lang/IFn
+      71: aload         6
+      73: invokeinterface #54,  2           // InterfaceMethod clojure/lang/IFn.invoke:(Ljava/lang/Object;)Ljava/lang/Object;
+      78: dup
+      79: ifnull        92
+      82: getstatic     #60                 // Field java/lang/Boolean.FALSE:Ljava/lang/Boolean;
+      85: if_acmpeq     93
+      88: aload_1
+      89: goto          115
+      92: pop
+      93: getstatic     #63                 // Field const__5:Lclojure/lang/Var;
+      96: invokevirtual #52                 // Method clojure/lang/Var.getRawRoot:()Ljava/lang/Object;
+      99: checkcast     #39                 // class clojure/lang/IFn
+     102: aload         6
+     104: invokeinterface #54,  2           // InterfaceMethod clojure/lang/IFn.invoke:(Ljava/lang/Object;)Ljava/lang/Object;
+     109: checkcast     #65                 // class com/example/java_clojure_performance_analyzer/models/response/YearlyInvestmentSummary
+     112: invokevirtual #68                 // Method com/example/java_clojure_performance_analyzer/models/response/YearlyInvestmentSummary.getEndBalance:()Ljava/lang/Double;
+     115: astore        7
+     117: aload         7
+     119: aload_1
+     120: invokestatic  #72                 // Method clojure/lang/Numbers.minus:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Number;
+     123: astore        8
+     125: new           #74                 // class com/example/java_clojure_performance_analyzer/models/response/InvestmentSummary
+     128: dup
+     129: aload_1
+     130: aconst_null
+     131: astore_1
+     132: checkcast     #76                 // class java/lang/Double
+     135: aload         7
+     137: aconst_null
+     138: astore        7
+     140: checkcast     #76                 // class java/lang/Double
+     143: aload         8
+     145: aconst_null
+     146: astore        8
+     148: checkcast     #76                 // class java/lang/Double
+     151: invokespecial #79                 // Method com/example/java_clojure_performance_analyzer/models/response/InvestmentSummary."<init>":(Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;)V
+     154: astore        9
+     156: new           #81                 // class com/example/java_clojure_performance_analyzer/models/response/CompoundInterestResponse
+     159: dup
+     160: aload         9
+     162: aconst_null
+     163: astore        9
+     165: checkcast     #74                 // class com/example/java_clojure_performance_analyzer/models/response/InvestmentSummary
+     168: aload         6
+     170: aconst_null
+     171: astore        6
+     173: checkcast     #83                 // class java/util/List
+     176: invokespecial #86                 // Method com/example/java_clojure_performance_analyzer/models/response/CompoundInterestResponse."<init>":(Lcom/example/java_clojure_performance_analyzer/models/response/InvestmentSummary;Ljava/util/List;)V
+     179: areturn
+
+  public java.lang.Object invoke(java.lang.Object);
+    Code:
+       0: aload_1
+       1: aconst_null
+       2: astore_1
+       3: invokestatic  #101                // Method invokeStatic:(Ljava/lang/Object;)Ljava/lang/Object;
+       6: areturn
+
+  public static {};
+    Code:
+       0: ldc           #104                // String clojure.core
+       2: ldc           #106                // String empty?
+       4: invokestatic  #112                // Method clojure/lang/RT.var:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Var;
+       7: checkcast     #49                 // class clojure/lang/Var
+      10: putstatic     #47                 // Field const__4:Lclojure/lang/Var;
+      13: ldc           #104                // String clojure.core
+      15: ldc           #114                // String last
+      17: invokestatic  #112                // Method clojure/lang/RT.var:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Var;
+      20: checkcast     #49                 // class clojure/lang/Var
+      23: putstatic     #63                 // Field const__5:Lclojure/lang/Var;
+      26: return
+}
+
+=== FUNÇÃO INTERNA DO LOOP (fn__275) ===
+Compiled from "compound_interest_service_idiomatic.clj"
+public final class com.example.java_clojure_performance_analyzer.service.compound_interest_service_idiomatic$calculate_compound_interest$fn__275 extends clojure.lang.AFunction {
+  java.lang.Object years;
+
+  double compound_factor;
+
+  java.lang.Object initial_amount;
+
+  public static final clojure.lang.Var const__5;
+
+  public com.example.java_clojure_performance_analyzer.service.compound_interest_service_idiomatic$calculate_compound_interest$fn__275(java.lang.Object, double, java.lang.Object);
+    Code:
+       0: aload_0
+       1: invokespecial #15                 // Method clojure/lang/AFunction."<init>":()V
+       4: aload_0
+       5: aload_1
+       6: putfield      #17                 // Field years:Ljava/lang/Object;
+       9: aload_0
+      10: dload_2
+      11: putfield      #19                 // Field compound_factor:D
+      14: aload_0
+      15: aload         4
+      17: putfield      #21                 // Field initial_amount:Ljava/lang/Object;
+      20: return
+
+  public java.lang.Object invoke();
+    Code:
+       0: lconst_1
+       1: lstore_1
+       2: aload_0
+       3: getfield      #21                 // Field initial_amount:Ljava/lang/Object;
+       6: aload_0
+       7: aconst_null
+       8: putfield      #21                 // Field initial_amount:Ljava/lang/Object;
+      11: astore_3
+      12: getstatic     #29                 // Field clojure/lang/PersistentVector.EMPTY:Lclojure/lang/PersistentVector;
+      15: astore        4
+      17: lload_1
+      18: aload_0
+      19: getfield      #17                 // Field years:Ljava/lang/Object;
+      22: invokestatic  #35                 // Method clojure/lang/Numbers.gt:(JLjava/lang/Object;)Z
+      25: ifeq          37
+      28: aload         4
+      30: aconst_null
+      31: astore        4
+      33: goto          149
+      36: athrow
+      37: aload_3
+      38: astore        5
+      40: aload_3
+      41: aconst_null
+      42: astore_3
+      43: aload_0
+      44: getfield      #19                 // Field compound_factor:D
+      47: invokestatic  #39                 // Method clojure/lang/Numbers.multiply:(Ljava/lang/Object;D)D
+      50: dstore        6
+      52: dload         6
+      54: aload         5
+      56: invokestatic  #43                 // Method clojure/lang/Numbers.minus:(DLjava/lang/Object;)D
+      59: dstore        8
+      61: lload_1
+      62: invokestatic  #47                 // Method clojure/lang/Numbers.inc:(J)J
+      65: dload         6
+      67: invokestatic  #53                 // Method java/lang/Double.valueOf:(D)Ljava/lang/Double;
+      70: getstatic     #57                 // Field const__5:Lclojure/lang/Var;
+      73: invokevirtual #62                 // Method clojure/lang/Var.getRawRoot:()Ljava/lang/Object;
+      76: checkcast     #64                 // class clojure/lang/IFn
+      79: aload         4
+      81: aconst_null
+      82: astore        4
+      84: new           #66                 // class com/example/java_clojure_performance_analyzer/models/response/YearlyInvestmentSummary
+      87: dup
+      88: lload_1
+      89: invokestatic  #72                 // Method clojure/lang/RT.intCast:(J)I
+      92: invokestatic  #77                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+      95: checkcast     #74                 // class java/lang/Integer
+      98: aload         5
+     100: aconst_null
+     101: astore        5
+     103: invokestatic  #81                 // Method clojure/lang/RT.doubleCast:(Ljava/lang/Object;)D
+     106: invokestatic  #53                 // Method java/lang/Double.valueOf:(D)Ljava/lang/Double;
+     109: checkcast     #49                 // class java/lang/Double
+     112: dload         6
+     114: invokestatic  #84                 // Method clojure/lang/RT.doubleCast:(D)D
+     117: invokestatic  #53                 // Method java/lang/Double.valueOf:(D)Ljava/lang/Double;
+     120: checkcast     #49                 // class java/lang/Double
+     123: dload         8
+     125: invokestatic  #84                 // Method clojure/lang/RT.doubleCast:(D)D
+     128: invokestatic  #53                 // Method java/lang/Double.valueOf:(D)Ljava/lang/Double;
+     131: checkcast     #49                 // class java/lang/Double
+     134: invokespecial #87                 // Method com/example/java_clojure_performance_analyzer/models/response/YearlyInvestmentSummary."<init>":(Ljava/lang/Integer;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;)V
+     137: invokeinterface #90,  3           // InterfaceMethod clojure/lang/IFn.invoke:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+     142: astore        4
+     144: astore_3
+     145: lstore_1
+     146: goto          17
+     149: areturn
+
+  public static {};
+    Code:
+       0: ldc           #105                // String clojure.core
+       2: ldc           #107                // String conj
+       4: invokestatic  #111                // Method clojure/lang/RT.var:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Var;
+       7: checkcast     #59                 // class clojure/lang/Var
+      10: putstatic     #57                 // Field const__5:Lclojure/lang/Var;
+      13: return
+}
+
+=== INICIALIZADOR DO NAMESPACE ===
+public class com.example.java_clojure_performance_analyzer.service.compound_interest_service_idiomatic__init {
+  public static final clojure.lang.Var const__0;
+
+  public static final clojure.lang.AFn const__1;
+
+  public static final clojure.lang.AFn const__2;
+
+  public static final clojure.lang.Var const__3;
+
+  public static final clojure.lang.AFn const__11;
+
+  public static final clojure.lang.Var const__12;
+
+  public static final clojure.lang.AFn const__16;
+
+  public static void load();
+    Code:
+       0: getstatic     #10                 // Field const__0:Lclojure/lang/Var;
+       3: invokevirtual #16                 // Method clojure/lang/Var.getRawRoot:()Ljava/lang/Object;
+       6: checkcast     #18                 // class clojure/lang/IFn
+       9: getstatic     #22                 // Field const__1:Lclojure/lang/AFn;
+      12: invokeinterface #26,  2           // InterfaceMethod clojure/lang/IFn.invoke:(Ljava/lang/Object;)Ljava/lang/Object;
+      17: new           #28                 // class com/example/java_clojure_performance_analyzer/service/compound_interest_service_idiomatic$loading__6789__auto____271
+      20: dup
+      21: invokespecial #31                 // Method com/example/java_clojure_performance_analyzer/service/compound_interest_service_idiomatic$loading__6789__auto____271."<init>":()V
+      24: checkcast     #18                 // class clojure/lang/IFn
+      27: invokeinterface #33,  1           // InterfaceMethod clojure/lang/IFn.invoke:()Ljava/lang/Object;
+      32: getstatic     #22                 // Field const__1:Lclojure/lang/AFn;
+      35: checkcast     #35                 // class clojure/lang/Symbol
+      38: getstatic     #38                 // Field const__2:Lclojure/lang/AFn;
+      41: invokevirtual #42                 // Method clojure/lang/Symbol.equals:(Ljava/lang/Object;)Z
+      44: ifeq          52
+      47: aconst_null
+      48: goto          67
+      51: athrow
+      52: new           #44                 // class com/example/java_clojure_performance_analyzer/service/compound_interest_service_idiomatic$fn__273
+      55: dup
+      56: invokespecial #45                 // Method com/example/java_clojure_performance_analyzer/service/compound_interest_service_idiomatic$fn__273."<init>":()V
+      59: checkcast     #47                 // class java/util/concurrent/Callable
+      62: invokestatic  #53                 // Method clojure/lang/LockingTransaction.runInTransaction:(Ljava/util/concurrent/Callable;)Ljava/lang/Object;
+      65: pop
+      66: aconst_null
+      67: getstatic     #56                 // Field const__3:Lclojure/lang/Var;
+      70: dup
+      71: getstatic     #59                 // Field const__11:Lclojure/lang/AFn;
+      74: checkcast     #61                 // class clojure/lang/IPersistentMap
+      77: invokevirtual #65                 // Method clojure/lang/Var.setMeta:(Lclojure/lang/IPersistentMap;)V
+      80: dup
+      81: new           #67                 // class com/example/java_clojure_performance_analyzer/service/compound_interest_service_idiomatic$calculate_compound_interest
+      84: dup
+      85: invokespecial #68                 // Method com/example/java_clojure_performance_analyzer/service/compound_interest_service_idiomatic$calculate_compound_interest."<init>":()V
+      88: invokevirtual #72                 // Method clojure/lang/Var.bindRoot:(Ljava/lang/Object;)V
+      91: getstatic     #75                 // Field const__12:Lclojure/lang/Var;
+      94: dup
+      95: getstatic     #78                 // Field const__16:Lclojure/lang/AFn;
+      98: checkcast     #61                 // class clojure/lang/IPersistentMap
+     101: invokevirtual #65                 // Method clojure/lang/Var.setMeta:(Lclojure/lang/IPersistentMap;)V
+     104: dup
+     105: new           #80                 // class com/example/java_clojure_performance_analyzer/service/compound_interest_service_idiomatic$create_service
+     108: dup
+     109: invokespecial #81                 // Method com/example/java_clojure_performance_analyzer/service/compound_interest_service_idiomatic$create_service."<init>":()V
+     112: invokevirtual #72                 // Method clojure/lang/Var.bindRoot:(Ljava/lang/Object;)V
+     115: return
+
+  public static void __init0();
+    Code:
+       0: ldc           #86                 // String clojure.core
+       2: ldc           #88                 // String in-ns
+       4: invokestatic  #94                 // Method clojure/lang/RT.var:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Var;
+       7: checkcast     #12                 // class clojure/lang/Var
+      10: putstatic     #10                 // Field const__0:Lclojure/lang/Var;
+      13: aconst_null
+      14: ldc           #96                 // String com.example.java-clojure-performance-analyzer.service.compound-interest-service-idiomatic
+      16: invokestatic  #100                // Method clojure/lang/Symbol.intern:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Symbol;
+      19: checkcast     #102                // class clojure/lang/AFn
+      22: putstatic     #22                 // Field const__1:Lclojure/lang/AFn;
+      25: aconst_null
+      26: ldc           #86                 // String clojure.core
+      28: invokestatic  #100                // Method clojure/lang/Symbol.intern:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Symbol;
+      31: checkcast     #102                // class clojure/lang/AFn
+      34: putstatic     #38                 // Field const__2:Lclojure/lang/AFn;
+      37: ldc           #96                 // String com.example.java-clojure-performance-analyzer.service.compound-interest-service-idiomatic
+      39: ldc           #104                // String calculate-compound-interest
+      41: invokestatic  #94                 // Method clojure/lang/RT.var:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Var;
+      44: checkcast     #12                 // class clojure/lang/Var
+      47: putstatic     #56                 // Field const__3:Lclojure/lang/Var;
+      50: bipush        8
+      52: anewarray     #4                  // class java/lang/Object
+      55: dup
+      56: iconst_0
+      57: aconst_null
+      58: ldc           #106                // String arglists
+      60: invokestatic  #110                // Method clojure/lang/RT.keyword:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Keyword;
+      63: aastore
+      64: dup
+      65: iconst_1
+      66: iconst_1
+      67: anewarray     #4                  // class java/lang/Object
+      70: dup
+      71: iconst_0
+      72: aconst_null
+      73: ldc           #112                // String request
+      75: invokestatic  #100                // Method clojure/lang/Symbol.intern:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Symbol;
+      78: checkcast     #114                // class clojure/lang/IObj
+      81: iconst_2
+      82: anewarray     #4                  // class java/lang/Object
+      85: dup
+      86: iconst_0
+      87: aconst_null
+      88: ldc           #116                // String tag
+      90: invokestatic  #110                // Method clojure/lang/RT.keyword:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Keyword;
+      93: aastore
+      94: dup
+      95: iconst_1
+      96: aconst_null
+      97: ldc           #118                // String CompoundInterestRequest
+      99: invokestatic  #100                // Method clojure/lang/Symbol.intern:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Symbol;
+     102: aastore
+     103: invokestatic  #122                // Method clojure/lang/RT.map:([Ljava/lang/Object;)Lclojure/lang/IPersistentMap;
+     106: checkcast     #61                 // class clojure/lang/IPersistentMap
+     109: invokeinterface #126,  2          // InterfaceMethod clojure/lang/IObj.withMeta:(Lclojure/lang/IPersistentMap;)Lclojure/lang/IObj;
+     114: invokestatic  #132                // Method clojure/lang/Tuple.create:(Ljava/lang/Object;)Lclojure/lang/IPersistentVector;
+     117: aastore
+     118: invokestatic  #138                // Method java/util/Arrays.asList:([Ljava/lang/Object;)Ljava/util/List;
+     121: invokestatic  #143                // Method clojure/lang/PersistentList.create:(Ljava/util/List;)Lclojure/lang/IPersistentList;
+     124: aastore
+     125: dup
+     126: iconst_2
+     127: aconst_null
+     128: ldc           #145                // String line
+     130: invokestatic  #110                // Method clojure/lang/RT.keyword:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Keyword;
+     133: aastore
+     134: dup
+     135: iconst_3
+     136: bipush        7
+     138: invokestatic  #151                // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+     141: aastore
+     142: dup
+     143: iconst_4
+     144: aconst_null
+     145: ldc           #153                // String column
+     147: invokestatic  #110                // Method clojure/lang/RT.keyword:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Keyword;
+     150: aastore
+     151: dup
+     152: iconst_5
+     153: iconst_1
+     154: invokestatic  #151                // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+     157: aastore
+     158: dup
+     159: bipush        6
+     161: aconst_null
+     162: ldc           #155                // String file
+     164: invokestatic  #110                // Method clojure/lang/RT.keyword:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Keyword;
+     167: aastore
+     168: dup
+     169: bipush        7
+     171: ldc           #157                // String com/example/java_clojure_performance_analyzer/service/compound_interest_service_idiomatic.clj
+     173: aastore
+     174: invokestatic  #122                // Method clojure/lang/RT.map:([Ljava/lang/Object;)Lclojure/lang/IPersistentMap;
+     177: checkcast     #102                // class clojure/lang/AFn
+     180: putstatic     #59                 // Field const__11:Lclojure/lang/AFn;
+     183: ldc           #96                 // String com.example.java-clojure-performance-analyzer.service.compound-interest-service-idiomatic
+     185: ldc           #159                // String create-service
+     187: invokestatic  #94                 // Method clojure/lang/RT.var:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Var;
+     190: checkcast     #12                 // class clojure/lang/Var
+     193: putstatic     #75                 // Field const__12:Lclojure/lang/Var;
+     196: bipush        10
+     198: anewarray     #4                  // class java/lang/Object
+     201: dup
+     202: iconst_0
+     203: aconst_null
+     204: ldc           #161                // String export
+     206: invokestatic  #110                // Method clojure/lang/RT.keyword:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Keyword;
+     209: aastore
+     210: dup
+     211: iconst_1
+     212: getstatic     #167                // Field java/lang/Boolean.TRUE:Ljava/lang/Boolean;
+     215: aastore
+     216: dup
+     217: iconst_2
+     218: aconst_null
+     219: ldc           #106                // String arglists
+     221: invokestatic  #110                // Method clojure/lang/RT.keyword:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Keyword;
+     224: aastore
+     225: dup
+     226: iconst_3
+     227: iconst_1
+     228: anewarray     #4                  // class java/lang/Object
+     231: dup
+     232: iconst_0
+     233: invokestatic  #170                // Method clojure/lang/Tuple.create:()Lclojure/lang/IPersistentVector;
+     236: aastore
+     237: invokestatic  #138                // Method java/util/Arrays.asList:([Ljava/lang/Object;)Ljava/util/List;
+     240: invokestatic  #143                // Method clojure/lang/PersistentList.create:(Ljava/util/List;)Lclojure/lang/IPersistentList;
+     243: aastore
+     244: dup
+     245: iconst_4
+     246: aconst_null
+     247: ldc           #145                // String line
+     249: invokestatic  #110                // Method clojure/lang/RT.keyword:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Keyword;
+     252: aastore
+     253: dup
+     254: iconst_5
+     255: bipush        57
+     257: invokestatic  #151                // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+     260: aastore
+     261: dup
+     262: bipush        6
+     264: aconst_null
+     265: ldc           #153                // String column
+     267: invokestatic  #110                // Method clojure/lang/RT.keyword:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Keyword;
+     270: aastore
+     271: dup
+     272: bipush        7
+     274: iconst_1
+     275: invokestatic  #151                // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+     278: aastore
+     279: dup
+     280: bipush        8
+     282: aconst_null
+     283: ldc           #155                // String file
+     285: invokestatic  #110                // Method clojure/lang/RT.keyword:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Keyword;
+     288: aastore
+     289: dup
+     290: bipush        9
+     292: ldc           #157                // String com/example/java_clojure_performance_analyzer/service/compound_interest_service_idiomatic.clj
+     294: aastore
+     295: invokestatic  #122                // Method clojure/lang/RT.map:([Ljava/lang/Object;)Lclojure/lang/IPersistentMap;
+     298: checkcast     #102                // class clojure/lang/AFn
+     301: putstatic     #78                 // Field const__16:Lclojure/lang/AFn;
+     304: return
+
+  public static {};
+    Code:
+       0: invokestatic  #173                // Method __init0:()V
+       3: ldc           #175                // String com.example.java_clojure_performance_analyzer.service.compound_interest_service_idiomatic__init
+       5: invokestatic  #179                // Method clojure/lang/RT.classForName:(Ljava/lang/String;)Ljava/lang/Class;
+       8: invokevirtual #185                // Method java/lang/Class.getClassLoader:()Ljava/lang/ClassLoader;
+      11: invokestatic  #191                // Method clojure/lang/Compiler.pushNSandLoader:(Ljava/lang/ClassLoader;)V
+      14: invokestatic  #193                // Method load:()V
+      17: invokestatic  #196                // Method clojure/lang/Var.popThreadBindings:()V
+      20: goto          27
+      23: invokestatic  #196                // Method clojure/lang/Var.popThreadBindings:()V
+      26: athrow
+      27: return
+    Exception table:
+       from    to  target type
+          14    17    23   any
+}
