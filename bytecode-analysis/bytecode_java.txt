@@ -1,0 +1,95 @@
+================================================================================
+CLOJURE INTEROP JAVA - BYTECODE ANALYSIS
+================================================================================
+
+=== MAIN FUNCTION:  ===
+
+Compiled from "JavaCompoundInterestService.java"
+public class com.example.java_clojure_performance_analyzer.services.JavaCompoundInterestService implements com.example.java_clojure_performance_analyzer.services.CompoundInterestService {
+  public com.example.java_clojure_performance_analyzer.services.JavaCompoundInterestService();
+    Code:
+       0: aload_0
+       1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+       4: return
+
+  public com.example.java_clojure_performance_analyzer.models.response.CompoundInterestResponse calculateCompoundInterest(com.example.java_clojure_performance_analyzer.models.request.CompoundInterestRequest);
+    Code:
+       0: aload_1
+       1: invokevirtual #7                  // Method com/example/java_clojure_performance_analyzer/models/request/CompoundInterestRequest.getInitialAmount:()Ljava/lang/Double;
+       4: invokevirtual #13                 // Method java/lang/Double.doubleValue:()D
+       7: dstore_2
+       8: aload_1
+       9: invokevirtual #19                 // Method com/example/java_clojure_performance_analyzer/models/request/CompoundInterestRequest.getAnnualInterestRate:()Ljava/lang/Double;
+      12: invokevirtual #13                 // Method java/lang/Double.doubleValue:()D
+      15: dstore        4
+      17: aload_1
+      18: invokevirtual #22                 // Method com/example/java_clojure_performance_analyzer/models/request/CompoundInterestRequest.getYears:()Ljava/lang/Integer;
+      21: invokevirtual #26                 // Method java/lang/Integer.intValue:()I
+      24: istore        6
+      26: dconst_1
+      27: dload         4
+      29: ldc2_w        #32                 // double 100.0d
+      32: ddiv
+      33: dadd
+      34: dstore        7
+      36: new           #34                 // class java/util/ArrayList
+      39: dup
+      40: iload         6
+      42: invokespecial #36                 // Method java/util/ArrayList."<init>":(I)V
+      45: astore        9
+      47: dload_2
+      48: dstore        10
+      50: iconst_1
+      51: istore        12
+      53: iload         12
+      55: iload         6
+      57: if_icmpgt     123
+      60: dload         10
+      62: dstore        13
+      64: dload         10
+      66: dload         7
+      68: dmul
+      69: dstore        15
+      71: dload         15
+      73: dload         13
+      75: dsub
+      76: dstore        17
+      78: aload         9
+      80: new           #39                 // class com/example/java_clojure_performance_analyzer/models/response/YearlyInvestmentSummary
+      83: dup
+      84: iload         12
+      86: invokestatic  #41                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+      89: dload         13
+      91: invokestatic  #45                 // Method java/lang/Double.valueOf:(D)Ljava/lang/Double;
+      94: dload         15
+      96: invokestatic  #45                 // Method java/lang/Double.valueOf:(D)Ljava/lang/Double;
+      99: dload         17
+     101: invokestatic  #45                 // Method java/lang/Double.valueOf:(D)Ljava/lang/Double;
+     104: invokespecial #48                 // Method com/example/java_clojure_performance_analyzer/models/response/YearlyInvestmentSummary."<init>":(Ljava/lang/Integer;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;)V
+     107: invokeinterface #51,  2           // InterfaceMethod java/util/List.add:(Ljava/lang/Object;)Z
+     112: pop
+     113: dload         15
+     115: dstore        10
+     117: iinc          12, 1
+     120: goto          53
+     123: dload         10
+     125: dload_2
+     126: dsub
+     127: dstore        12
+     129: new           #57                 // class com/example/java_clojure_performance_analyzer/models/response/InvestmentSummary
+     132: dup
+     133: dload_2
+     134: invokestatic  #45                 // Method java/lang/Double.valueOf:(D)Ljava/lang/Double;
+     137: dload         10
+     139: invokestatic  #45                 // Method java/lang/Double.valueOf:(D)Ljava/lang/Double;
+     142: dload         12
+     144: invokestatic  #45                 // Method java/lang/Double.valueOf:(D)Ljava/lang/Double;
+     147: invokespecial #59                 // Method com/example/java_clojure_performance_analyzer/models/response/InvestmentSummary."<init>":(Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;)V
+     150: astore        14
+     152: new           #62                 // class com/example/java_clojure_performance_analyzer/models/response/CompoundInterestResponse
+     155: dup
+     156: aload         14
+     158: aload         9
+     160: invokespecial #64                 // Method com/example/java_clojure_performance_analyzer/models/response/CompoundInterestResponse."<init>":(Lcom/example/java_clojure_performance_analyzer/models/response/InvestmentSummary;Ljava/util/List;)V
+     163: areturn
+}
