@@ -132,6 +132,7 @@
 						<sourceDirectory>src/main/clojure</sourceDirectory>
 					</sourceDirectories>
 					<warnOnReflection>true</warnOnReflection>
+					<compileDeclaredNamespaceOnly>true</compileDeclaredNamespaceOnly>
 					<namespaces>
 						<namespace>com.example.java-clojure-performance-analyzer.service.compound-interest-service-idiomatic</namespace>
 						<namespace>com.example.java-clojure-performance-analyzer.service.compound-interest-service-interop-java</namespace>
@@ -140,7 +141,7 @@
 				<executions>
 					<execution>
 						<id>compile-clojure</id>
-						<phase>process-classes</phase>
+						<phase>compile</phase>
 						<goals>
 							<goal>compile</goal>
 						</goals>
