@@ -1,0 +1,91 @@
+================================================================================
+COMPARATIVE BYTECODE ANALYSIS
+TCC: Cost of Idiomatic Abstractions on the JVM
+================================================================================
+
+Date: Tue Jan 20 07:04:28 AM -03 2026
+
+================================================================================
+1. INSTRUCTION COUNT
+================================================================================
+
+--- JAVA ---
+  invokevirtual (direct method calls):            6
+  invokespecial (constructors):                   5
+  invokestatic:                                   7
+  invokeinterface:                                1
+  new (object allocation):                        4
+  double operations (dmul/dadd/dsub/ddiv):        5
+
+--- IDIOMATIC CLOJURE ---
+  invokevirtual:                                  14
+  invokespecial:                                  10
+  invokestatic (Numbers.*, RT.*):                 56
+  invokeinterface (IFn, collections):             7
+  new (object allocation):                        8
+  double operations (dmul/dadd/dsub/ddiv):        1
+
+--- CLOJURE JAVA INTEROP ---
+  invokevirtual:                                  11
+  invokespecial:                                  11
+  invokestatic:                                   50
+  invokeinterface:                                4
+  new (object allocation):                        9
+  double operations (dmul/dadd/dsub/ddiv):        4
+
+================================================================================
+2. PARADIGM-SPECIFIC PATTERNS
+================================================================================
+
+--- JAVA: Mutable Structures ---
+  ArrayList references:                           2
+  ArrayList.add calls:                            0
+
+--- IDIOMATIC CLOJURE: Persistent Structures ---
+  PersistentVector references:                    3
+  RT.conj calls (add to collection):              0
+  clojure.lang.Numbers calls:                     6
+  RT (Runtime) calls:                             24
+
+--- CLOJURE INTEROP: Optimizations ---
+  ArrayList references:                           4
+  ArrayList.add calls:                            1
+  unchecked operations:                           0
+  effective type hints (checkcast):               29
+
+================================================================================
+3. CONTROL FLOW INSTRUCTIONS (LOOPS)
+================================================================================
+
+--- JAVA ---
+  goto (loop jumps):                              1
+  if_icmp* (int comparisons):                     1
+
+--- IDIOMATIC CLOJURE ---
+  goto (optimized recur):                         5
+  if_icmp* (comparisons):                         0
+
+--- CLOJURE INTEROP ---
+  goto (optimized recur):                         4
+  if_icmp* (comparisons):                         0
+
+================================================================================
+4. INTERPRETIVE SUMMARY
+================================================================================
+
+JAVA:
+  - Uses mutable ArrayList (single allocation)
+  - Direct primitive arithmetic operations (dmul, dadd)
+  - Traditional for loop compiled to efficient goto
+
+IDIOMATIC CLOJURE:
+  - Uses immutable PersistentVector (new version each iteration via conj)
+  - Operations via clojure.lang.Numbers (overflow checking)
+  - loop/recur compiled to goto (no stack consumption)
+  - More invokestatic and invokeinterface = more indirection
+
+CLOJURE INTEROP:
+  - Uses Java's ArrayList (like pure Java)
+  - Type hints (^ArrayList) eliminate reflection
+  - unchecked-inc avoids overflow checking
+  - Combines Clojure expressiveness with Java performance
