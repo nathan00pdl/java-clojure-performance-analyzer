@@ -20,7 +20,6 @@ public class CompoundInterestSimulation extends Simulation {
         .shareConnections() 
         .acceptEncodingHeader("gzip, deflate")
         .disableFollowRedirect()
-        .inferHtmlResources()
         .maxConnectionsPerHost(1000);
 
     private final String requestBody = """
