@@ -1,0 +1,295 @@
+================================================================================
+IDIOMATIC CLOJURE - LOCAL VARIABLE TABLES
+================================================================================
+
+=== MAIN FUNCTION: calculate_compound_interest ===
+Compiled from "compound_interest_service_idiomatic.clj"
+public final class com.example.java_clojure_performance_analyzer.service.compound_interest_service_idiomatic$calculate_compound_interest extends clojure.lang.AFunction {
+  public static final clojure.lang.Var const__4;
+
+  public static final clojure.lang.Var const__5;
+
+  public com.example.java_clojure_performance_analyzer.service.compound_interest_service_idiomatic$calculate_compound_interest();
+    Code:
+       0: aload_0
+       1: invokespecial #9                  // Method clojure/lang/AFunction."<init>":()V
+       4: return
+    LineNumberTable:
+      line 7: 0
+
+  public static java.lang.Object invokeStatic(java.lang.Object);
+    Code:
+       0: aload_0
+       1: checkcast     #13                 // class com/example/java_clojure_performance_analyzer/models/request/CompoundInterestRequest
+       4: invokevirtual #17                 // Method com/example/java_clojure_performance_analyzer/models/request/CompoundInterestRequest.getInitialAmount:()Ljava/lang/Double;
+       7: astore_1
+       8: aload_0
+       9: checkcast     #13                 // class com/example/java_clojure_performance_analyzer/models/request/CompoundInterestRequest
+      12: invokevirtual #20                 // Method com/example/java_clojure_performance_analyzer/models/request/CompoundInterestRequest.getAnnualInterestRate:()Ljava/lang/Double;
+      15: astore_2
+      16: aload_0
+      17: aconst_null
+      18: astore_0
+      19: checkcast     #13                 // class com/example/java_clojure_performance_analyzer/models/request/CompoundInterestRequest
+      22: invokevirtual #24                 // Method com/example/java_clojure_performance_analyzer/models/request/CompoundInterestRequest.getYears:()Ljava/lang/Integer;
+      25: astore_3
+      26: dconst_1
+      27: aload_2
+      28: aconst_null
+      29: astore_2
+      30: ldc2_w        #25                 // double 100.0d
+      33: invokestatic  #32                 // Method clojure/lang/Numbers.divide:(Ljava/lang/Object;D)D
+      36: dadd
+      37: dstore        4
+      39: new           #34                 // class com/example/java_clojure_performance_analyzer/service/compound_interest_service_idiomatic$calculate_compound_interest$fn__275
+      42: dup
+      43: aload_1
+      44: aload_3
+      45: aconst_null
+      46: astore_3
+      47: dload         4
+      49: invokespecial #37                 // Method com/example/java_clojure_performance_analyzer/service/compound_interest_service_idiomatic$calculate_compound_interest$fn__275."<init>":(Ljava/lang/Object;Ljava/lang/Object;D)V
+      52: checkcast     #39                 // class clojure/lang/IFn
+      55: invokeinterface #43,  1           // InterfaceMethod clojure/lang/IFn.invoke:()Ljava/lang/Object;
+      60: astore        6
+      62: getstatic     #47                 // Field const__4:Lclojure/lang/Var;
+      65: invokevirtual #52                 // Method clojure/lang/Var.getRawRoot:()Ljava/lang/Object;
+      68: checkcast     #39                 // class clojure/lang/IFn
+      71: aload         6
+      73: invokeinterface #54,  2           // InterfaceMethod clojure/lang/IFn.invoke:(Ljava/lang/Object;)Ljava/lang/Object;
+      78: dup
+      79: ifnull        92
+      82: getstatic     #60                 // Field java/lang/Boolean.FALSE:Ljava/lang/Boolean;
+      85: if_acmpeq     93
+      88: aload_1
+      89: goto          115
+      92: pop
+      93: getstatic     #63                 // Field const__5:Lclojure/lang/Var;
+      96: invokevirtual #52                 // Method clojure/lang/Var.getRawRoot:()Ljava/lang/Object;
+      99: checkcast     #39                 // class clojure/lang/IFn
+     102: aload         6
+     104: invokeinterface #54,  2           // InterfaceMethod clojure/lang/IFn.invoke:(Ljava/lang/Object;)Ljava/lang/Object;
+     109: checkcast     #65                 // class com/example/java_clojure_performance_analyzer/models/response/YearlyInvestmentSummary
+     112: invokevirtual #68                 // Method com/example/java_clojure_performance_analyzer/models/response/YearlyInvestmentSummary.getEndBalance:()Ljava/lang/Double;
+     115: astore        7
+     117: aload         7
+     119: aload_1
+     120: invokestatic  #72                 // Method clojure/lang/Numbers.minus:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Number;
+     123: astore        8
+     125: new           #74                 // class com/example/java_clojure_performance_analyzer/models/response/InvestmentSummary
+     128: dup
+     129: aload_1
+     130: aconst_null
+     131: astore_1
+     132: checkcast     #76                 // class java/lang/Double
+     135: aload         7
+     137: aconst_null
+     138: astore        7
+     140: checkcast     #76                 // class java/lang/Double
+     143: aload         8
+     145: aconst_null
+     146: astore        8
+     148: checkcast     #76                 // class java/lang/Double
+     151: invokespecial #79                 // Method com/example/java_clojure_performance_analyzer/models/response/InvestmentSummary."<init>":(Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;)V
+     154: astore        9
+     156: new           #81                 // class com/example/java_clojure_performance_analyzer/models/response/CompoundInterestResponse
+     159: dup
+     160: aload         9
+     162: aconst_null
+     163: astore        9
+     165: checkcast     #74                 // class com/example/java_clojure_performance_analyzer/models/response/InvestmentSummary
+     168: aload         6
+     170: aconst_null
+     171: astore        6
+     173: checkcast     #83                 // class java/util/List
+     176: invokespecial #86                 // Method com/example/java_clojure_performance_analyzer/models/response/CompoundInterestResponse."<init>":(Lcom/example/java_clojure_performance_analyzer/models/response/InvestmentSummary;Ljava/util/List;)V
+     179: areturn
+    LineNumberTable:
+      line 7: 0
+      line 9: 4
+      line 10: 12
+      line 11: 22
+      line 13: 33
+      line 13: 36
+      line 15: 52
+      line 15: 55
+      line 43: 62
+      line 43: 68
+      line 43: 73
+      line 45: 99
+      line 45: 104
+      line 45: 112
+      line 48: 120
+    LocalVariableTable:
+      Start  Length  Slot  Name   Signature
+          8     171     1 initial_amount   Ljava/lang/Object;
+         16     163     2  rate   Ljava/lang/Object;
+         26     153     3 years   Ljava/lang/Object;
+         39     140     4 compound_factor   D
+         62     117     6 yearly_details_list   Ljava/lang/Object;
+        117      62     7 final_amount   Ljava/lang/Object;
+        125      54     8 total_interest_earned   Ljava/lang/Object;
+        156      23     9 summary   Ljava/lang/Object;
+          0     179     0 request   Ljava/lang/Object;
+
+  public java.lang.Object invoke(java.lang.Object);
+    Code:
+       0: aload_1
+       1: aconst_null
+       2: astore_1
+       3: invokestatic  #101                // Method invokeStatic:(Ljava/lang/Object;)Ljava/lang/Object;
+       6: areturn
+    LineNumberTable:
+      line 7: 3
+
+  public static {};
+    Code:
+       0: ldc           #104                // String clojure.core
+       2: ldc           #106                // String empty?
+       4: invokestatic  #112                // Method clojure/lang/RT.var:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Var;
+       7: checkcast     #49                 // class clojure/lang/Var
+      10: putstatic     #47                 // Field const__4:Lclojure/lang/Var;
+      13: ldc           #104                // String clojure.core
+      15: ldc           #114                // String last
+      17: invokestatic  #112                // Method clojure/lang/RT.var:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Var;
+      20: checkcast     #49                 // class clojure/lang/Var
+      23: putstatic     #63                 // Field const__5:Lclojure/lang/Var;
+      26: return
+    LineNumberTable:
+      line 7: 0
+}
+
+=== INNER LOOP FUNCTION (fn__275) ===
+Compiled from "compound_interest_service_idiomatic.clj"
+public final class com.example.java_clojure_performance_analyzer.service.compound_interest_service_idiomatic$calculate_compound_interest$fn__275 extends clojure.lang.AFunction {
+  java.lang.Object initial_amount;
+
+  java.lang.Object years;
+
+  double compound_factor;
+
+  public static final clojure.lang.Var const__5;
+
+  public com.example.java_clojure_performance_analyzer.service.compound_interest_service_idiomatic$calculate_compound_interest$fn__275(java.lang.Object, java.lang.Object, double);
+    Code:
+       0: aload_0
+       1: invokespecial #15                 // Method clojure/lang/AFunction."<init>":()V
+       4: aload_0
+       5: aload_1
+       6: putfield      #17                 // Field initial_amount:Ljava/lang/Object;
+       9: aload_0
+      10: aload_2
+      11: putfield      #19                 // Field years:Ljava/lang/Object;
+      14: aload_0
+      15: dload_3
+      16: putfield      #21                 // Field compound_factor:D
+      19: return
+    LineNumberTable:
+      line 15: 0
+
+  public java.lang.Object invoke();
+    Code:
+       0: lconst_1
+       1: lstore_1
+       2: aload_0
+       3: getfield      #17                 // Field initial_amount:Ljava/lang/Object;
+       6: aload_0
+       7: aconst_null
+       8: putfield      #17                 // Field initial_amount:Ljava/lang/Object;
+      11: astore_3
+      12: getstatic     #29                 // Field clojure/lang/PersistentVector.EMPTY:Lclojure/lang/PersistentVector;
+      15: astore        4
+      17: lload_1
+      18: aload_0
+      19: getfield      #19                 // Field years:Ljava/lang/Object;
+      22: invokestatic  #35                 // Method clojure/lang/Numbers.gt:(JLjava/lang/Object;)Z
+      25: ifeq          37
+      28: aload         4
+      30: aconst_null
+      31: astore        4
+      33: goto          149
+      36: athrow
+      37: aload_3
+      38: astore        5
+      40: aload_3
+      41: aconst_null
+      42: astore_3
+      43: aload_0
+      44: getfield      #21                 // Field compound_factor:D
+      47: invokestatic  #39                 // Method clojure/lang/Numbers.multiply:(Ljava/lang/Object;D)D
+      50: dstore        6
+      52: dload         6
+      54: aload         5
+      56: invokestatic  #43                 // Method clojure/lang/Numbers.minus:(DLjava/lang/Object;)D
+      59: dstore        8
+      61: lload_1
+      62: invokestatic  #47                 // Method clojure/lang/Numbers.inc:(J)J
+      65: dload         6
+      67: invokestatic  #53                 // Method java/lang/Double.valueOf:(D)Ljava/lang/Double;
+      70: getstatic     #57                 // Field const__5:Lclojure/lang/Var;
+      73: invokevirtual #62                 // Method clojure/lang/Var.getRawRoot:()Ljava/lang/Object;
+      76: checkcast     #64                 // class clojure/lang/IFn
+      79: aload         4
+      81: aconst_null
+      82: astore        4
+      84: new           #66                 // class com/example/java_clojure_performance_analyzer/models/response/YearlyInvestmentSummary
+      87: dup
+      88: lload_1
+      89: invokestatic  #72                 // Method clojure/lang/RT.intCast:(J)I
+      92: invokestatic  #77                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+      95: checkcast     #74                 // class java/lang/Integer
+      98: aload         5
+     100: aconst_null
+     101: astore        5
+     103: invokestatic  #81                 // Method clojure/lang/RT.doubleCast:(Ljava/lang/Object;)D
+     106: invokestatic  #53                 // Method java/lang/Double.valueOf:(D)Ljava/lang/Double;
+     109: checkcast     #49                 // class java/lang/Double
+     112: dload         6
+     114: invokestatic  #84                 // Method clojure/lang/RT.doubleCast:(D)D
+     117: invokestatic  #53                 // Method java/lang/Double.valueOf:(D)Ljava/lang/Double;
+     120: checkcast     #49                 // class java/lang/Double
+     123: dload         8
+     125: invokestatic  #84                 // Method clojure/lang/RT.doubleCast:(D)D
+     128: invokestatic  #53                 // Method java/lang/Double.valueOf:(D)Ljava/lang/Double;
+     131: checkcast     #49                 // class java/lang/Double
+     134: invokespecial #87                 // Method com/example/java_clojure_performance_analyzer/models/response/YearlyInvestmentSummary."<init>":(Ljava/lang/Integer;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;)V
+     137: invokeinterface #90,  3           // InterfaceMethod clojure/lang/IFn.invoke:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+     142: astore        4
+     144: astore_3
+     145: lstore_1
+     146: goto          17
+     149: areturn
+    LineNumberTable:
+      line 15: 0
+      line 20: 17
+      line 20: 22
+      line 24: 47
+      line 25: 56
+      line 28: 62
+      line 30: 76
+      line 32: 89
+      line 33: 103
+      line 34: 114
+      line 35: 125
+      line 30: 137
+    LocalVariableTable:
+      Start  Length  Slot  Name   Signature
+         40     109     5 start_balance   Ljava/lang/Object;
+         52      97     6 end_balance   D
+         61      88     8 interest_earned   D
+          2     147     1  year   J
+         12     137     3 current_amount   Ljava/lang/Object;
+         17     132     4 yearly_details_list   Ljava/lang/Object;
+          0     149     0  this   Ljava/lang/Object;
+
+  public static {};
+    Code:
+       0: ldc           #105                // String clojure.core
+       2: ldc           #107                // String conj
+       4: invokestatic  #111                // Method clojure/lang/RT.var:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Var;
+       7: checkcast     #59                 // class clojure/lang/Var
+      10: putstatic     #57                 // Field const__5:Lclojure/lang/Var;
+      13: return
+    LineNumberTable:
+      line 15: 0
+}

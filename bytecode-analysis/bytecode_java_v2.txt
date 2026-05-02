@@ -1,0 +1,127 @@
+Compiled from "JavaCompoundInterestService.java"
+public class com.example.java_clojure_performance_analyzer.services.JavaCompoundInterestService implements com.example.java_clojure_performance_analyzer.services.CompoundInterestService {
+  public com.example.java_clojure_performance_analyzer.services.JavaCompoundInterestService();
+    Code:
+       0: aload_0
+       1: invokespecial #10                 // Method java/lang/Object."<init>":()V
+       4: return
+    LineNumberTable:
+      line 14: 0
+    LocalVariableTable:
+      Start  Length  Slot  Name   Signature
+          0       5     0  this   Lcom/example/java_clojure_performance_analyzer/services/JavaCompoundInterestService;
+
+  public com.example.java_clojure_performance_analyzer.models.response.CompoundInterestResponse calculateCompoundInterest(com.example.java_clojure_performance_analyzer.models.request.CompoundInterestRequest);
+    Code:
+       0: aload_1
+       1: invokevirtual #18                 // Method com/example/java_clojure_performance_analyzer/models/request/CompoundInterestRequest.getInitialAmount:()Ljava/lang/Double;
+       4: invokevirtual #24                 // Method java/lang/Double.doubleValue:()D
+       7: dstore_2
+       8: aload_1
+       9: invokevirtual #30                 // Method com/example/java_clojure_performance_analyzer/models/request/CompoundInterestRequest.getAnnualInterestRate:()Ljava/lang/Double;
+      12: invokevirtual #24                 // Method java/lang/Double.doubleValue:()D
+      15: dstore        4
+      17: aload_1
+      18: invokevirtual #33                 // Method com/example/java_clojure_performance_analyzer/models/request/CompoundInterestRequest.getYears:()Ljava/lang/Integer;
+      21: invokevirtual #37                 // Method java/lang/Integer.intValue:()I
+      24: istore        6
+      26: dconst_1
+      27: dload         4
+      29: ldc2_w        #43                 // double 100.0d
+      32: ddiv
+      33: dadd
+      34: dstore        7
+      36: new           #45                 // class java/util/ArrayList
+      39: dup
+      40: iload         6
+      42: invokespecial #47                 // Method java/util/ArrayList."<init>":(I)V
+      45: astore        9
+      47: dload_2
+      48: dstore        10
+      50: iconst_1
+      51: istore        12
+      53: goto          116
+      56: dload         10
+      58: dstore        13
+      60: dload         10
+      62: dload         7
+      64: dmul
+      65: dstore        15
+      67: dload         15
+      69: dload         13
+      71: dsub
+      72: dstore        17
+      74: aload         9
+      76: new           #50                 // class com/example/java_clojure_performance_analyzer/models/response/YearlyInvestmentSummary
+      79: dup
+      80: iload         12
+      82: invokestatic  #52                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+      85: dload         13
+      87: invokestatic  #56                 // Method java/lang/Double.valueOf:(D)Ljava/lang/Double;
+      90: dload         15
+      92: invokestatic  #56                 // Method java/lang/Double.valueOf:(D)Ljava/lang/Double;
+      95: dload         17
+      97: invokestatic  #56                 // Method java/lang/Double.valueOf:(D)Ljava/lang/Double;
+     100: invokespecial #59                 // Method com/example/java_clojure_performance_analyzer/models/response/YearlyInvestmentSummary."<init>":(Ljava/lang/Integer;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;)V
+     103: invokeinterface #62,  2           // InterfaceMethod java/util/List.add:(Ljava/lang/Object;)Z
+     108: pop
+     109: dload         15
+     111: dstore        10
+     113: iinc          12, 1
+     116: iload         12
+     118: iload         6
+     120: if_icmple     56
+     123: dload         10
+     125: dload_2
+     126: dsub
+     127: dstore        12
+     129: new           #68                 // class com/example/java_clojure_performance_analyzer/models/response/InvestmentSummary
+     132: dup
+     133: dload_2
+     134: invokestatic  #56                 // Method java/lang/Double.valueOf:(D)Ljava/lang/Double;
+     137: dload         10
+     139: invokestatic  #56                 // Method java/lang/Double.valueOf:(D)Ljava/lang/Double;
+     142: dload         12
+     144: invokestatic  #56                 // Method java/lang/Double.valueOf:(D)Ljava/lang/Double;
+     147: invokespecial #70                 // Method com/example/java_clojure_performance_analyzer/models/response/InvestmentSummary."<init>":(Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;)V
+     150: astore        14
+     152: new           #73                 // class com/example/java_clojure_performance_analyzer/models/response/CompoundInterestResponse
+     155: dup
+     156: aload         14
+     158: aload         9
+     160: invokespecial #75                 // Method com/example/java_clojure_performance_analyzer/models/response/CompoundInterestResponse."<init>":(Lcom/example/java_clojure_performance_analyzer/models/response/InvestmentSummary;Ljava/util/List;)V
+     163: areturn
+    LineNumberTable:
+      line 17: 0
+      line 18: 8
+      line 19: 17
+      line 21: 26
+      line 23: 36
+      line 25: 47
+      line 27: 50
+      line 28: 56
+      line 29: 60
+      line 30: 67
+      line 32: 74
+      line 34: 109
+      line 27: 113
+      line 37: 123
+      line 38: 129
+      line 40: 152
+    LocalVariableTable:
+      Start  Length  Slot  Name   Signature
+          0     164     0  this   Lcom/example/java_clojure_performance_analyzer/services/JavaCompoundInterestService;
+          0     164     1 request   Lcom/example/java_clojure_performance_analyzer/models/request/CompoundInterestRequest;
+          8     156     2 initialAmount   D
+         17     147     4  rate   D
+         26     138     6 years   I
+         36     128     7 compoundFactor   D
+         47     117     9 yearlyDetailsList   Ljava/util/List;
+         50     114    10 currentAmount   D
+         53      70    12  year   I
+         60      53    13 startBalance   D
+         67      46    15 endBalance   D
+         74      39    17 interestEarned   D
+        129      35    12 totalInterestEarned   D
+        152      12    14 summary   Lcom/example/java_clojure_performance_analyzer/models/response/InvestmentSummary;
+}
