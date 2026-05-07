@@ -13,6 +13,8 @@ cd "$(dirname "$0")/.."
 IMPLEMENTATION=$1
 LOAD_LEVEL=$2
 
+RESULTS_DIR="metrics-results-v2"
+
 if [ -z "$IMPLEMENTATION" ] || [ -z "$LOAD_LEVEL" ]; then
     echo -e "${RED}Error: Specify implementation and load level${NC}"
     echo "Usage: $0 [java|clojure-idiomatic|clojure-interop-java] [100|500|1000]"
@@ -54,7 +56,7 @@ fi
 
 PROMETHEUS_URL="http://localhost:9090"
 
-mkdir -p metrics-results
+mkdir -p metrics-results-v2
 
 echo "═══════════════════════════════════════════════════"
 echo "  METRICS COLLECTION - ${IMPLEMENTATION^^} @ ${LOAD_LEVEL} REQ/S"
@@ -265,7 +267,7 @@ echo ""
 
 
 TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
-RESULT_FILE="metrics-results/metrics-${IMPLEMENTATION}-${LOAD_LEVEL}-${TIMESTAMP}.txt"
+RESULT_FILE="${RESULTS_DIR}/metrics-${IMPLEMENTATION}-${LOAD_LEVEL}-${TIMESTAMP}.txt"
 HEAP_AVAILABLE_GB="6"
 
 GC_TIME_INITIAL_MS=$(echo "scale=0; $GC_TIME_INITIAL * 1000" | bc)
@@ -407,7 +409,7 @@ echo -e "${GREEN}✓ Results saved in: $RESULT_FILE${NC}"
 echo ""
 
 
-CSV_FILE="metrics-results/metrics-comparison.csv"
+CSV_FILE="${RESULTS_DIR}/metrics-comparison.csv"
 
 if [ ! -f "$CSV_FILE" ]; then
     echo "Implementation,Timestamp,Load_Level,Prometheus_Success,Gatling_Total,Gatling_Success,Gatling_Failed,Error_Rate_%,Prom_Gatling_Delta_%,GC_Time_ms,GC_Collections,Heap_Peak_GB,Heap_Peak_%,CPU_Peak_%,Sync_Status,Error_Status,P50_ms,P75_ms,P95_ms,P99_ms,Min_ms,Mean_ms,Max_ms,StdDev_ms,Req_Per_Sec" > "$CSV_FILE"

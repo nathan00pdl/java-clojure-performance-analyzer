@@ -1,0 +1,60 @@
+RESULTS - CLOJURE-IDIOMATIC
+Date: 2025-12-13 22:30:04
+
+METRICS PROMETHEUS
+────────────────────────────────────────────────
+CPU Peak:                 87.04 %
+Heap Available:           6 GB
+Heap Peak:                2.19 GB
+Heap Peak (%):            36.00 %
+GC Time Initial:          11.000 ms
+GC Time Final:            1039.000 ms
+GC Time (test):           1028.000 ms
+GC Collections Initial:   1
+GC Collections Final:     12
+GC Collections (test):    11
+Requests Initial:         14
+Requests Final:           150091
+Total Requests:           150077
+
+GATLING METRICS
+────────────────────────────────────────────────
+RESPONSE TIME DISTRIBUTION
+< 800ms:                  19627 requests (13%)
+800-1200ms:               567 requests (0%)
+> 1200ms:                 129806 requests (87%)
+
+REQUEST SUMMARY AND THROUGHPUT
+Requests/Second:          500.0 req/s
+Total Requests:           150000
+Successful Requests:      150000
+Failed Requests:          0
+Error Rate:               0 %
+
+RESPONSE TIME (ms)
+Min:                      0 ms
+Mean:                     12526 ms
+Max:                      44866 ms
+Std Deviation:            6451 ms
+
+PERCENTILES (ms)
+P50 (Median):             14858 ms
+P75:                      17006 ms
+P95:                      18525 ms
+P99:                      25091 ms
+
+VALIDATION
+────────────────────────────────────────────────
+Prometheus-Gatling Delta: +77 requests (0%)
+Sync Status:              EXCELLENT
+Error Status:             EXCELLENT
+
+INTERPRETATION
+────────────────────────────────────────────────
+Heap Usage: ✓ GOOD (30-50%)
+GC Overhead: ✓ ACCEPTABLE (500-2000ms)
+CPU Peak: ⚠ HIGH (70-90%)
+Error Rate: ✓ EXCELLENT (< 0.5%)
+P95 Latency: ⚠ HIGH (> 100ms)
+Response Consistency: ⚠ VARIABLE (StdDev > 50ms)
+Response Distribution: ⚠ NEEDS IMPROVEMENT (<50% under 800ms)
