@@ -142,97 +142,68 @@ echo ""
 
 echo "[STEP 5] Collecting Gatling metrics..."
 echo ""
-echo -e "${BLUE}Option 1:${NC} Provide path to stats.json for automatic extraction"
-echo "           Example: gatling-results/compoundinterestsimulation-20251210123456/js/stats.json"
-echo ""
-echo -e "${BLUE}Option 2:${NC} Press ENTER to input all metrics manually"
-echo ""
-read -p "Path to stats.json (or ENTER for manual): " GATLING_STATS_PATH
-
 
 AUTO_EXTRACTED=false
 
-if [ -n "$GATLING_STATS_PATH" ] && [ -f "$GATLING_STATS_PATH" ]; then
+while [ "$AUTO_EXTRACTED" = false ]; do
+    echo -e "${BLUE}Option 1:${NC} Provide path to stats.json for automatic extraction"
+    echo "           Example: gatling-results/compoundinterestsimulation-20251210123456/js/stats.json"
     echo ""
-    echo -e "  ${GREEN}✓ File found, extracting all metrics automatically...${NC}"
+    echo -e "${BLUE}Option 2:${NC} Type 'm' for manual input"
     echo ""
+    read -p "Path to stats.json (or 'm' for manual): " GATLING_STATS_PATH
 
-    GATLING_TOTAL=$(jq -r '.stats.numberOfRequests.total' "$GATLING_STATS_PATH")
-    GATLING_SUCCESS=$(jq -r '.stats.numberOfRequests.ok' "$GATLING_STATS_PATH")
-    GATLING_FAILED=$(jq -r '.stats.numberOfRequests.ko' "$GATLING_STATS_PATH")
+    if [ "$GATLING_STATS_PATH" = "m" ]; then
+        break
+    elif [ -n "$GATLING_STATS_PATH" ] && [ -f "$GATLING_STATS_PATH" ]; then
+        echo ""
+        echo -e "  ${GREEN}✓ File found, extracting all metrics automatically...${NC}"
+        echo ""
 
-    PERCENTILE_50=$(jq -r '.stats.percentiles1.total' "$GATLING_STATS_PATH")
-    PERCENTILE_75=$(jq -r '.stats.percentiles2.total' "$GATLING_STATS_PATH")
-    PERCENTILE_95=$(jq -r '.stats.percentiles3.total' "$GATLING_STATS_PATH")
-    PERCENTILE_99=$(jq -r '.stats.percentiles4.total' "$GATLING_STATS_PATH")
+        GATLING_TOTAL=$(jq -r '.stats.numberOfRequests.total' "$GATLING_STATS_PATH")
+        GATLING_SUCCESS=$(jq -r '.stats.numberOfRequests.ok' "$GATLING_STATS_PATH")
+        GATLING_FAILED=$(jq -r '.stats.numberOfRequests.ko' "$GATLING_STATS_PATH")
+        PERCENTILE_50=$(jq -r '.stats.percentiles1.total' "$GATLING_STATS_PATH")
+        PERCENTILE_75=$(jq -r '.stats.percentiles2.total' "$GATLING_STATS_PATH")
+        PERCENTILE_95=$(jq -r '.stats.percentiles3.total' "$GATLING_STATS_PATH")
+        PERCENTILE_99=$(jq -r '.stats.percentiles4.total' "$GATLING_STATS_PATH")
+        RESPONSE_TIME_MIN=$(jq -r '.stats.minResponseTime.total' "$GATLING_STATS_PATH")
+        RESPONSE_TIME_MAX=$(jq -r '.stats.maxResponseTime.total' "$GATLING_STATS_PATH")
+        RESPONSE_TIME_MEAN=$(jq -r '.stats.meanResponseTime.total' "$GATLING_STATS_PATH")
+        RESPONSE_TIME_STDDEV=$(jq -r '.stats.standardDeviation.total' "$GATLING_STATS_PATH")
+        REQUESTS_PER_SECOND=$(jq -r '.stats.meanNumberOfRequestsPerSecond.total' "$GATLING_STATS_PATH")
 
-    RESPONSE_TIME_MIN=$(jq -r '.stats.minResponseTime.total' "$GATLING_STATS_PATH")
-    RESPONSE_TIME_MAX=$(jq -r '.stats.maxResponseTime.total' "$GATLING_STATS_PATH")
-    RESPONSE_TIME_MEAN=$(jq -r '.stats.meanResponseTime.total' "$GATLING_STATS_PATH")
-    RESPONSE_TIME_STDDEV=$(jq -r '.stats.standardDeviation.total' "$GATLING_STATS_PATH")
+        AUTO_EXTRACTED=true
 
-    REQUESTS_PER_SECOND=$(jq -r '.stats.meanNumberOfRequestsPerSecond.total' "$GATLING_STATS_PATH")
-
-    AUTO_EXTRACTED=true
-
-    echo "  ${GREEN}✓ All metrics extracted successfully!${NC}"
-    echo ""
-    echo "  Request Summary:"
-    echo "    Total:                  $GATLING_TOTAL"
-    echo "    Successful (OK):        $GATLING_SUCCESS"
-    echo "    Failed (KO):            $GATLING_FAILED"
-    echo ""
-    echo "  Response Time (ms):"
-    echo "    Min:                    $RESPONSE_TIME_MIN"
-    echo "    Mean:                   $RESPONSE_TIME_MEAN"
-    echo "    Max:                    $RESPONSE_TIME_MAX"
-    echo "    Std Deviation:          $RESPONSE_TIME_STDDEV"
-    echo ""
-    echo "  Percentiles (ms):"
-    echo "    P50 (Median):           $PERCENTILE_50"
-    echo "    P75:                    $PERCENTILE_75"
-    echo "    P95:                    $PERCENTILE_95"
-    echo "    P99:                    $PERCENTILE_99"
-    echo ""
-    echo "  Throughput:"
-    echo "    Requests/second:        $REQUESTS_PER_SECOND"
-    echo ""
-
-elif [ -n "$GATLING_STATS_PATH" ]; then
-    echo ""
-    echo -e "  ${RED}✗ File not found: $GATLING_STATS_PATH${NC}"
-    echo "  Falling back to manual input..."
-    echo ""
-fi
-
-
-if [ "$AUTO_EXTRACTED" = false ]; then
-    echo "  ${YELLOW}Manual input mode - Enter all Gatling metrics:${NC}"
-    echo ""
-
-    echo "  Request Summary:"
-    read -p "    Total requests:           " GATLING_TOTAL
-    read -p "    Successful (OK):          " GATLING_SUCCESS
-    read -p "    Failed (KO):              " GATLING_FAILED
-
-    echo ""
-    echo "  Response Time (ms):"
-    read -p "    Min:                      " RESPONSE_TIME_MIN
-    read -p "    Mean:                     " RESPONSE_TIME_MEAN
-    read -p "    Max:                      " RESPONSE_TIME_MAX
-    read -p "    Std Deviation:            " RESPONSE_TIME_STDDEV
-
-    echo ""
-    echo "  Percentiles (ms):"
-    read -p "    P50 (Median):             " PERCENTILE_50
-    read -p "    P75:                      " PERCENTILE_75
-    read -p "    P95:                      " PERCENTILE_95
-    read -p "    P99:                      " PERCENTILE_99
-
-    echo ""
-    echo "  Throughput:"
-    read -p "    Requests/second:          " REQUESTS_PER_SECOND
-fi
+        echo "  ${GREEN}✓ All metrics extracted successfully!${NC}"
+        echo ""
+        echo "  Request Summary:"
+        echo "    Total:                  $GATLING_TOTAL"
+        echo "    Successful (OK):        $GATLING_SUCCESS"
+        echo "    Failed (KO):            $GATLING_FAILED"
+        echo ""
+        echo "  Response Time (ms):"
+        echo "    Min:                    $RESPONSE_TIME_MIN"
+        echo "    Mean:                   $RESPONSE_TIME_MEAN"
+        echo "    Max:                    $RESPONSE_TIME_MAX"
+        echo "    Std Deviation:          $RESPONSE_TIME_STDDEV"
+        echo ""
+        echo "  Percentiles (ms):"
+        echo "    P50 (Median):           $PERCENTILE_50"
+        echo "    P75:                    $PERCENTILE_75"
+        echo "    P95:                    $PERCENTILE_95"
+        echo "    P99:                    $PERCENTILE_99"
+        echo ""
+        echo "  Throughput:"
+        echo "    Requests/second:        $REQUESTS_PER_SECOND"
+        echo ""
+    else
+        echo ""
+        echo -e "  ${RED}✗ File not found: '$GATLING_STATS_PATH'${NC}"
+        echo -e "  Tip: $(ls -t gatling-results/*/js/stats.json 2>/dev/null | head -1 || echo 'No stats.json found in gatling-results/')"
+        echo ""
+    fi
+done
 
 
 echo ""
