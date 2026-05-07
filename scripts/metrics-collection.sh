@@ -19,20 +19,16 @@ if [ -z "$IMPLEMENTATION" ] || [ -z "$LOAD_LEVEL" ]; then
     exit 1
 fi
 
-# Validate LOAD_LEVEL
 if [[ ! "$LOAD_LEVEL" =~ ^(100|500|1000)$ ]]; then
     echo -e "${RED}Error: Load level must be 100, 500, or 1000${NC}"
     exit 1
 fi
 
-# Validate IMPLEMENTATION
 if [[ ! "$IMPLEMENTATION" =~ ^(java|clojure-idiomatic|clojure-interop-java)$ ]]; then
     echo -e "${RED}Error: Implementation must be java, clojure-idiomatic, or clojure-interop-java${NC}"
     exit 1
 fi
 
-# P95 and P99 interpretation thresholds by load level
-# Thresholds reflect expected latency ranges per regime, not absolute fixed values
 if [ "$LOAD_LEVEL" = "100" ]; then
     P95_EXCELLENT=10
     P95_GOOD=50
@@ -48,7 +44,6 @@ elif [ "$LOAD_LEVEL" = "500" ]; then
     P99_GOOD=1000
     P99_ACCEPTABLE=5000
 else
-    # 1000 req/s
     P95_EXCELLENT=1000
     P95_GOOD=5000
     P95_ACCEPTABLE=15000
