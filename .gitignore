@@ -67,7 +67,8 @@ replay_pid*
 logs/
 
 # Test Results & Performance Metrics (keep structure)
-metrics-results/*
+metrics-results-v1/*
+metrics-results-v2/*
 !metrics-results/.gitkeep
 
 gatling-results/*
