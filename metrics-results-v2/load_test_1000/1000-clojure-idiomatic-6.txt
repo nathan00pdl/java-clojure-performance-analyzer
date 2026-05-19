@@ -1,0 +1,56 @@
+RESULTS - CLOJURE-IDIOMATIC @ 1000 REQ/S
+Date: 2026-05-13 21:39:24
+
+METRICS PROMETHEUS
+────────────────────────────────────────────────
+CPU Peak:                 76.06 %
+Heap Available:           6 GB
+Heap Peak:                1.60 GB
+Heap Peak (%):            26.00 %
+GC Time Initial:          17.000 ms
+GC Time Final:            11325.000 ms
+GC Time (test):           11308.000 ms
+GC Collections Initial:   2
+GC Collections Final:     59
+GC Collections (test):    57
+Requests Initial:         19
+Requests Final:           243929
+Total Requests:           243910
+
+GATLING METRICS
+────────────────────────────────────────────────
+REQUEST SUMMARY AND THROUGHPUT
+Requests/Second:          874.6355685131196 req/s
+Total Requests:           300000
+Successful Requests:      237007
+Failed Requests:          62993
+Error Rate:               20.900 %
+
+RESPONSE TIME (ms)
+Min:                      0 ms
+Mean:                     33269 ms
+Max:                      172481 ms
+Std Deviation:            39169 ms
+
+PERCENTILES (ms)
+P50 (Median):             16191 ms
+P75:                      60142 ms
+P95:                      113354 ms
+P99:                      129507 ms
+
+VALIDATION
+────────────────────────────────────────────────
+Prometheus-Gatling Delta: +6903 requests (2.900%)
+Sync Status:              WARNING
+Error Status:             HIGH
+
+INTERPRETATION (thresholds calibrated for 1000 req/s)
+────────────────────────────────────────────────
+Heap Usage: ✓ EXCELLENT (< 30%)
+GC Overhead: ✗ HIGH (> 5s)
+CPU Peak: ⚠ HIGH (70-90%)
+Error Rate: ✗ HIGH (> 2%)
+P95 Latency: ✗ HIGH (> 15000ms at 1000 req/s)
+P99 Latency: ✗ HIGH (> 30000ms at 1000 req/s)
+Response Consistency: ⚠ VARIABLE (StdDev > 50ms)
+GC Activity: ⚠ HIGH (> 30 collections)
