@@ -65,17 +65,23 @@ replay_pid*
 # Logs
 *.log
 logs/
+gc-logs/
+gc-*.log
 
 # Test Results & Performance Metrics (keep structure)
-metrics-results-v1/*
-metrics-results-v2/*
-!metrics-results/.gitkeep
+.metrics-results-v1/*
+!.metrics-results-v1/.gitkeep
+.metrics-results-v2/*
+!.metrics-results-v2/.gitkeep
 
 gatling-results/*
 !gatling-results/.gitkeep
 
 heap-dumps/*
 !heap-dumps/.gitkeep
+
+results/raw/*
+!results/raw/.gitkeep
 
 # Docker Build Cache
 maven-cache/
