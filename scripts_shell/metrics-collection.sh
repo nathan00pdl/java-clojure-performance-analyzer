@@ -13,7 +13,7 @@ cd "$(dirname "$0")/.."
 IMPLEMENTATION=$1
 LOAD_LEVEL=$2
 
-RESULTS_DIR="metrics-results-v2"
+RESULTS_DIR="metrics-results-load-1000-v3"
 
 if [ -z "$IMPLEMENTATION" ] || [ -z "$LOAD_LEVEL" ]; then
     echo -e "${RED}Error: Specify implementation and load level${NC}"
@@ -56,11 +56,9 @@ fi
 
 PROMETHEUS_URL="http://localhost:9090"
 
-mkdir -p metrics-results-v2
+mkdir -p metrics-results-load-1000-v3
 
-echo "═══════════════════════════════════════════════════"
 echo "  METRICS COLLECTION - ${IMPLEMENTATION^^} @ ${LOAD_LEVEL} REQ/S"
-echo "═══════════════════════════════════════════════════"
 echo ""
 
 echo "[STEP 1] Collecting initial metrics..."
@@ -89,8 +87,8 @@ echo ""
 
 echo "[STEP 3] Waiting for Prometheus synchronization..."
 echo ""
-echo "  Waiting 15 seconds for final metrics sync..."
-sleep 15
+echo "  Waiting 25 seconds for final metrics sync..."
+sleep 25
 
 echo "[STEP 4] Collecting final metrics..."
 echo ""
@@ -100,11 +98,11 @@ GC_COUNT_FINAL=$(curl -s "${PROMETHEUS_URL}/api/v1/query?query=jvm_gc_pause_seco
 REQUESTS_FINAL=$(curl -s "${PROMETHEUS_URL}/api/v1/query?query=http_server_requests_seconds_count" | jq -r '.data.result | map(.value[1] | tonumber) | add // 0')
 
 HEAP_PEAK=$(curl -s -G "${PROMETHEUS_URL}/api/v1/query" \
-  --data-urlencode 'query=max(max_over_time(jvm_memory_used_bytes{area="heap"}[10m]))' \
+  --data-urlencode 'query=max(max_over_time(jvm_memory_used_bytes{area="heap"}[15m]))' \
   | jq -r '.data.result[0].value[1]')
 
 CPU_PEAK=$(curl -s -G "${PROMETHEUS_URL}/api/v1/query" \
-  --data-urlencode 'query=max(max_over_time(process_cpu_usage[10m])) * 100' \
+  --data-urlencode 'query=max(max_over_time(process_cpu_usage[15m])) * 100' \
   | jq -r '.data.result[0].value[1]')
 
 echo "  GC Time Final:          $GC_TIME_FINAL seconds"
@@ -117,7 +115,7 @@ echo ""
 echo "[CALCULATIONS]"
 echo ""
 
-GC_TIME_MS=$(echo "scale=0; ($GC_TIME_FINAL - $GC_TIME_INITIAL) * 1000" | bc 2>/dev/null || echo "0")
+GC_TIME_MS=$(echo "scale=3; ($GC_TIME_FINAL - $GC_TIME_INITIAL) * 1000" | bc 2>/dev/null || echo "0")
 GC_COUNT=$(echo "scale=0; $GC_COUNT_FINAL - $GC_COUNT_INITIAL" | bc 2>/dev/null || echo "0")
 TOTAL_REQUESTS=$(echo "$REQUESTS_FINAL - $REQUESTS_INITIAL" | bc)
 HEAP_GB_RAW=$(echo "scale=2; $HEAP_PEAK / 1024 / 1024 / 1024" | bc)
