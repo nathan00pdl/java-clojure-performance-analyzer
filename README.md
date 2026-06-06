@@ -3,12 +3,12 @@
 ## Overview
 Comparative performance study between programming paradigms through a REST API that calculates compound interest. The project implements three distinct approaches:
 
-- **Java (OOP)**: Pure object-oriented implementation using imperative style
-- **Clojure Idiomatic (FP)**: Pure functional implementation with immutable data structures
-- **Clojure Interop Java (Hybrid OOP+FP)**: Strategic Java interoperability for performance optimization
+- **Java (OOP)**: Pure object-oriented implementation using imperative style with mutable `ArrayList`
+- **Clojure Idiomatic (FP)**: Pure functional implementation with immutable `PersistentVector` data structures
+- **Clojure Interop Java (Hybrid OOP+FP)**: Strategic Java interoperability using native `ArrayList` within Clojure syntax
 
 ## Research Objective
-Evaluate whether strategic interoperability between Java and Clojure can achieve superior performance compared to using either paradigm in isolation, analyzing CPU usage, memory consumption, garbage collection overhead, and response time consistency under high-concurrency scenarios.
+Measure and compare quantitatively the performance cost of Clojure's idiomatic abstractions versus Java in HTTP request processing on the JVM, and investigate the role of Garbage Collector behavior as the mediating mechanism between paradigm choice and observed latency. The central finding of the study is that Java exhibits structural instability under saturation at 1000 req/s (CV% ~31%), while both Clojure implementations show convergent latency with greater stability (CV% ~13–15%). The generational hypothesis — that Clojure Idiomatic's short-lived immutable objects align with the design assumptions of generational GC — is the explanatory framework, not a claim of Clojure superiority.
 
 ## Architecture
 
@@ -131,7 +131,17 @@ POST /api/compound-interest-clojure/calculate-interop-java
 
 ## Performance Testing Workflow
 
-This project follows a rigorous testing methodology to ensure reliable, reproducible results for academic analysis. The workflow consists of executing isolated tests for each implementation, guaranteeing no metric contamination between executions. Before each test, containers and volumes are completely removed to ensure a clean environment. After recreating the containers, a stabilization period is observed before collecting initial Prometheus metrics including GC time, GC collections, and request count. The collect-metrics script then waits for manual Gatling test execution in a separate terminal. After Gatling completes, the script waits 15 seconds for Prometheus synchronization before collecting final metrics. The script automatically calculates differences between initial and final metrics, extracts data from Gatling's generated stats.json file, and saves everything in two formats: a detailed text file and a CSV dataset. Between tests of different implementations, a 5-minute pause ensures the system returns to idle state before starting the next cycle. Results are validated by analyzing the coefficient of variation of CPU Peak across tests, targeting values below 10% for scientific consistency.
+This project follows a rigorous testing methodology to ensure reliable, reproducible results for academic analysis. The study comprised **three independent test rounds** (V1, V2, V3), each organized as 3 implementations × 3 load levels × up to 7 repetitions per group.
+
+- **V1 (initial round, 54 executions)**: Used as historical reference for 100 and 500 req/s. A bug was identified in the `metrics-collection.sh` script where PromQL queries for GC Time and GC Collections used `result[0]`, capturing only one G1GC series instead of the sum of all. This caused underestimation of absolute GC values. Relative ordering between implementations was preserved.
+- **V2 (corrected round, 54 executions)**: Conducted with the corrected script (replacing `result[0]` with `[.data.result[].value[1] | tonumber] | add // 0`). Constitutes the definitive data for 100 and 500 req/s.
+- **V3 (dedicated round, 21 executions)**: Dedicated exclusively to 1000 req/s, motivated by instability observed in V2 at that load level (4 collapses across 18 executions). Constitutes the definitive data for 1000 req/s.
+
+Executions were excluded under two independent criteria:
+1. **Qualitative invalidity**: error rate > 0% — sufficient condition for discard regardless of other metrics.
+2. **Statistical outliers**: z-score criterion (|z| > 2) applied over the P95 latency metric.
+
+Between consecutive executions, a minimum 300-second stabilization interval was observed.
 
 ### Test Configuration
 
@@ -194,7 +204,7 @@ top -b -n 1 | head -n 20
 #### 7. Run Test with Metrics Collection
 ```bash
 # Terminal 1: Start metrics collection
-./collect-metrics.sh java  # or clojure-idiomatic or clojure-interop-java
+./metrics-collection.sh java  # or clojure-idiomatic or clojure-interop-java
 
 # Terminal 2: Execute load test when prompted
 ./run-gatling.sh
@@ -208,7 +218,7 @@ sleep 300  # 5 minutes between tests
 ```
 
 #### 9. Repeat for Other Implementations
-Repeat steps 3-8 for each implementation, changing the scenario in CompoundInterestSimulation.java and the argument to collect-metrics.sh.
+Repeat steps 3-8 for each implementation, changing the scenario in `CompoundInterestSimulation.java` and the argument to `metrics-collection.sh`.
 
 ### Verify Results
 ```bash
@@ -225,17 +235,21 @@ cat metrics-results/metrics-{implementation}-{timestamp}.txt
 ## Metrics Collected
 
 ### Prometheus Metrics
+All Prometheus metrics are calculated as the delta between the initial value (collected before the test starts) and the final value (collected after a 15-second synchronization wait post-Gatling), isolating consumption attributable exclusively to the test period.
+
 - **CPU Peak**: Maximum CPU usage during test
-- **Heap Peak**: Maximum heap memory allocation
-- **GC Time**: Total garbage collection time
-- **GC Collections**: Number of GC cycles
+- **Heap Peak**: Maximum heap memory allocation (GB and % of configured 6GB max)
+- **GC Time**: Total garbage collection pause time (`jvm_gc_pause_seconds_sum`)
+- **GC Collections**: Number of GC cycles (`jvm_gc_pause_seconds_count`)
 - **Total Requests**: HTTP requests processed
 
 ### Gatling Metrics
-- **Response Time**: Min, Mean, P50, P75, P95, P99, Max
+- **Response Time**: Min, Mean, P50, P75, P95, P99, Max (ms)
 - **Throughput**: Requests per second
-- **Success Rate**: Percentage of successful requests
-- **Response Distribution**: Percentage under 800ms, 800-1200ms, >1200ms
+- **Success Rate**: Percentage of successful requests (executions with error rate > 0% are discarded)
+- **Response Distribution**: Percentage under 800ms, 800–1200ms, >1200ms
+
+P95 and P99 are the primary latency metrics, as they capture tail behavior under sustained load and are most sensitive to GC pause impact.
 
 ### Results Storage
 - **Text Reports**: `metrics-results/metrics-{implementation}-{timestamp}.txt`
@@ -256,7 +270,7 @@ for (int year = 1; year <= years; year++) {
 }
 ```
 
-**Characteristics**: Mutable state, traditional loops, ArrayList allocation
+**Characteristics**: Mutable state, traditional loops, single `ArrayList` instance mutated in place, arithmetic on primitive `double`/`int` types — no intermediate object versions created per iteration.
 
 ### Clojure Idiomatic (Functional)
 ```clojure
@@ -270,7 +284,7 @@ for (int year = 1; year <= years; year++) {
            (conj yearly-details-list ...))))
 ```
 
-**Characteristics**: Immutable structures, tail recursion, persistent vectors
+**Characteristics**: Immutable `PersistentVector` expanded via `conj` at each iteration, producing intermediate object versions that become GC-eligible immediately. Arithmetic intermediated by `clojure.lang.Numbers` (56 `invokestatic` calls per request vs. Java's 7). Higher GC pressure across all load levels, but this does not translate into latency penalties in stable executions.
 
 ### Clojure Interop Java (Hybrid)
 ```clojure
@@ -283,7 +297,7 @@ for (int year = 1; year <= years; year++) {
   ...)
 ```
 
-**Characteristics**: Java ArrayList for mutation, type hints, unchecked math
+**Characteristics**: Native Java `ArrayList` with `^ArrayList` type hint (eliminates runtime reflection), `unchecked-inc` for overflow-check-free counter increment, explicit primitive coercions. Allocation pattern approximates Java imperative. Retains Clojure runtime infrastructure for type conversion operations.
 
 ## Input Validation
 - `initialAmount`: ≥ 0
