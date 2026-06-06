@@ -369,4 +369,4 @@ docker stats app-performance-test
 This project is licensed under the MIT License.
 
 ## Author
-Nathan Paiva - TCC Project
+Nathan Paiva — Undergraduate Thesis (Computer Engineering, IFSP Piracicaba)
