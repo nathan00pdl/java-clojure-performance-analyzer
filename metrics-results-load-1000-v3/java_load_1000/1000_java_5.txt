@@ -1,0 +1,56 @@
+RESULTS - JAVA @ 1000 REQ/S
+Date: 2026-05-23 17:07:25
+
+METRICS PROMETHEUS
+────────────────────────────────────────────────
+CPU Peak:                 89.63 %
+Heap Available:           6 GB
+Heap Peak:                0.75 GB
+Heap Peak (%):            12.00 %
+GC Time Initial:          10.00 ms
+GC Time Final:            9641.000 ms
+GC Time (test):           9631.000 ms
+GC Collections Initial:   1
+GC Collections Final:     55
+GC Collections (test):    54
+Requests Initial:         12
+Requests Final:           234427
+Total Requests:           234415
+
+GATLING METRICS
+────────────────────────────────────────────────
+REQUEST SUMMARY AND THROUGHPUT
+Requests/Second:          697.6744186046511 req/s
+Total Requests:           300000
+Successful Requests:      224696
+Failed Requests:          75304
+Error Rate:               25.100 %
+
+RESPONSE TIME (ms)
+Min:                      2 ms
+Mean:                     59645 ms
+Max:                      286227 ms
+Std Deviation:            49467 ms
+
+PERCENTILES (ms)
+P50 (Median):             46319 ms
+P75:                      100660 ms
+P95:                      145846 ms
+P99:                      178527 ms
+
+VALIDATION
+────────────────────────────────────────────────
+Prometheus-Gatling Delta: +9719 requests (4.300%)
+Sync Status:              WARNING
+Error Status:             HIGH
+
+INTERPRETATION (thresholds calibrated for 1000 req/s)
+────────────────────────────────────────────────
+Heap Usage: ✓ EXCELLENT (< 30%)
+GC Overhead: ✗ HIGH (> 5s)
+CPU Peak: ⚠ HIGH (70-90%)
+Error Rate: ✗ HIGH (> 2%)
+P95 Latency: ✗ HIGH (> 15000ms at 1000 req/s)
+P99 Latency: ✗ HIGH (> 30000ms at 1000 req/s)
+Response Consistency: ⚠ VARIABLE (StdDev > 50ms)
+GC Activity: ⚠ HIGH (> 30 collections)

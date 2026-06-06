@@ -1,0 +1,56 @@
+RESULTS - CLOJURE-INTEROP-JAVA @ 1000 REQ/S
+Date: 2026-05-23 19:26:19
+
+METRICS PROMETHEUS
+────────────────────────────────────────────────
+CPU Peak:                 81.05 %
+Heap Available:           6 GB
+Heap Peak:                2.37 GB
+Heap Peak (%):            39.00 %
+GC Time Initial:          19.000 ms
+GC Time Final:            1214.9999999999999000 ms
+GC Time (test):           1195.9999999999999000 ms
+GC Collections Initial:   2
+GC Collections Final:     17
+GC Collections (test):    15
+Requests Initial:         33
+Requests Final:           300116
+Total Requests:           300083
+
+GATLING METRICS
+────────────────────────────────────────────────
+REQUEST SUMMARY AND THROUGHPUT
+Requests/Second:          1000.0 req/s
+Total Requests:           300000
+Successful Requests:      300000
+Failed Requests:          0
+Error Rate:               0 %
+
+RESPONSE TIME (ms)
+Min:                      0 ms
+Mean:                     678 ms
+Max:                      19097 ms
+Std Deviation:            2083 ms
+
+PERCENTILES (ms)
+P50 (Median):             1 ms
+P75:                      1 ms
+P95:                      5296 ms
+P99:                      10520 ms
+
+VALIDATION
+────────────────────────────────────────────────
+Prometheus-Gatling Delta: +83 requests (0%)
+Sync Status:              EXCELLENT
+Error Status:             EXCELLENT
+
+INTERPRETATION (thresholds calibrated for 1000 req/s)
+────────────────────────────────────────────────
+Heap Usage: ✓ GOOD (30-50%)
+GC Overhead: ✓ ACCEPTABLE (500-2000ms)
+CPU Peak: ⚠ HIGH (70-90%)
+Error Rate: ✓ EXCELLENT (< 0.5%)
+P95 Latency: ⚠ ACCEPTABLE (< 15000ms at 1000 req/s)
+P99 Latency: ⚠ ACCEPTABLE (< 30000ms at 1000 req/s)
+Response Consistency: ⚠ VARIABLE (StdDev > 50ms)
+GC Activity: ⚠ MODERATE (15-30 collections)
