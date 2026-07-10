@@ -13,7 +13,8 @@ cd "$(dirname "$0")/.."
 IMPLEMENTATION=$1
 LOAD_LEVEL=$2
 
-RESULTS_DIR="metrics-results-load-1000-v3"
+RESULTS_DIR="metrics-results-load-1000-v4-gc"
+GC_LOGS_DIR="gc-logs"
 
 if [ -z "$IMPLEMENTATION" ] || [ -z "$LOAD_LEVEL" ]; then
     echo -e "${RED}Error: Specify implementation and load level${NC}"
@@ -56,7 +57,10 @@ fi
 
 PROMETHEUS_URL="http://localhost:9090"
 
-mkdir -p metrics-results-load-1000-v3
+mkdir -p "$RESULTS_DIR"
+mkdir -p "$GC_LOGS_DIR"
+
+TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
 
 echo "  METRICS COLLECTION - ${IMPLEMENTATION^^} @ ${LOAD_LEVEL} REQ/S"
 echo ""
@@ -85,12 +89,72 @@ echo ""
 read -p "Press ENTER after test finishes..."
 echo ""
 
-echo "[STEP 3] Waiting for Prometheus synchronization..."
+echo "[STEP 3] Collecting GC log from container..."
+echo ""
+
+GC_LOG_DEST="${GC_LOGS_DIR}/gc-${IMPLEMENTATION}-${LOAD_LEVEL}-${TIMESTAMP}.log"
+CONTAINER_NAME="app-performance-test"
+
+if docker ps --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
+    if docker cp "${CONTAINER_NAME}:/app/logs/gc.log" "$GC_LOG_DEST" 2>/dev/null; then
+        echo -e "  ${GREEN}✓ GC log copied to: $GC_LOG_DEST${NC}"
+        GC_LOG_AVAILABLE=true
+    else
+        echo -e "  ${YELLOW}⚠ GC log not found inside container at /app/logs/gc.log${NC}"
+        echo "    Check that -Xlog:gc* flag is set in docker-compose.yml JAVA_OPTS"
+        GC_LOG_AVAILABLE=false
+    fi
+else
+    echo -e "  ${YELLOW}⚠ Container '${CONTAINER_NAME}' not running — skipping GC log copy${NC}"
+    GC_LOG_AVAILABLE=false
+fi
+echo ""
+
+echo "[STEP 4] Analyzing GC log..."
+echo ""
+
+MINOR_GC_COUNT=0
+MIXED_GC_COUNT=0
+FULL_GC_COUNT=0
+GC_LOG_STATUS="NOT_AVAILABLE"
+
+if [ "$GC_LOG_AVAILABLE" = true ]; then
+    MINOR_GC_COUNT=$(grep -c "Pause Young" "$GC_LOG_DEST" 2>/dev/null || echo 0)
+    MIXED_GC_COUNT=$(grep -c "Pause Mixed" "$GC_LOG_DEST" 2>/dev/null || echo 0)
+    FULL_GC_COUNT=$(grep -c "Pause Full" "$GC_LOG_DEST" 2>/dev/null || echo 0)
+
+    echo "  GC Type Breakdown:"
+    echo "    Minor GC (Young):       $MINOR_GC_COUNT"
+    echo "    Mixed GC:               $MIXED_GC_COUNT"
+    echo "    Full GC:                $FULL_GC_COUNT"
+    echo ""
+
+    if [ "$FULL_GC_COUNT" -gt 0 ]; then
+        echo -e "  ${RED}✗ Full GC detected — strong indicator of heap pressure / GC thrashing${NC}"
+        GC_LOG_STATUS="FULL_GC_DETECTED"
+    elif [ "$MIXED_GC_COUNT" -gt 0 ]; then
+        echo -e "  ${YELLOW}⚠ Mixed GC detected — Old Generation being collected${NC}"
+        GC_LOG_STATUS="MIXED_GC_DETECTED"
+    else
+        echo -e "  ${GREEN}✓ Only Minor GC — objects collected in Young Generation${NC}"
+        GC_LOG_STATUS="MINOR_GC_ONLY"
+    fi
+
+    HEAP_FINAL_LINE=$(grep "Heap" "$GC_LOG_DEST" 2>/dev/null | tail -1 || echo "N/A")
+    echo ""
+    echo "  Heap state at last GC event:"
+    echo "    $HEAP_FINAL_LINE"
+else
+    echo -e "  ${YELLOW}⚠ GC log unavailable — skipping breakdown${NC}"
+fi
+echo ""
+
+echo "[STEP 5] Waiting for Prometheus synchronization..."
 echo ""
 echo "  Waiting 25 seconds for final metrics sync..."
 sleep 25
 
-echo "[STEP 4] Collecting final metrics..."
+echo "[STEP 6] Collecting final metrics..."
 echo ""
 
 GC_TIME_FINAL=$(curl -s "${PROMETHEUS_URL}/api/v1/query?query=jvm_gc_pause_seconds_sum" | jq -r '[.data.result[].value[1] | tonumber] | add // 0')
@@ -136,8 +200,7 @@ echo "  Heap Peak (%):          $HEAP_PERCENT %"
 echo "  CPU Peak:               $CPU_PEAK_FORMATTED %"
 echo ""
 
-
-echo "[STEP 5] Collecting Gatling metrics..."
+echo "[STEP 7] Collecting Gatling metrics..."
 echo ""
 
 AUTO_EXTRACTED=false
@@ -169,6 +232,13 @@ while [ "$AUTO_EXTRACTED" = false ]; do
         RESPONSE_TIME_MEAN=$(jq -r '.stats.meanResponseTime.total' "$GATLING_STATS_PATH")
         RESPONSE_TIME_STDDEV=$(jq -r '.stats.standardDeviation.total' "$GATLING_STATS_PATH")
         REQUESTS_PER_SECOND=$(jq -r '.stats.meanNumberOfRequestsPerSecond.total' "$GATLING_STATS_PATH")
+
+        ERRORS_JSON=$(dirname "$GATLING_STATS_PATH")/../errors.json
+        if [ -f "$ERRORS_JSON" ]; then
+            GATLING_ERRORS_DETAIL=$(jq -r 'to_entries[] | "\(.value.count)\t\(.key)"' "$ERRORS_JSON" 2>/dev/null || echo "N/A")
+        else
+            GATLING_ERRORS_DETAIL="N/A — errors.json not found"
+        fi
 
         AUTO_EXTRACTED=true
 
@@ -202,9 +272,7 @@ while [ "$AUTO_EXTRACTED" = false ]; do
     fi
 done
 
-
 echo ""
-
 
 if [ "$GATLING_TOTAL" -gt 0 ]; then
     GATLING_ERROR_RATE=$(echo "scale=3; ($GATLING_FAILED / $GATLING_TOTAL) * 100" | bc)
@@ -263,8 +331,6 @@ fi
 echo "  ═══════════════════════════════════════════════════"
 echo ""
 
-
-TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
 RESULT_FILE="${RESULTS_DIR}/metrics-${IMPLEMENTATION}-${LOAD_LEVEL}-${TIMESTAMP}.txt"
 HEAP_AVAILABLE_GB="6"
 
@@ -291,6 +357,15 @@ Requests Initial:         $REQUESTS_INITIAL
 Requests Final:           $REQUESTS_FINAL
 Total Requests:           $TOTAL_REQUESTS
 
+GC LOG ANALYSIS (JVM Internal)
+────────────────────────────────────────────────
+GC Log File:              $GC_LOG_DEST
+GC Log Status:            $GC_LOG_STATUS
+Minor GC (Young Gen):     $MINOR_GC_COUNT
+Mixed GC (Old Gen):       $MIXED_GC_COUNT
+Full GC:                  $FULL_GC_COUNT
+Heap at Last GC:          $HEAP_FINAL_LINE
+
 GATLING METRICS
 ────────────────────────────────────────────────
 REQUEST SUMMARY AND THROUGHPUT
@@ -299,6 +374,10 @@ Total Requests:           $GATLING_TOTAL
 Successful Requests:      $GATLING_SUCCESS
 Failed Requests:          $GATLING_FAILED
 Error Rate:               $GATLING_ERROR_RATE %
+
+ERROR BREAKDOWN
+────────────────────────────────────────────────
+$GATLING_ERRORS_DETAIL
 
 RESPONSE TIME (ms)
 Min:                      $RESPONSE_TIME_MIN ms
@@ -402,19 +481,27 @@ else
     echo "GC Activity: ⚠ HIGH (> 30 collections)" >> "$RESULT_FILE"
 fi
 
+if [ "$GC_LOG_AVAILABLE" = true ]; then
+    if [ "$FULL_GC_COUNT" -gt 0 ]; then
+        echo "GC Regime: ✗ FULL GC DETECTED — heap pressure / GC thrashing" >> "$RESULT_FILE"
+    elif [ "$MIXED_GC_COUNT" -gt 0 ]; then
+        echo "GC Regime: ⚠ MIXED GC — Old Generation being collected" >> "$RESULT_FILE"
+    else
+        echo "GC Regime: ✓ MINOR GC ONLY — Young Generation sufficient" >> "$RESULT_FILE"
+    fi
+fi
+
 echo ""
 echo -e "${GREEN}✓ Results saved in: $RESULT_FILE${NC}"
 echo ""
 
-
 CSV_FILE="${RESULTS_DIR}/metrics-comparison.csv"
 
 if [ ! -f "$CSV_FILE" ]; then
-    echo "Implementation,Timestamp,Load_Level,Prometheus_Success,Gatling_Total,Gatling_Success,Gatling_Failed,Error_Rate_%,Prom_Gatling_Delta_%,GC_Time_ms,GC_Collections,Heap_Peak_GB,Heap_Peak_%,CPU_Peak_%,Sync_Status,Error_Status,P50_ms,P75_ms,P95_ms,P99_ms,Min_ms,Mean_ms,Max_ms,StdDev_ms,Req_Per_Sec" > "$CSV_FILE"
+    echo "Implementation,Timestamp,Load_Level,Prometheus_Success,Gatling_Total,Gatling_Success,Gatling_Failed,Error_Rate_%,Prom_Gatling_Delta_%,GC_Time_ms,GC_Collections,Heap_Peak_GB,Heap_Peak_%,CPU_Peak_%,Sync_Status,Error_Status,P50_ms,P75_ms,P95_ms,P99_ms,Min_ms,Mean_ms,Max_ms,StdDev_ms,Req_Per_Sec,GC_Log_Status,Minor_GC,Mixed_GC,Full_GC" > "$CSV_FILE"
 fi
 
-echo "${IMPLEMENTATION},${TIMESTAMP},${LOAD_LEVEL},${TOTAL_REQUESTS},${GATLING_TOTAL},${GATLING_SUCCESS},${GATLING_FAILED},${GATLING_ERROR_RATE},${DELTA_PERCENT},${GC_TIME_MS},${GC_COUNT},${HEAP_GB},${HEAP_PERCENT},${CPU_PEAK_FORMATTED},${SYNC_STATUS},${ERROR_STATUS},${PERCENTILE_50},${PERCENTILE_75},${PERCENTILE_95},${PERCENTILE_99},${RESPONSE_TIME_MIN},${RESPONSE_TIME_MEAN},${RESPONSE_TIME_MAX},${RESPONSE_TIME_STDDEV},${REQUESTS_PER_SECOND}" >> "$CSV_FILE"
-
+echo "${IMPLEMENTATION},${TIMESTAMP},${LOAD_LEVEL},${TOTAL_REQUESTS},${GATLING_TOTAL},${GATLING_SUCCESS},${GATLING_FAILED},${GATLING_ERROR_RATE},${DELTA_PERCENT},${GC_TIME_MS},${GC_COUNT},${HEAP_GB},${HEAP_PERCENT},${CPU_PEAK_FORMATTED},${SYNC_STATUS},${ERROR_STATUS},${PERCENTILE_50},${PERCENTILE_75},${PERCENTILE_95},${PERCENTILE_99},${RESPONSE_TIME_MIN},${RESPONSE_TIME_MEAN},${RESPONSE_TIME_MAX},${RESPONSE_TIME_STDDEV},${REQUESTS_PER_SECOND},${GC_LOG_STATUS},${MINOR_GC_COUNT},${MIXED_GC_COUNT},${FULL_GC_COUNT}" >> "$CSV_FILE"
 
 echo "═══════════════════════════════════════════════════"
 echo "  COMPREHENSIVE SUMMARY"
@@ -430,6 +517,12 @@ echo "    GC Time:                   $GC_TIME_MS ms"
 echo "    GC Collections:            $GC_COUNT"
 echo "    Heap Peak:                 $HEAP_GB GB ($HEAP_PERCENT%)"
 echo "    CPU Peak:                  $CPU_PEAK_FORMATTED%"
+echo ""
+echo "  ${BLUE}GC LOG ANALYSIS:${NC}"
+echo "    Status:                    $GC_LOG_STATUS"
+echo "    Minor GC (Young Gen):      $MINOR_GC_COUNT"
+echo "    Mixed GC (Old Gen):        $MIXED_GC_COUNT"
+echo "    Full GC:                   $FULL_GC_COUNT"
 echo ""
 echo "  ${BLUE}GATLING METRICS - REQUESTS:${NC}"
 echo "    Total:                     $GATLING_TOTAL"
@@ -453,6 +546,9 @@ echo ""
 echo "═══════════════════════════════════════════════════"
 echo ""
 echo -e "${GREEN}✓ Data added to CSV: $CSV_FILE${NC}"
+if [ "$GC_LOG_AVAILABLE" = true ]; then
+    echo -e "${GREEN}✓ GC log saved:      $GC_LOG_DEST${NC}"
+fi
 echo ""
 echo "Next steps:"
 echo "  1. Wait 5 minutes for stabilization"
