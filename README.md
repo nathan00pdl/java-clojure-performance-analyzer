@@ -1,5 +1,19 @@
 # Performance Analyzer: Programming Paradigms Comparison
 
+## Academic Context
+
+**Title:** Cost of Idiomatic Abstractions on the JVM: A Quantitative Study Comparing Java and Clojure Implementations in HTTP Request Processing
+
+**Author:** Nathan Paiva  
+**Advisor:** Juliano Zanuzzio Blanco  
+**Institution:** IFSP — Federal Institute of São Paulo, Piracicaba Campus  
+**Program:** Computer Engineering  
+**Year:** 2026
+
+## Paper
+
+The full text of the study is available at: [`docs/tcc-nathan-paiva.pdf`](docs/tcc-nathan-paiva-2025.pdf)
+
 ## Overview
 Comparative performance study between programming paradigms through a REST API that calculates compound interest. The project implements three distinct approaches:
 
@@ -66,7 +80,7 @@ src/
 
 ### 1. Clone Repository
 ```bash
-git clone https://github.com/your-username/java-clojure-performance-analyzer.git
+git clone https://github.com/nathan00pdl/java-clojure-performance-analyzer.git
 cd java-clojure-performance-analyzer
 ```
 
@@ -141,7 +155,7 @@ Executions were excluded under two independent criteria:
 1. **Qualitative invalidity**: error rate > 0% — sufficient condition for discard regardless of other metrics.
 2. **Statistical outliers**: z-score criterion (|z| > 2) applied over the P95 latency metric.
 
-Between consecutive executions, a minimum 300-second stabilization interval was observed.
+Each execution ran in a fully fresh container. Between consecutive executions, the environment was completely reset (`docker compose down -v && docker system prune -f && docker volume prune -f`) followed by a clean restart of the application. A minimum 300-second stabilization interval was observed before each new execution to allow thermal and OS-level resource stabilization. This guarantees that each execution starts from a virgin heap state with no JIT warm-up carried over from previous runs, making executions statistically independent.
 
 ### Test Configuration
 
@@ -181,7 +195,7 @@ docker compose down -v && docker system prune -f && docker volume prune -f
 
 #### 4. Start Services and Verify Health
 ```bash
-docker compose up -d app prometheus && sleep 30 && curl -sf http://localhost:8080/actuator/health
+docker compose up -d app prometheus && until curl -sf http://localhost:8080/actuator/health > /dev/null; do sleep 2; done && echo "App ready"
 ```
 
 #### 5. Verify Test Configuration
@@ -202,23 +216,40 @@ top -b -n 1 | head -n 20
 ```
 
 #### 7. Run Test with Metrics Collection
+
+**Terminal 1** — start metrics collection:
 ```bash
-# Terminal 1: Start metrics collection
-./metrics-collection.sh java  # or clojure-idiomatic or clojure-interop-java
-
-# Terminal 2: Execute load test when prompted
-./run-gatling.sh
-
-# Return to Terminal 1 and press ENTER after Gatling finishes
+./metrics-collection.sh <implementation> <load>
 ```
+
+| Parameter | Options |
+|---|---|
+| `<implementation>` | `java` · `clojure-idiomatic` · `clojure-interop-java` |
+| `<load>` | `100` · `500` · `1000` |
+
+Example:
+```bash
+./metrics-collection.sh java 1000
+```
+
+**Terminal 2** — execute load test when prompted:
+```bash
+./run-gatling.sh
+```
+
+Return to Terminal 1 and press ENTER after Gatling finishes.
 
 #### 8. Wait for System Stabilization
 ```bash
 sleep 300  # 5 minutes between tests
 ```
 
-#### 9. Repeat for Other Implementations
-Repeat steps 3-8 for each implementation, changing the scenario in `CompoundInterestSimulation.java` and the argument to `metrics-collection.sh`.
+#### 9. Reset Environment and Repeat
+```bash
+docker compose down -v && docker system prune -f && docker volume prune -f && docker compose up -d app prometheus && until curl -sf http://localhost:8080/actuator/health > /dev/null; do sleep 2; done && echo "App ready"
+```
+
+Repeat steps 5-9 for each execution, changing the scenario in `CompoundInterestSimulation.java` and the argument to `metrics-collection.sh` when switching implementations.
 
 ### Verify Results
 ```bash
@@ -235,7 +266,7 @@ cat metrics-results/metrics-{implementation}-{timestamp}.txt
 ## Metrics Collected
 
 ### Prometheus Metrics
-All Prometheus metrics are calculated as the delta between the initial value (collected before the test starts) and the final value (collected after a 15-second synchronization wait post-Gatling), isolating consumption attributable exclusively to the test period.
+All Prometheus metrics are calculated as the delta between the initial value (collected before the test starts) and the final value (collected after a 25-second synchronization wait post-Gatling), isolating consumption attributable exclusively to the test period.
 
 - **CPU Peak**: Maximum CPU usage during test
 - **Heap Peak**: Maximum heap memory allocation (GB and % of configured 6GB max)
@@ -243,11 +274,18 @@ All Prometheus metrics are calculated as the delta between the initial value (co
 - **GC Collections**: Number of GC cycles (`jvm_gc_pause_seconds_count`)
 - **Total Requests**: HTTP requests processed
 
+### GC Log Analysis (V4)
+Starting from test round V4, JVM-internal GC logs are captured via `-Xlog:gc*` and analyzed per execution, providing a breakdown of GC regime transitions:
+
+- **Minor GC**: Young Generation collections — expected dominant pattern for short-lived objects
+- **Mixed GC**: Old Generation partially collected — indicator of premature object promotion
+- **Full GC**: Complete heap collection — indicator of GC thrashing under saturation
+
 ### Gatling Metrics
 - **Response Time**: Min, Mean, P50, P75, P95, P99, Max (ms)
 - **Throughput**: Requests per second
 - **Success Rate**: Percentage of successful requests (executions with error rate > 0% are discarded)
-- **Response Distribution**: Percentage under 800ms, 800–1200ms, >1200ms
+- **Error Breakdown**: Detailed classification of failure types (timeouts, connection refused, premature close)
 
 P95 and P99 are the primary latency metrics, as they capture tail behavior under sustained load and are most sensitive to GC pause impact.
 
@@ -255,6 +293,7 @@ P95 and P99 are the primary latency metrics, as they capture tail behavior under
 - **Text Reports**: `metrics-results/metrics-{implementation}-{timestamp}.txt`
 - **CSV Dataset**: `metrics-results/metrics-comparison.csv`
 - **Gatling HTML**: `gatling-results/compoundinterestsimulation-{timestamp}/`
+- **GC Logs**: `gc-logs/gc-{implementation}-{load}-{timestamp}.log`
 
 ## Paradigm Implementations
 
@@ -309,17 +348,19 @@ for (int year = 1; year <= years; year++) {
 ### JVM Tuning (docker-compose.yml)
 ```yaml
 JAVA_OPTS: >-
-  -Xms4g                              # Initial heap size
-  -Xmx6g                              # Maximum heap size
-  -Xss512k                            # Thread stack size
-  -XX:MaxMetaspaceSize=512m           # Maximum metaspace (class metadata)
-  -XX:+UseG1GC                        # Use G1 garbage collector
-  -XX:MaxGCPauseMillis=200            # Target maximum GC pause time
-  -XX:+ParallelRefProcEnabled         # Parallel reference processing
-  -XX:+UseStringDeduplication         # Deduplicate identical strings
-  -XX:+UseCompressedOops              # Compress object pointers (memory efficiency)
-  -XX:+HeapDumpOnOutOfMemoryError     # Generate heap dump on OOM
-  -XX:HeapDumpPath=/app/heap-dumps    # Heap dump storage location
+  -Xms4g
+  -Xmx6g
+  -Xss512k
+  -XX:MaxMetaspaceSize=512m
+  -XX:+UseG1GC
+  -Xlog:gc*:file=/app/logs/gc.log:tags,uptime,time,level:filecount=1,filesize=50m
+  -XX:+UnlockDiagnosticVMOptions
+  -XX:MaxGCPauseMillis=200
+  -XX:+ParallelRefProcEnabled
+  -XX:+UseStringDeduplication
+  -XX:+UseCompressedOops
+  -XX:+HeapDumpOnOutOfMemoryError
+  -XX:HeapDumpPath=/app/heap-dumps
 ```
 
 ### Tomcat Configuration (application.properties)
@@ -369,4 +410,5 @@ docker stats app-performance-test
 This project is licensed under the MIT License.
 
 ## Author
-Nathan Paiva — Undergraduate Thesis (Computer Engineering, IFSP Piracicaba)
+Nathan Paiva — Bachelor's Thesis in Computer Engineering, IFSP Piracicaba, 2025  
+Advisor: Juliano Zanuzzio Blanco
