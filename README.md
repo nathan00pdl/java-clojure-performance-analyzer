@@ -256,11 +256,14 @@ Repeat steps 5-9 for each execution, changing the scenario in `CompoundInterestS
 # List generated Gatling reports
 ls -lt gatling-results/
 
-# View latest metrics
-cat metrics-results/metrics-comparison.csv
+# View latest metrics (example for V4)
+cat metrics-results/v4/metrics-comparison.csv
 
 # Check individual test report
-cat metrics-results/metrics-{implementation}-{timestamp}.txt
+cat metrics-results/v4/metrics-{implementation}-{timestamp}.txt
+
+# List all available rounds
+ls metrics-results/
 ```
 
 ## Metrics Collected
@@ -290,8 +293,8 @@ Starting from test round V4, JVM-internal GC logs are captured via `-Xlog:gc*` a
 P95 and P99 are the primary latency metrics, as they capture tail behavior under sustained load and are most sensitive to GC pause impact.
 
 ### Results Storage
-- **Text Reports**: `metrics-results/metrics-{implementation}-{timestamp}.txt`
-- **CSV Dataset**: `metrics-results/metrics-comparison.csv`
+- **Text Reports**: `metrics-results/{version}/metrics-{implementation}-{timestamp}.txt`
+- **CSV Dataset**: `metrics-results/{version}/metrics-comparison.csv`
 - **Gatling HTML**: `gatling-results/compoundinterestsimulation-{timestamp}/`
 - **GC Logs**: `gc-logs/gc-{implementation}-{load}-{timestamp}.log`
 
