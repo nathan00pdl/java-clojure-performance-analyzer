@@ -65,14 +65,6 @@ replay_pid*
 # Logs
 *.log
 logs/
-gc-logs/*
-!gc-logs/.gitkeep
-
-# Test Results & Performance Metrics (keep structure)
-.metrics-results-v1/*
-!.metrics-results-v1/.gitkeep   
-.metrics-results-v2/*
-!.metrics-results-v2/.gitkeep
 
 gatling-results/*
 !gatling-results/.gitkeep
