@@ -71,10 +71,12 @@ echo ""
 GC_TIME_INITIAL=$(curl -s "${PROMETHEUS_URL}/api/v1/query?query=jvm_gc_pause_seconds_sum" | jq -r '[.data.result[].value[1] | tonumber] | add // 0')
 GC_COUNT_INITIAL=$(curl -s "${PROMETHEUS_URL}/api/v1/query?query=jvm_gc_pause_seconds_count" | jq -r '[.data.result[].value[1] | tonumber] | add // 0')
 REQUESTS_INITIAL=$(curl -s "${PROMETHEUS_URL}/api/v1/query?query=http_server_requests_seconds_count" | jq -r '.data.result | map(.value[1] | tonumber) | add // 0')
+REFERENCE_UPTIME=$(curl -s "${PROMETHEUS_URL}/api/v1/query?query=process_uptime_seconds" | jq -r '.data.result[0].value[1] // 0')
 
 echo "  GC Time Initial:        $GC_TIME_INITIAL seconds"
 echo "  GC Collections Initial: $GC_COUNT_INITIAL"
 echo "  Requests Initial:       $REQUESTS_INITIAL"
+echo "  Reference Uptime:       ${REFERENCE_UPTIME}s (test start marker for GC log filtering)"
 echo ""
 echo "  ℹ These initial values include health checks and Prometheus scraping"
 echo "    They will be subtracted from final metrics"
@@ -116,15 +118,40 @@ echo ""
 MINOR_GC_COUNT=0
 MIXED_GC_COUNT=0
 FULL_GC_COUNT=0
+MINOR_GC_TOTAL_RAW=0
 GC_LOG_STATUS="NOT_AVAILABLE"
+HEAP_FINAL_LINE="N/A"
 
 if [ "$GC_LOG_AVAILABLE" = true ]; then
-    MINOR_GC_COUNT=$(grep -c "Pause Young" "$GC_LOG_DEST" 2>/dev/null || echo 0)
-    MIXED_GC_COUNT=$(grep -c "Pause Mixed" "$GC_LOG_DEST" 2>/dev/null || echo 0)
-    FULL_GC_COUNT=$(grep -c "Pause Full" "$GC_LOG_DEST" 2>/dev/null || echo 0)
+    GC_LOG_TEST_WINDOW=$(awk -v ref="$REFERENCE_UPTIME" '
+        {
+            start = index($0, "[")
+            while (start > 0) {
+                close_br = index(substr($0, start), "s]")
+                if (close_br > 0) {
+                    candidate = substr($0, start + 1, close_br - 2)
+                    if (candidate ~ /^[0-9]+\.[0-9]+$/) {
+                        uptime = candidate + 0
+                        if (uptime > ref + 0) print
+                        break
+                    }
+                }
+                next_start = index(substr($0, start + 1), "[")
+                if (next_start == 0) break
+                start = start + next_start
+            }
+        }' "$GC_LOG_DEST")
 
-    echo "  GC Type Breakdown:"
-    echo "    Minor GC (Young):       $MINOR_GC_COUNT"
+    GC_LINE_PATTERN='[0-9]+M->[0-9]+M\([0-9]+M\)'
+
+    MINOR_GC_COUNT=$(printf '%s\n' "$GC_LOG_TEST_WINDOW" | grep -cE "Pause Young.*${GC_LINE_PATTERN}") || MINOR_GC_COUNT=0
+    MIXED_GC_COUNT=$(printf '%s\n' "$GC_LOG_TEST_WINDOW" | grep -cE "Pause Mixed.*${GC_LINE_PATTERN}") || MIXED_GC_COUNT=0
+    FULL_GC_COUNT=$(printf '%s\n' "$GC_LOG_TEST_WINDOW" | grep -cE "Pause Full.*${GC_LINE_PATTERN}") || FULL_GC_COUNT=0
+
+    MINOR_GC_TOTAL_RAW=$(grep -cE "Pause Young.*${GC_LINE_PATTERN}" "$GC_LOG_DEST") || MINOR_GC_TOTAL_RAW=0
+
+    echo "  GC Type Breakdown (test window only, uptime > ${REFERENCE_UPTIME}s):"
+    echo "    Minor GC (Young):       $MINOR_GC_COUNT   (raw total incl. warm-up: $MINOR_GC_TOTAL_RAW)"
     echo "    Mixed GC:               $MIXED_GC_COUNT"
     echo "    Full GC:                $FULL_GC_COUNT"
     echo ""
@@ -140,7 +167,9 @@ if [ "$GC_LOG_AVAILABLE" = true ]; then
         GC_LOG_STATUS="MINOR_GC_ONLY"
     fi
 
-    HEAP_FINAL_LINE=$(grep "Heap" "$GC_LOG_DEST" 2>/dev/null | tail -1 || echo "N/A")
+    HEAP_FINAL_LINE=$(grep -E '[0-9]+M->[0-9]+M\([0-9]+M\)' "$GC_LOG_DEST" 2>/dev/null | tail -1)
+    HEAP_FINAL_LINE=${HEAP_FINAL_LINE:-"N/A"}
+
     echo ""
     echo "  Heap state at last GC event:"
     echo "    $HEAP_FINAL_LINE"
@@ -360,8 +389,10 @@ Total Requests:           $TOTAL_REQUESTS
 GC LOG ANALYSIS (JVM Internal)
 ────────────────────────────────────────────────
 GC Log File:              $GC_LOG_DEST
+Reference Uptime:         ${REFERENCE_UPTIME}s (test start marker)
 GC Log Status:            $GC_LOG_STATUS
 Minor GC (Young Gen):     $MINOR_GC_COUNT
+Minor GC (raw, incl. warm-up): $MINOR_GC_TOTAL_RAW
 Mixed GC (Old Gen):       $MIXED_GC_COUNT
 Full GC:                  $FULL_GC_COUNT
 Heap at Last GC:          $HEAP_FINAL_LINE
@@ -520,7 +551,7 @@ echo "    CPU Peak:                  $CPU_PEAK_FORMATTED%"
 echo ""
 echo "  ${BLUE}GC LOG ANALYSIS:${NC}"
 echo "    Status:                    $GC_LOG_STATUS"
-echo "    Minor GC (Young Gen):      $MINOR_GC_COUNT"
+echo "    Minor GC (Young Gen):      $MINOR_GC_COUNT   (raw incl. warm-up: $MINOR_GC_TOTAL_RAW)"
 echo "    Mixed GC (Old Gen):        $MIXED_GC_COUNT"
 echo "    Full GC:                   $FULL_GC_COUNT"
 echo ""
