@@ -65,6 +65,9 @@ replay_pid*
 # Logs
 *.log
 logs/
+gc-logs/
+
+metrics-results/v4/
 
 gatling-results/*
 !gatling-results/.gitkeep
