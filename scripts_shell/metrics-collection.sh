@@ -13,7 +13,7 @@ cd "$(dirname "$0")/.."
 IMPLEMENTATION=$1
 LOAD_LEVEL=$2
 
-RESULTS_DIR="metrics-results/v4-gc"
+RESULTS_DIR="metrics-results/v4"
 GC_LOGS_DIR="gc-logs"
 
 if [ -z "$IMPLEMENTATION" ] || [ -z "$LOAD_LEVEL" ]; then
