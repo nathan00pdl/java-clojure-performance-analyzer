@@ -256,11 +256,11 @@ Repeat steps 5-9 for each execution, changing the scenario in `CompoundInterestS
 # List generated Gatling reports
 ls -lt gatling-results/
 
-# View latest metrics (example for V4)
-cat metrics-results/v4/metrics-comparison.csv
+# View latest metrics (example for V3)
+cat metrics-results/v3/metrics-comparison.csv
 
 # Check individual test report
-cat metrics-results/v4/metrics-{implementation}-{timestamp}.txt
+cat metrics-results/v3/metrics-{implementation}-{timestamp}.txt
 
 # List all available rounds
 ls metrics-results/
@@ -277,13 +277,6 @@ All Prometheus metrics are calculated as the delta between the initial value (co
 - **GC Collections**: Number of GC cycles (`jvm_gc_pause_seconds_count`)
 - **Total Requests**: HTTP requests processed
 
-### GC Log Analysis (V4)
-Starting from test round V4, JVM-internal GC logs are captured via `-Xlog:gc*` and analyzed per execution, providing a breakdown of GC regime transitions:
-
-- **Minor GC**: Young Generation collections — expected dominant pattern for short-lived objects
-- **Mixed GC**: Old Generation partially collected — indicator of premature object promotion
-- **Full GC**: Complete heap collection — indicator of GC thrashing under saturation
-
 ### Gatling Metrics
 - **Response Time**: Min, Mean, P50, P75, P95, P99, Max (ms)
 - **Throughput**: Requests per second
@@ -296,7 +289,6 @@ P95 and P99 are the primary latency metrics, as they capture tail behavior under
 - **Text Reports**: `metrics-results/{version}/metrics-{implementation}-{timestamp}.txt`
 - **CSV Dataset**: `metrics-results/{version}/metrics-comparison.csv`
 - **Gatling HTML**: `gatling-results/compoundinterestsimulation-{timestamp}/`
-- **GC Logs**: `gc-logs/gc-{implementation}-{load}-{timestamp}.log`
 
 ## Paradigm Implementations
 
@@ -356,8 +348,6 @@ JAVA_OPTS: >-
   -Xss512k
   -XX:MaxMetaspaceSize=512m
   -XX:+UseG1GC
-  -Xlog:gc*:file=/app/logs/gc.log:tags,uptime,time,level:filecount=1,filesize=50m
-  -XX:+UnlockDiagnosticVMOptions
   -XX:MaxGCPauseMillis=200
   -XX:+ParallelRefProcEnabled
   -XX:+UseStringDeduplication
