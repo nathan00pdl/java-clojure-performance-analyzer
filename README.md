@@ -12,7 +12,7 @@
 
 ## Paper
 
-The full text of the study is available at: [`docs/tcc-nathan-paiva.pdf`](docs/tcc-nathan-paiva-2025.pdf)
+The full text of the study is available at: [`docs/article-nathan-paiva.pdf`](docs/article-nathan-paiva.pdf)
 
 ## Overview
 Comparative performance study between programming paradigms through a REST API that calculates compound interest. The project implements three distinct approaches:
