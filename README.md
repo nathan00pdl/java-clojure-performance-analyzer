@@ -14,6 +14,13 @@
 
 The full text of the study is available at: [`docs/article-nathan-paiva.pdf`](docs/article-nathan-paiva.pdf)
 
+## Test Data
+
+The complete raw results from the three independent test rounds (V1, V2, V3) are available at:
+[`data-v1-v2-v3/TEST-V1.xlsx`](data-v1-v2-v3/TEST-V1.xlsx), [`data-v1-v2-v3/TEST-V2.xlsx`](data-v1-v2-v3/TEST-V2.xlsx), [`data-v1-v2-v3/TEST-V3.xlsx`](data-v1-v2-v3/TEST-V3.xlsx)
+
+Each workbook contains a Raw Data sheet with all executions (including discarded ones) and separate analysis sheet(s) documenting the exclusion criteria (qualitative invalidity and z-score outlier detection) applied to reach the definitive dataset for each load level. See [Performance Testing Workflow](#performance-testing-workflow) for the full methodology behind each round.
+
 ## Overview
 Comparative performance study between programming paradigms through a REST API that calculates compound interest. The project implements three distinct approaches:
 
