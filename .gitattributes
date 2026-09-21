@@ -1,8 +1,2 @@
 /mvnw text eol=lf
 *.cmd text eol=crlf
-
-# Experiment data and its extracts: they should not count as source code
-metrics-results/** linguist-documentation
-bytecode-analysis/** linguist-documentation
-data-v1-v2-v3/** linguist-documentation
-docs/** linguist-documentation
