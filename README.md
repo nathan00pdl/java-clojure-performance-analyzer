@@ -33,6 +33,16 @@ Measure and compare quantitatively the performance cost of Clojure's idiomatic a
 
 ## Architecture
 
+The two diagrams below are Figures 1 and 2 of the paper. Click either one to open it at full size.
+
+**How the three implementations share one contract.** `ClojureConfiguration` loads the two Clojure namespaces at startup and exposes them as Spring beans, so the Java service and both Clojure services implement the same `CompoundInterestService` interface. Any difference measured in the load tests comes from the paradigm, not from the HTTP layer or the contract:
+
+<p align="center"><a href="docs/architecture-components.png"><img src="docs/architecture-components.png" alt="Component diagram: ClojureConfiguration exposes the two Clojure namespaces as Spring beans; the Java and Clojure controllers both depend on the CompoundInterestService interface, implemented by the Java service with a mutable ArrayList, the idiomatic Clojure service with a PersistentVector, and the interop service with a native ArrayList." width="880"></a></p>
+
+**The test environment.** Two containers: the application, which also runs Gatling through `docker exec`, and Prometheus. On the host, `metrics-collection.sh` drives each execution, queries Prometheus over PromQL and consolidates the numbers:
+
+<p align="center"><a href="docs/architecture-test-environment.png"><img src="docs/architecture-test-environment.png" alt="Test environment: the app-performance-test container holds Gatling and the Spring Boot application on port 8080; the prometheus-monitoring container scrapes /actuator/prometheus every 5s; on the host, metrics-collection.sh queries Prometheus and writes the result files." width="880"></a></p>
+
 ### Project Structure
 ```
 src/
@@ -63,6 +73,20 @@ src/
     └── CompoundInterestSimulation.java        # Load testing configuration
 ```
 
+### Repository Layout
+
+| Path | What it holds |
+|---|---|
+| `src/` | The three implementations and the Gatling simulation |
+| `scripts_shell/` | The tooling of the experiment: `metrics-collection.sh` and `run-gatling.sh` drive an execution, `bytecode-analysis*.sh` extract the bytecode, `test-prometheus-queries.sh` checks the PromQL queries |
+| `data-v1-v2-v3/` | The raw results of the three rounds, one workbook each |
+| `metrics-results/` | The consolidated metrics, one folder per round (`v1`, `v2`, `v3`) and inside it one folder per implementation and load level |
+| `bytecode-analysis/` | The bytecode of each implementation, extracted with `javap -c -p`, and the two comparative analyses behind the instruction counts reported in the paper |
+| `monitoring-configs/` | The Prometheus and Grafana configuration |
+| `docs/` | The paper and the two diagrams above |
+
+`gatling-results/`, `heap-dumps/` and `maven-cache/` are produced by the runs and are not versioned.
+
 ### Monitoring Stack
 - **Prometheus**: JVM metrics collection (CPU, heap, GC)
 - **Grafana**: Real-time visualization
@@ -79,9 +103,10 @@ src/
 
 ## Prerequisites
 - Java 17+
-- Maven 3.8+
 - Docker & Docker Compose
 - Git
+
+Maven itself is not needed: `./mvnw` is in the repository, and the load tests run inside the application container.
 
 ## Quick Start
 
@@ -226,7 +251,7 @@ top -b -n 1 | head -n 20
 
 **Terminal 1** — start metrics collection:
 ```bash
-./metrics-collection.sh <implementation> <load>
+./scripts_shell/metrics-collection.sh <implementation> <load>
 ```
 
 | Parameter | Options |
@@ -236,12 +261,12 @@ top -b -n 1 | head -n 20
 
 Example:
 ```bash
-./metrics-collection.sh java 1000
+./scripts_shell/metrics-collection.sh java 1000
 ```
 
 **Terminal 2** — execute load test when prompted:
 ```bash
-./run-gatling.sh
+./scripts_shell/run-gatling.sh
 ```
 
 Return to Terminal 1 and press ENTER after Gatling finishes.
@@ -256,7 +281,7 @@ sleep 300  # 5 minutes between tests
 docker compose down -v && docker system prune -f && docker volume prune -f && docker compose up -d app prometheus && until curl -sf http://localhost:8080/actuator/health > /dev/null; do sleep 2; done && echo "App ready"
 ```
 
-Repeat steps 5-9 for each execution, changing the scenario in `CompoundInterestSimulation.java` and the argument to `metrics-collection.sh` when switching implementations.
+Repeat steps 5-9 for each execution, changing the scenario in `CompoundInterestSimulation.java` and the argument to `scripts_shell/metrics-collection.sh` when switching implementations.
 
 ### Verify Results
 ```bash
@@ -266,8 +291,9 @@ ls -lt gatling-results/
 # View latest metrics (example for V3)
 cat metrics-results/v3/metrics-comparison.csv
 
-# Check individual test report
-cat metrics-results/v3/metrics-{implementation}-{timestamp}.txt
+# Check the executions of one implementation at one load level
+ls metrics-results/v3/java_load_1000/
+cat metrics-results/v3/java_load_1000/1000_java_1.txt
 
 # List all available rounds
 ls metrics-results/
@@ -293,7 +319,7 @@ All Prometheus metrics are calculated as the delta between the initial value (co
 P95 and P99 are the primary latency metrics, as they capture tail behavior under sustained load and are most sensitive to GC pause impact.
 
 ### Results Storage
-- **Text Reports**: `metrics-results/{version}/metrics-{implementation}-{timestamp}.txt`
+- **Text Reports**: `metrics-results/{version}/{implementation}_load_{load}/{load}_{implementation}_{execution}.txt`
 - **CSV Dataset**: `metrics-results/{version}/metrics-comparison.csv`
 - **Gatling HTML**: `gatling-results/compoundinterestsimulation-{timestamp}/`
 
@@ -394,7 +420,7 @@ docker compose restart app
 curl http://localhost:8080/actuator/prometheus
 
 # Check Prometheus targets
-open http://localhost:9090/targets
+curl -s http://localhost:9090/api/v1/targets | grep -o '"health":"[a-z]*"'
 ```
 
 ### Gatling Fails to Execute
@@ -407,8 +433,8 @@ docker stats app-performance-test
 ```
 
 ## License
-This project is licensed under the MIT License.
+Licensed under the [MIT License](LICENSE). The paper in `docs/` is the author's academic work.
 
 ## Author
-Nathan Paiva — Bachelor's Thesis in Computer Engineering, IFSP Piracicaba, 2025  
+Nathan Paiva — Bachelor's Thesis in Computer Engineering, IFSP Piracicaba, 2026  
 Advisor: Juliano Zanuzzio Blanco
